@@ -1,0 +1,13 @@
+-use sprintf instead of fprintf in prints.c
+-option to specify the number of packet to be read (and time of the capture)
+-revision of filter.c to be flexible as protocol.c
+-license displaying command
+-complete verification of the arguments in the check_options
+-give the choice of the interface
+-make a session layer filter
+-ntohs / ntohl
+-make the filter work for fragmented data (tcp,ip) 
+
+-code optimization
+-comment
+-make the net libs
