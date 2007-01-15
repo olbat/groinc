@@ -49,6 +49,26 @@ struct ipv4_header
 	__u32 destaddr;
 };
 
+struct arp_header
+{
+	__u16 hardtype;
+	__u16 prototype;
+	__u8 hardlen;
+	__u8 protolen;
+	__u16 operation;
+	char *sourceaddrhard;
+	char *sourceaddrproto;
+	char *destaddrhard;
+	char *destaddrproto;
+};	
+
+struct icmp_header
+{
+	__u8 type;
+	__u8 code;
+	__u8 icmpchecksum;
+};
+
 struct tcp_header
 {
 	__u16 sourceport;

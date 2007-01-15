@@ -1,3 +1,5 @@
+-make structures/functions for dynamic structures
+-options to display detailed layer protocol description
 -use sprintf instead of fprintf in prints.c
 -option to specify the number of packet to be read (and time of the capture)
 -revision of filter.c to be flexible as protocol.c

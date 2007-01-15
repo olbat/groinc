@@ -55,7 +55,7 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 	char *data;
 	
 	end = 0;
-	if ((!ldestip) && (!ldestport) && (!lsourceip) && (!lsourceport) && (!lglobalip) && (!lglobalport) && (mac_null(lsourcemac)) && (mac_null(ldestmac)))
+	if ((!ldestip) && (!ldestport) && (!lsourceip) && (!lsourceport) && (!lglobalip) && (!lglobalport) && (mac_null(lsourcemac)) && (mac_null(ldestmac)) && (ipproto == IPPROTO_RAW) && (!ethproto))
 	{
 		end = 1;
 	}
@@ -76,16 +76,16 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 				if (!mac_null(ldestmac))
 					end = end && (!mac_cmp(ldestmac,destmac));
 			}
-			if ((network_layerph->id == ETHPROTO_IP) && ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport)))
+			if ((ipproto == IPPROTO_RAW) || (transport_layerph->id == ipproto))
+			{
+				end = 1;
+			}
+			if ((end) && ((network_layerph->id == ETHPROTO_IP) && ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport))))
 			{
 				__u32 sourceip, destip;
 				__u16 sourceport,destport;
 				sourceip = ((struct ipv4_header *)network_layerph->header)->sourceaddr;
 				destip = ((struct ipv4_header *)network_layerph->header)->destaddr;
-				if ((ipproto == IPPROTO_RAW) || (transport_layerph->id == ipproto))
-				{
-					end = 1;
-				}
 				if (end)
 				{
 					get_ports(transport_layerph,&sourceport,&destport);
