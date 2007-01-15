@@ -36,9 +36,14 @@ void print_ip(int fd,struct ipv4_header *iph)
 	fprintf((FILE *)fd,"[IPv4/ version:%hhd ipheaderlen:%hhd tos:%#x totlen:%d id:%#x fragoffset:%#x ttl:%hhd proto:%hhd checksum:%#x source:%s dest:%s]",iph->version,(iph->iphdrlen*4),iph->tos,ntohs(iph->totlen),ntohs(iph->id),ntohs(iph->fragoffset),iph->ttl,iph->proto,ntohs(iph->ipchecksum),ipv4_ntoa(ntohl(iph->sourceaddr)),ipv4_ntoa(ntohl(iph->destaddr)));
 }
 
+void print_icmp(int fd,struct icmp_header *icmph)
+{
+	fprintf((FILE *)fd,"[ICMP/ type:%hhd code:%hhd checksum:%#x]\n",icmph->type,icmph->code,icmph->icmpchecksum);
+}
+
 void print_tcp(int fd,struct tcp_header *tcph)
 {
-	fprintf((FILE *)fd,"[TCP/ port src:%hd port dest:%hd seqnum:%#x acknum:%#x tcpheaderlen:%d (res:%d ecn:%d ece:%d urg:%d ack:%d psh:%d rst:%d syn:%d fin:%d) window:%#x %hd tcpcheckdum:%#x urgptr:%#x]\n",ntohs(tcph->sourceport),ntohs(tcph->destport),ntohl(tcph->seqnum),ntohl(tcph->acknum),(tcph->tcphdrlen*4),tcph->res,tcph->ecn,tcph->ece,tcph->urg,tcph->ack,tcph->psh,tcph->rst,tcph->syn,tcph->fin,ntohs(tcph->window),tcph->window,ntohs(tcph->tcpchecksum),ntohs(tcph->urgptr));
+	fprintf((FILE *)fd,"[TCP/ port src:%hd port dest:%hd seqnum:%#x acknum:%#x tcpheaderlen:%d (res:%d ecn:%d ece:%d urg:%d ack:%d psh:%d rst:%d syn:%d fin:%d) window:%#x %hd checksum:%#x urgptr:%#x]\n",ntohs(tcph->sourceport),ntohs(tcph->destport),ntohl(tcph->seqnum),ntohl(tcph->acknum),(tcph->tcphdrlen*4),tcph->res,tcph->ecn,tcph->ece,tcph->urg,tcph->ack,tcph->psh,tcph->rst,tcph->syn,tcph->fin,ntohs(tcph->window),tcph->window,ntohs(tcph->tcpchecksum),ntohs(tcph->urgptr));
 }
 
 void print_udp(int fd, struct udp_header *udph)
@@ -84,6 +89,9 @@ void print_transport_layer(int fd, struct protocol_header *transport_layerph)
 {
 	switch (transport_layerph->id)
 	{
+		case IPPROTO_ICMP :
+			print_icmp(fd,(struct icmp_header *)transport_layerph->header);
+			break;
 		case IPPROTO_TCP :
 			print_tcp(fd,(struct tcp_header *)transport_layerph->header);
 			break;

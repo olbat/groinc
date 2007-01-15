@@ -54,6 +54,9 @@ void parse_transport_layer(struct data *datagram,struct protocol_header *transpo
 	transport_layerph->header = (datagram->data + datagram->len);
 	switch (transport_layerph->id)
 	{
+		case IPPROTO_ICMP :
+			transport_layerph->len = sizeof(struct icmp_header);
+			break;
 		case IPPROTO_TCP :
 			transport_layerph->len = (((struct tcp_header *)transport_layerph->header)->tcphdrlen * 4);
 			break;
