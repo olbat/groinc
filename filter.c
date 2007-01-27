@@ -86,8 +86,8 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 				__u16 sourceport,destport;
 				sourceip = ((struct ipv4_header *)network_layerph->header)->sourceaddr;
 				destip = ((struct ipv4_header *)network_layerph->header)->destaddr;
-				if (end)
-				{
+				//if (end)
+				//{
 					get_ports(transport_layerph,&sourceport,&destport);
 					
 					if (lglobalip)
@@ -112,7 +112,7 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 						if (ldestport)
 							end = end && (ldestport == destport);
 					}	
-				}
+				//}
 			}
 		}
 	}

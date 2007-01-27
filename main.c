@@ -115,8 +115,7 @@ int main(int argc, char **argv)
 	protoname = "";
 	ethproto = ETHPROTO_IP;
 	ethprotoname = "";
-	//ipproto = IPPROTO_RAW;
-	ipproto = 1;
+	ipproto = IPPROTO_RAW;
 	ipprotoname = "";
 	inputfile = "";
 	outputfile = "";
