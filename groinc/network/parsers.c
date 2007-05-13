@@ -20,6 +20,7 @@
 
 #include <netinet/in.h>
 #include "parsers.h"
+#include "../protocols/scan_proto.h"
 
 void parse_datalink_layer(struct data *datagram,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph)
 {
@@ -29,11 +30,11 @@ void parse_datalink_layer(struct data *datagram,struct protocol_header *datalink
 	switch (datalink_layerph->id)
 	{
 		case PROTO_ETHER :
-			datalink_layerph->len = sizeof(struct ethernet_header);
-			network_layerph->id = ((struct ethernet_header *)datalink_layerph->header)->proto;
+			scan_ether(datagram,datalink_layerph,network_layerph);
 			break;
 	}
-	datagram->len = (datagram->len + datalink_layerph->len);
+	if ((datagram->len + datalink_layerph->len) < datagram->totlen)
+		datagram->len = (datagram->len + datalink_layerph->len);
 }
 
 void parse_network_layer(struct data *datagram,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
@@ -42,11 +43,14 @@ void parse_network_layer(struct data *datagram,struct protocol_header *network_l
 	switch (network_layerph->id)
 	{
 		case ETHPROTO_IP :
-			network_layerph->len = (((struct ipv4_header *)network_layerph->header)->iphdrlen * 4);
-			transport_layerph->id = ((struct ipv4_header *)network_layerph->header)->proto;
+			scan_ipv4(datagram,network_layerph,transport_layerph);
+			break;
+		case ETHPROTO_ARP :
+			scan_arp(datagram,network_layerph,transport_layerph);
 			break;
 	}
-	datagram->len = (datagram->len + network_layerph->len);
+	if ((datagram->len + network_layerph->len) < datagram->totlen)
+		datagram->len = (datagram->len + network_layerph->len);
 } 
 
 void parse_transport_layer(struct data *datagram,struct protocol_header *transport_layerph)
@@ -55,17 +59,19 @@ void parse_transport_layer(struct data *datagram,struct protocol_header *transpo
 	switch (transport_layerph->id)
 	{
 		case IPPROTO_ICMP :
-			transport_layerph->len = sizeof(struct icmp_header);
+			scan_icmp(datagram,transport_layerph);
 			break;
 		case IPPROTO_TCP :
-			transport_layerph->len = (((struct tcp_header *)transport_layerph->header)->tcphdrlen * 4);
+			scan_tcp(datagram,transport_layerph);
 			break;
 		case IPPROTO_UDP :
-			transport_layerph->len = sizeof(struct udp_header);
+			scan_udp(datagram,transport_layerph);
 			break;
 	}
-	datagram->len = (datagram->len + transport_layerph->len);
+	if ((datagram->len + transport_layerph->len) < datagram->totlen)
+		datagram->len = (datagram->len + transport_layerph->len);
 }
+
 void get_ports(struct protocol_header *transport_layerph, __u16 *sourceport, __u16 *destport)	
 {
 	*sourceport = ntohs(*((__u16 *)transport_layerph->header));

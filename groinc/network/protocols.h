@@ -53,13 +53,14 @@ int lookup_ipid(char *name);
 #define ETHPROTO_RARP	0x5308
 #define	ETHPROTO_XNS	0x6
 #define	ETHPROTO_APPLETALK	0xb908
+#define ETHPROTO_RAW 	0
 
 #endif
 
 #ifndef _NETINET_IN_H
 
 /* transport layer protocols (ip) */
-/* for more informations see the RFC 1700 */
+/* for further informations see the RFC 1700 (http://ietf.org/rfc/rfc1700.txt) */
 
 #define IPPROTO_IP          0	   /* Dummy protocol for TCP.                     */
 #define IPPROTO_ICMP        1      /* Internet Control Message       [RFC792,JBP] */

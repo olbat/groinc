@@ -1,3 +1,4 @@
+
 /* This file is a part of groinc
  * 
  * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
@@ -18,23 +19,15 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+#include <stdio.h>
+#include <stdarg.h>
 
-#include "my_types.h"
-
-struct data
+void print_proto(int fd, char *format, ...)
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
-};
+	va_list list;
+	va_start(list,format);
+	vfprintf((FILE *)fd,format,list);
+	fflush((FILE *)fd);
+	va_end(list);
+}
 
-struct protocol_header
-{
-	unsigned int id;
-	int len;
-	char *header;
-};
-
-#endif

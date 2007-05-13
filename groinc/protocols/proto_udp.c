@@ -18,23 +18,23 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+/*
+ * For further informations about this implementation please take a look to the following RFC :
+ * 	RFC 768 - User Datagram Protocol (http://ietf.org/rfc/rfc768.txt)
+ */
 
-#include "my_types.h"
+#include "proto_udp.h"
+#include "printp.h"
+#include <netinet/in.h>
 
-struct data
+void scan_udp(struct data *datagram, struct protocol_header *transport_layerph)
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
-};
+	transport_layerph->len = sizeof(struct udp_header);
+}
 
-struct protocol_header
+void print_udp(int fd, char *datagram)
 {
-	unsigned int id;
-	int len;
-	char *header;
-};
-
-#endif
+	struct udp_header *udph;
+	udph = (struct udp_header *) datagram;
+	print_proto(fd,"[UDP/ source port:%hd dest port:%hd udpdatalen:%hd checksum:%#x]",ntohs(udph->sourceport),ntohs(udph->destport),ntohs(udph->udpdatalen),udph->udpchecksum);
+}

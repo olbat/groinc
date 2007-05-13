@@ -22,39 +22,24 @@
 #include "memory_tools.h"
 #include "math_tools.h"
 #include <netinet/in.h>
-#include <malloc.h>
 
-char *ipv4_ntoa(__u32 longip)
+char *ipv4_ntoa(__u32 longip, char *buff)
 {
-	int i,tot,current;
-	char *end,**preend;
-	
-	preend = (char **) malloc(4*sizeof(char *));
-	tot = 0;
-	for (i = 0;i < 4;i++)
-	{
-		tot = tot + my_strlen(preend[i] = my_itoa((unsigned char)(longip>>(8*i)),10));
-	}
+	int i, tot, tmplen;
 
-	end = (char *) malloc(sizeof(char) * (tot + 4)); /* the 3 '.' and the final '\0' */
-	
-	my_memset(end,0,sizeof(end));
-	end[tot + 3] = '\0';
 	tot = 0;
-	current = 0;
 	i = 4;
-	
 	while (i--)
 	{
-		my_memcpy((end + tot),preend[i],current = my_strlen(preend[i]));
+		char tmp[tmplen = my_itoa_buffer_size((unsigned char)(longip>>(8*i)),10)];
+		my_memcpy((buff + tot),my_itoa((unsigned char)(longip>>(8*i)),10,tmp),(tmplen - 1));
+		tot = tot + (tmplen - 1);
 		if (i)
-		{
-			tot = tot + current;
-			end[tot++] = '.';
-		}
+			buff[tot++] = '.';
 	}
-	free(preend);
-	return end;
+	buff[tot] = 0;
+
+	return buff;
 }
 
 __u32 ipv4_aton(char *str)
@@ -77,14 +62,17 @@ __u32 ipv4_aton(char *str)
 	return htonl(end);
 }
 
-__u8 *mac_aton(char *str)
+__u8 *mac_aton(char *str, __u8 *buff)
 {
-	__u8 *end, *p;
+	__u8 *p;
 	char *ptr;
 	
+	/* 
 	end = (__u8 *) malloc(6*sizeof(__u8));
 	my_memset((char *)end,0,8);
-	p = end;
+	*/
+
+	p = buff;
 	ptr = str;
 	while(*str)
 	{
@@ -96,28 +84,31 @@ __u8 *mac_aton(char *str)
 		str++;
 	}
 	*p = (__u8) my_atoi_len(ptr,(str - ptr),16);
-	return end;
+	
+	return buff;
 }
 
-char *mac_ntoa(__u8 *macaddr)
+char *mac_ntoa(__u8 *macaddr, char *buff)
 {
-	char *end,*ptr,*tmp;
+	char *ptr;
+	char tmp[2];
 	char i;
 
-	end = (char *) malloc((3 * 6 + 1)*sizeof(char));
-	ptr = end;
-	for (i=0;i<5;i++)
+	ptr = buff;
+	for (i=0;i < 5;i++)
 	{
-		tmp = my_itoa_zero(*macaddr++,2,16);
-		*ptr++ = *tmp++;
+		my_itoa_char(*macaddr++,2,16,'0',tmp);
 		*ptr++ = *tmp;
+		*ptr++ = *(tmp + 1);
 		*ptr++ = ':';
 	}
-	tmp = my_itoa_zero(*macaddr,2,16);
-	*ptr++ = *tmp++;
+
+	my_itoa_char(*macaddr,2,16,'0',tmp);
 	*ptr++ = *tmp;
-	*ptr = '\0';
-	return end;
+	*ptr++ = *(tmp + 1);
+	*ptr = 0;
+
+	return buff;
 }
 
 int mac_cmp(__u8 *macaddr1, __u8 *macaddr2)

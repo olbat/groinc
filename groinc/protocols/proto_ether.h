@@ -18,23 +18,26 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+#ifndef _PROTO_ETHER_H
+#define _PROTO_ETHER_H
 
-#include "my_types.h"
+#include "../network/my_types.h"
+#include "../network/headers.h"
 
-struct data
+/*
+ * For further informations about this implementation please take a look to the following documents :
+ * 	Ethernet IEEE 802.3 standard (http://standards.ieee.org/getieee802/802.3.html)
+ * 	RFC 894 - A Standard for the Transmission of IP Datagrams over Ethernet Networks (http://ietf.org/rfc/rfc894.txt)
+ */
+
+struct ethernet_header
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
+	__u8	destmac[6];
+	__u8	sourcemac[6];
+	__u16	proto;
 };
 
-struct protocol_header
-{
-	unsigned int id;
-	int len;
-	char *header;
-};
+void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph);
+void print_ether(int fd, char *datagram);
 
 #endif

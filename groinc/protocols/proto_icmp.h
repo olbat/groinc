@@ -18,23 +18,26 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+#ifndef _PROTO_ICMP_H
+#define _PROTO_ICMP_H
 
-#include "my_types.h"
+#include "../network/my_types.h"
+#include "../network/headers.h"
 
-struct data
+/*
+ * For further informations about this implementation please take a look to the following RFC :
+ * 	RFC 792 - INTERNET CONTROL MESSAGE PROTOCOL (http://ietf.org/rfc/rfc792.txt)
+ */
+
+struct icmp_header
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
+	__u8 type;
+	__u8 code;
+	__u16 icmpchecksum;
+	__u32 field;
 };
 
-struct protocol_header
-{
-	unsigned int id;
-	int len;
-	char *header;
-};
+void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph);
+void print_icmp(int fd, char *datagram);
 
 #endif

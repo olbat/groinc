@@ -18,23 +18,38 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+/*
+ * For further informations about this implementation please take a look to the following RFC :
+ * 	RFC 793 - TRANSMISSION CONTROL PROTOCOL (http://ietf.org/rfc/rfc793.txt)
+ */
 
-#include "my_types.h"
+#ifndef _PROTO_TCP_H
+#define _PROTO_TCP_H
 
-struct data
+#include "../network/my_types.h"
+#include "../network/headers.h"
+
+struct tcp_header
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
+	__u16 sourceport;
+	__u16 destport;
+	__u32 seqnum;
+	__u32 acknum;
+	__u16 res:4,
+	      tcphdrlen:4,
+	      fin:1,
+	      syn:1,
+	      rst:1,
+	      psh:1,
+	      ack:1,
+	      urg:1,
+	      ece:1,
+	      ecn:1;
+	__u16 window;
+	__u16 tcpchecksum;
+	__u16 urgptr;
 };
-
-struct protocol_header
-{
-	unsigned int id;
-	int len;
-	char *header;
-};
+void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph);
+void print_tcp(int fd, char *datagram);
 
 #endif

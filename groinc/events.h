@@ -3,12 +3,11 @@
  * This software is released under GPL the license
  * see the COPYING file for more informations */
 
-#ifndef _SNIFFER_H
-#define _SNIFFER_H
+#ifndef _EVENTS_H
+#define _EVENTS_H
 
-int start_sniff(int inputfd,int outputfd);
-int stop_sniff();
-int cleanup_sniff();
+void event_stop();
+void event_kill();
 
 #endif
 

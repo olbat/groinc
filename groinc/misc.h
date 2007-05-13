@@ -3,12 +3,17 @@
  * This software is released under GPL the license
  * see the COPYING file for more informations */
 
-#ifndef _SNIFFER_H
-#define _SNIFFER_H
+#ifndef _MISC_H
+#define _MISC_H
 
-int start_sniff(int inputfd,int outputfd);
-int stop_sniff();
-int cleanup_sniff();
+#define GROINC_VERSION "groinc 0.0.9rc3 (20070513)"
+
+enum miscno 
+{
+	MISCNO_LICENSE,
+	MISCNO_VERSION
+};
+
+void print_misc(enum miscno no);
 
 #endif
-

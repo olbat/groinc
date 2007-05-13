@@ -47,7 +47,7 @@ int check_options()
 		}
 		else
 		{
-			ipproto = (unsigned char) tmp;
+			ipproto = (unsigned int) tmp;
 		}
 	}
 	if (*ethprotoname)
@@ -60,7 +60,7 @@ int check_options()
 		}
 		else
 		{
-			ethproto = (unsigned char) tmp;
+			ethproto = (unsigned int) tmp;
 		}
 	}
 	if (*protoname)
@@ -73,7 +73,7 @@ int check_options()
 		}
 		else
 		{
-			proto = (unsigned char) tmp;
+			proto = (unsigned int) tmp;
 		}
 	}
 	if (*fsourceport)
@@ -102,11 +102,32 @@ int check_options()
 	}
 	if (*fdestmac)
 	{
-		ldestmac = (__u8 *) mac_aton(fdestmac);
+		mac_aton(fdestmac,ldestmac);
 	}
 	if (*fsourcemac)
 	{
-		lsourcemac = (__u8 *) mac_aton(fsourcemac);
+		mac_aton(fsourcemac,lsourcemac);
 	}
+	if (*flimitnb)
+	{
+		llimitnb = (long int) my_atoi(flimitnb,10);
+	}
+	if (*ftimelimit)
+	{
+		gettimeofday(&timelimit,0);
+		timelimit.tv_sec = timelimit.tv_sec + my_atoi(ftimelimit,10);
+	}
+
+	if ((!ldestip) && (!ldestport) && (!lsourceip) && (!lsourceport)
+	&& (!lglobalip) && (!lglobalport) && (mac_null(lsourcemac)) 
+	&& (mac_null(ldestmac)) && (ipproto == IPPROTO_RAW) && (ethproto == ETHPROTO_RAW))
+	{
+		nofilter = 1;
+	}
+	else
+	{
+		nofilter = 0;
+	}
+
 	return end;
 }

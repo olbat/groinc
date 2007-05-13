@@ -16,9 +16,13 @@ extern char	opt_output,
 		opt_ndisplayemptyslp,
 		opt_displaydlproto,
 		opt_displaynlproto,
-		opt_displaytlproto;
+		opt_displaytlproto,
+		opt_displayhexa,
+		opt_ndisplaypackets;
+
 extern char	*inputfile,
 		*outputfile;
+
 extern int 	datafd,
       		headerfd;
 
