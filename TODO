@@ -1,12 +1,12 @@
 -revision prints.c and other print files
--stop correctly the software (free everything when ^-c)
+-REVISION OF THE FILTER NEEDED (ugly code)
+-revision of the user option names
+-make a manual
 -make structures/functions for dynamic structures
 -enable filtering of encapsuled protocol headers (like IP header in ICMP) 
 -options to display detailed layer protocol description
 -use sprintf instead of fprintf in prints.c
--option to specify the number of packet to be read (and time of the capture)
 -revision of filter.c to be flexible as protocol.c
--license displaying command
 -complete verification of the arguments in the check_options
 -give the choice of the interface
 -make a session layer filter
