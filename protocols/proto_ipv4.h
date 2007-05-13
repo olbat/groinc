@@ -18,23 +18,35 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+/*
+ * For further informations about this implementation please take a look to the following RFC :
+ * 	RFC 791 - INTERNET PROTOCOL (http://ietf.org/rfc/rfc791.txt)
+ */
 
-#include "my_types.h"
+#ifndef _PROTO_IPV4_H
+#define _PROTO_IPV4_H
 
-struct data
+#include "../network/my_types.h"
+#include "../network/headers.h"
+
+struct ipv4_header
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
+	__u8 iphdrlen:4,
+	     version:4;
+	__u8 tos;
+	__u16 totlen;
+	__u16 id;
+	__u16 fragoffset;
+	__u8 ttl;
+	__u8 proto;
+	__u16 ipchecksum;
+	__u32 sourceaddr;
+	__u32 destaddr;
 };
 
-struct protocol_header
-{
-	unsigned int id;
-	int len;
-	char *header;
-};
+void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph, struct protocol_header *transport_layerph);
+void print_ipv4(int fd, char *datagram);
+void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport);
 
 #endif
+

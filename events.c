@@ -18,23 +18,25 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+#include "events.h"
+#include "sniffer.h"
+#include "globals_filter.h"
+#include <stdlib.h> 
+#include <unistd.h>
 
-#include "my_types.h"
-
-struct data
+void event_stop()
 {
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
-};
+	sniffer_stop = 1;
+	stop_sniff();
+	cleanup_sniff();
 
-struct protocol_header
+	exit(0);
+}
+
+void event_kill()
 {
-	unsigned int id;
-	int len;
-	char *header;
-};
+	cleanup_sniff();
 
-#endif
+	exit(0);
+}
+

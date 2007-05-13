@@ -7,10 +7,13 @@
 
 #include "../network/my_types.h"
 
-char *ipv4_ntoa(__u32 longip);
+#define MAC_STR_SIZE 19
+#define IPV4_STR_MAXSIZE 16
+
+char *ipv4_ntoa(__u32 longip, char *buff);
 __u32 ipv4_aton(char *str);
-__u8 *mac_aton(char *str);
-char *mac_ntoa(__u8 *macaddr);
+__u8 *mac_aton(char *str, __u8 *buff);
+char *mac_ntoa(__u8 *macaddr, char *buff);
 int mac_cmp(__u8 *mac1, __u8 *mac2);
 int mac_null(__u8 *macaddr);
 

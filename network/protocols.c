@@ -181,7 +181,6 @@ int lookup_protocolid(char *name,struct protoname protonames[])
 	
 	end = -1;
 	i = PROTO_MIN;
-	
 	while ((protonames[i].id != PROTO_MAX) && (my_strcmp(protonames[i].name,name)))
 		i++;
 	if (protonames[i].id != PROTO_MAX)

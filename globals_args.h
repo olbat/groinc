@@ -22,7 +22,11 @@ extern	char 	*fsourcemac,
 		*co_error,
 		*protoname,
 		*ethprotoname,
- 		*ipprotoname;
+ 		*ipprotoname,
+		*flimitnb,
+		*ftimelimit;
+
+extern enum miscno	po_misc;
 
 #endif
 

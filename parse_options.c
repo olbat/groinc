@@ -1,30 +1,31 @@
-/* This file is a part of groinc
+/* this file is a part of groinc
  * 
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * copyright (c) 2006, 2007 sarzyniec luc <olbat@xiato.com>
  * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * this program is free software; you can redistribute it and/or modify
+ * it under the terms of the gnu general public license as published by
+ * the free software foundation; either version 2 of the license, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * this program is distributed in the hope that it will be useful,
+ * but without any warranty; without even the implied warranty of
+ * merchantability or fitness for a particular purpose.  see the
+ * gnu general public license for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * you should have received a copy of the gnu general public license
+ * along with this program; if not, write to the free software
+ * foundation, inc., 51 franklin st, fifth floor, boston, ma  02110-1301  usa
  * 
- * see the COPYING file for more informations */
+ * see the copying file for more informations */
 
 #include "parse_options.h"
 #include "globals_args.h"
 #include "globals_option.h"
 #include "tools/memory_tools.h"
 #include "network/protocols.h"
+#include "misc.h"
 
-enum { OPT_ERROR,OPT_HELP,OPT_DSTPORT,OPT_DSTIP,OPT_SRCPORT,OPT_SRCIP,OPT_OUTPUT,OPT_OUTPUTDATA, OPT_DISPLAYDATA,OPT_DISPLAYHEADER,OPT_DISPLAYPACKETS,OPT_DISPLAYALLPACKETS,OPT_FILTERSTR,OPT_IPPROTOCOL,OPT_SIMPLEDISPLAY,OPT_DISPLAYTLPROTO,OPT_FILTERREGEX,OPT_DONTDISPLAYEMPTYSLP,OPT_ETHPROTOCOL,OPT_DISPLAYNLPROTO,OPT_DISPLAYDLPROTO,OPT_PROTOCOL,OPT_SRCMAC,OPT_DSTMAC,OPT_GLOBALIP,OPT_GLOBALPORT,OPT_INPUTFILE,OPT_OUTPUTFILE,OPT_NULL,OPT_END };
+enum { OPT_ERROR,OPT_HELP,OPT_DSTPORT,OPT_DSTIP,OPT_SRCPORT,OPT_SRCIP,OPT_OUTPUT,OPT_OUTPUTDATA, OPT_DISPLAYDATA,OPT_DISPLAYHEADER,OPT_DISPLAYPACKETS,OPT_DISPLAYALLPACKETS,OPT_FILTERSTR,OPT_IPPROTOCOL,OPT_SIMPLEDISPLAY,OPT_DISPLAYTLPROTO,OPT_FILTERREGEX,OPT_DONTDISPLAYEMPTYSLP,OPT_ETHPROTOCOL,OPT_DISPLAYNLPROTO,OPT_DISPLAYDLPROTO,OPT_PROTOCOL,OPT_SRCMAC,OPT_DSTMAC,OPT_GLOBALIP,OPT_GLOBALPORT,OPT_INPUTFILE,OPT_OUTPUTFILE,OPT_DISPLAYHEXA,OPT_LIMITNB,OPT_DONTDISPLAYPACKETS,OPT_TIMELIMIT,OPT_VERSION,OPT_LICENSE,OPT_NULL,OPT_END };
 
 static struct optlist po_optlist[] = {
 	{'d',	"destport",	OPT_DSTPORT,	PO_ARG },
@@ -34,26 +35,32 @@ static struct optlist po_optlist[] = {
 	{'o',	"outputdata",	OPT_OUTPUTDATA,	PO_ARG },
 	{'O',	"output",	OPT_OUTPUT,	PO_ARG },
 	{'f',	"filter",	OPT_FILTERSTR,	PO_ARG },
-	{'q',	"protocol",	OPT_PROTOCOL,	PO_ARG },
+	{'Q',	"protocol",	OPT_PROTOCOL,	PO_ARG },
 	{'p',	"ipprotocol", 	OPT_IPPROTOCOL,	PO_ARG },
 	{'P',	"ethprotocol",	OPT_ETHPROTOCOL,PO_ARG },
 	{'F',	"filter-regex",	OPT_FILTERREGEX,PO_ARG },
 	{'m',	"sourcemac",	OPT_SRCMAC,	PO_ARG },
 	{'M',	"destmac",	OPT_DSTMAC,	PO_ARG },
+	{'l',	"limitnb",	OPT_LIMITNB,	PO_ARG },
 	{'g',	"globalport",	OPT_GLOBALPORT,	PO_ARG },
 	{'G',	"globalip",	OPT_GLOBALIP,	PO_ARG },
-	{'l',	"load",		OPT_INPUTFILE,	PO_ARG },	
-	{'w',	"save",		OPT_OUTPUTFILE,	PO_ARG },
+	{'r',	"read",		OPT_INPUTFILE,	PO_ARG },
+	{'t',	"timelimit",	OPT_TIMELIMIT,	PO_ARG },
+	{'w',	"write",	OPT_OUTPUTFILE,	PO_ARG },
 	{'a',	"displaydata",	OPT_DISPLAYDATA,	PO_NOARG },
 	{'A',	"simpledisplay",OPT_SIMPLEDISPLAY,	PO_NOARG },
 	{'v',	"verbose",	OPT_DISPLAYHEADER,	PO_NOARG },
 	{'n',	"displaypackets",OPT_DISPLAYPACKETS,	PO_NOARG },
-	{'N',	"displayallpackets",	OPT_DISPLAYALLPACKETS,		PO_NOARG },
-	{'z',	"dontdisplayemptysp",	OPT_DONTDISPLAYEMPTYSLP,	PO_NOARG },
+	{'H',	"hexa",		OPT_DISPLAYHEXA,	PO_NOARG },
+	{'h',	"help", 	OPT_HELP,		PO_NOARG },
+	{'q',	"quiet",	OPT_DONTDISPLAYPACKETS,	PO_NOARG },
+	{ 0,	"version",	OPT_VERSION,	PO_NOARG },
+	{ 0,	"license",	OPT_LICENSE,	PO_NOARG },
 	{'c',	"displayprotodatalink",	OPT_DISPLAYDLPROTO,	PO_NOARG },
 	{'b',	"displayprototransport",OPT_DISPLAYTLPROTO,	PO_NOARG },
 	{'B',	"displayprotonetwork",	OPT_DISPLAYNLPROTO,	PO_NOARG },
-	{'h',	"help", 	OPT_HELP,		PO_NOARG },
+	{'N',	"displayallpackets",	OPT_DISPLAYALLPACKETS,		PO_NOARG },
+	{'z',	"dontdisplayemptysp",	OPT_DONTDISPLAYEMPTYSLP,	PO_NOARG },
 	{'\0',	"",		OPT_END,	PO_NOARG}
 };
 static char *value;
@@ -168,6 +175,14 @@ int parse_options(int argc, char **argv)
 			case OPT_HELP :
 				return P_ERROR;
 				break;
+			case OPT_VERSION :
+				po_misc = MISCNO_VERSION;
+				return P_MISC;
+				break;
+			case OPT_LICENSE :
+				po_misc = MISCNO_LICENSE;
+				return P_MISC;
+				break;
 			case OPT_DSTPORT :
 				fdestport = value;
 				break;
@@ -191,6 +206,12 @@ int parse_options(int argc, char **argv)
 				break;
 			case OPT_DSTMAC :
 				fdestmac = value;
+				break;
+			case OPT_LIMITNB :
+				flimitnb = value;
+				break;
+			case OPT_TIMELIMIT :
+				ftimelimit = value;
 				break;
 			case OPT_SIMPLEDISPLAY:
 				opt_simpledisplay = 1;
@@ -219,6 +240,12 @@ int parse_options(int argc, char **argv)
 			case OPT_DONTDISPLAYEMPTYSLP :
 				opt_ndisplayemptyslp = 1;
 				break;
+			case OPT_DONTDISPLAYPACKETS :
+				opt_ndisplaypackets = 1;
+				break;
+			case OPT_DISPLAYHEXA :
+				opt_displayhexa = 1;
+				break;
 			case OPT_OUTPUT :
 				opt_output = 1;
 				output = value;
@@ -232,7 +259,6 @@ int parse_options(int argc, char **argv)
 				break;
 			case OPT_FILTERREGEX :
 				filterregexstr = value;
-				//regcomp(&filterregex,value,0);
 				break;
 			case OPT_PROTOCOL :
 				protoname = value;

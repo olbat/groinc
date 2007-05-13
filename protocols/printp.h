@@ -18,23 +18,9 @@
  * 
  * see the COPYING file for more informations */
 
-#ifndef _HEADERS_H
-#define _HEADERS_H
+#ifndef _PRINTP_H
+#define _PRINTP_H
 
-#include "my_types.h"
-
-struct data
-{
-	char *data;
-	unsigned int len; /* the offset, need to be renamed */
-	unsigned int totlen;
-};
-
-struct protocol_header
-{
-	unsigned int id;
-	int len;
-	char *header;
-};
+void print_proto(int fd, char *format, ...);
 
 #endif

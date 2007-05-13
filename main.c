@@ -21,9 +21,11 @@
 #include <sys/socket.h>
 #include <linux/if_ether.h>
 #include <fcntl.h>
-#include <stdio.h>
+#include <stdio.h> /* stdin/stdout */
 #include <regex.h>
 #include <netinet/in.h>
+#include <signal.h>
+#include <sys/time.h>
 
 #include "network/protocols.h"
 #include "network/my_types.h"
@@ -32,6 +34,8 @@
 #include "usage.h"
 #include "sniffer.h"
 #include "tools/network_tools.h" /* to be removed */
+#include "events.h"
+#include "misc.h"
 
 #define OUTPUT_HEADER_FILE_DEFAULT stdout
 #define OUTPUT_DATA_FILE_DEFAULT stdout
@@ -42,14 +46,20 @@
 __u16 	ldestport,
 	lsourceport,
 	lglobalport;
+
 __u32	lsourceip,
 	ldestip,
 	lglobalip;
-__u8 	*lsourcemac,
-	*ldestmac;
+
+__u8 	lsourcemac[MAC_STR_SIZE],
+	ldestmac[MAC_STR_SIZE];
+
+long int	llimitnb;
+unsigned long int 	packetstot, packetsfiltred;
+
 char	*fsourcemac,
 	*fdestmac,
- 	*fsourceip,
+	*fsourceip,
 	*fdestip,
 	*fglobalip,
 	*fsourceport,
@@ -63,15 +73,22 @@ char	*fsourcemac,
 	*filterregexstr,
 	*protoname,
 	*ethprotoname,
- 	*ipprotoname,
+	*ipprotoname,
 	*inputfile,
-	*outputfile;
-regex_t filterregex;
-unsigned char proto,ethproto,ipproto;
-int datafd,
-    headerfd;
+	*outputfile,
+	*flimitnb,
+	*ftimelimit;
 
-char	opt_displaydlproto,
+unsigned int 	proto,
+		ethproto,
+		ipproto;
+
+int 	datafd,
+	headerfd;
+
+char	sniffer_stop,
+	nofilter,
+	opt_displaydlproto,
 	opt_displaynlproto,
 	opt_displaytlproto,
 	opt_simpledisplay,
@@ -81,16 +98,39 @@ char	opt_displaydlproto,
 	opt_displayallpackets,
 	opt_output,
 	opt_outputdata,
-	opt_ndisplayemptyslp;
+	opt_ndisplayemptyslp,
+	opt_displayhexa,
+	opt_ndisplaypackets;
 	
+regex_t filterregex;
+
+enum miscno	po_misc;
+
+struct timeval 	timestart,
+		timefirstpacket,
+		timelimit;
 
 int main(int argc, char **argv)
 {
-	int inputfd,outputfd;
+	int inputfd,outputfd,poptret;
 	
+	/* signals settings */
+	signal(SIGINT,event_stop);
+	signal(SIGQUIT,event_stop);
+
+	signal(SIGHUP,event_kill);
+	signal(SIGTSTP,event_kill);
+	signal(SIGABRT,event_kill);
+	signal(SIGTERM,event_kill);
+	signal(SIGFPE,event_kill);
+	signal(SIGILL,event_kill);
+	signal(SIGSEGV,event_kill);
+
+	sniffer_stop = 0;
+
 	/* initialization of the options var */
-	lsourcemac = mac_aton("00:00:00:00:00:00");
-	ldestmac = mac_aton("00:00:00:00:00:00");
+	mac_aton("00:00:00:00:00:00",lsourcemac);
+	mac_aton("00:00:00:00:00:00",ldestmac);
 	fdestmac = "";
 	fsourcemac = "";
 	ldestport = 0;
@@ -113,12 +153,17 @@ int main(int argc, char **argv)
 	filterregexstr = "";
 	proto = PROTO_ETHER;
 	protoname = "";
-	ethproto = ETHPROTO_IP;
+	ethproto = ETHPROTO_RAW;
 	ethprotoname = "";
 	ipproto = IPPROTO_RAW;
 	ipprotoname = "";
 	inputfile = "";
 	outputfile = "";
+	flimitnb = "";
+	ftimelimit = "";
+	llimitnb = -1;
+	packetstot = 0;
+	packetsfiltred = 0;
 	
 	opt_displaydlproto = 0;
 	opt_displaynlproto = 0;
@@ -131,35 +176,13 @@ int main(int argc, char **argv)
 	opt_output = 0;
 	opt_outputdata = 0;
 	opt_ndisplayemptyslp = 0;
-	
-	if (argc <= 1)
-	{
-		print_usage(argv[0]);
-		return 1;
-	}
-	if (parse_options(argc-1,argv) == P_ERROR)
-	{
-		if (*po_error != 0)
-		{
-			print_error_opt(po_error);
-			print_usage(argv[0]);
-			return 1;
-		}
-		else
-		{
-			print_usage(argv[0]);
-			return 0;
-		}
-	}
-	if (check_options())
-	{
-		if (*co_error)
-		{
-			print_error_setting(co_error);
-			print_usage(argv[0]);
-			return 1;
-		}
-	}
+	opt_displayhexa = 0;
+	opt_ndisplaypackets = 0;
+
+	timefirstpacket.tv_sec = 0;
+	timefirstpacket.tv_usec = 0;
+	timelimit.tv_sec = 0;
+
 	
 	if (opt_output != 0)
 	{
@@ -176,6 +199,43 @@ int main(int argc, char **argv)
 	else
 	{
 		datafd = (int)OUTPUT_DATA_FILE_DEFAULT;
+	}
+	
+	if (argc <= 1)
+	{
+		print_usage(argv[0]);
+		return 1;
+	}
+	
+	poptret = parse_options(argc-1,argv);
+	if (poptret == P_ERROR)
+	{
+		if (*po_error != 0)
+		{
+			print_error_opt(po_error);
+			print_usage(argv[0]);
+			return 1;
+		}
+		else
+		{
+			print_usage(argv[0]);
+			return 0;
+		}
+	}
+	else if (poptret == P_MISC)
+	{
+		print_misc(po_misc);
+		return 0;
+	}
+
+	if (check_options())
+	{
+		if (*co_error)
+		{
+			print_error_setting(co_error);
+			print_usage(argv[0]);
+			return 1;
+		}
 	}
 	
 	/* if ((inputfd = socket(AF_INET,SOCK_RAW,proto)) < 0) */
@@ -196,7 +256,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		sniff(inputfd,outputfd);
+		start_sniff(inputfd,outputfd);
 	}
 	return 0;
 }

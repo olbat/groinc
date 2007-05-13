@@ -20,7 +20,6 @@
 
 #include "math_tools.h"
 #include "memory_tools.h"
-#include <malloc.h>
 
 static const char *lbase = { "0123456789abcdefghijklmnopqrstuvwxyz" };
 static const char *ubase = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
@@ -74,9 +73,26 @@ unsigned int my_pow(unsigned int n, unsigned int p)
 	return end;
 }
 
-char *my_itoa(unsigned int number, unsigned char base)
+/* The size needed to store a number as a string (counting the ending '\0') */
+unsigned int my_itoa_buffer_size(unsigned int number, unsigned char base)
 {
-	char *end;
+	unsigned int end,pow;
+	
+	end = 1;
+	pow = 1;
+
+	/* getting the order of the number */
+	while (pow * base <= number)
+	{
+		end++;
+		pow = pow * base;
+	}
+	
+	return end + 1;
+}
+
+char *my_itoa(unsigned int number, unsigned char base, char *buff)
+{
 	unsigned int order,tmp,pow;
 
 	order = 1;
@@ -91,8 +107,7 @@ char *my_itoa(unsigned int number, unsigned char base)
 	}
 
 	/* initialize the returned string */	
-	end = (char *) malloc(sizeof(char)*(order + 1));
-	end[order] = '\0';
+	buff[order] = 0;
 
 	/* reuse of the variable order */
 	order = 0;
@@ -100,32 +115,36 @@ char *my_itoa(unsigned int number, unsigned char base)
 	while(pow)
 	{
 		tmp = number / pow; 
-		end[order++] = my_itoc(tmp);
+		buff[order++] = my_itoc(tmp);
 		number = number - (tmp * pow);
 		pow /= base;
 	}
-	return end;
+	return buff;
 }
 
-char *my_itoa_zero(unsigned int number, unsigned char zeros,unsigned char base)
+/* The size needed to store the addicted chars to store a number as a string (you need first use my_itoa_buffer_size) */
+unsigned int my_itoa_char_char_size(unsigned int number, unsigned char nbc,unsigned char base)
 {
-	char *end,*tmp;
+	int len;
+
+	if ((len = (my_itoa_buffer_size(number,base) - 1)) < nbc)
+		nbc = nbc - len;
+	else
+		nbc = 0;
+	return nbc;
+}
+	
+char *my_itoa_char(unsigned int number, unsigned char nbc,unsigned char base, char c, char *buff)
+{
 	unsigned int len;
 	
-	tmp = my_itoa(number,base);
-	len = my_strlen(tmp); 
-	if (len < zeros)
-		zeros = zeros - len;
-	else
-		zeros = 0;
+	if ((len = my_itoa_char_char_size(number,nbc,base)))
+		my_memset(buff,c,len);
+	my_itoa(number,base,(buff + len));
 
-	end = (char *) malloc((len + zeros) * sizeof(char));
-	if (zeros)
-		my_memset(end,'0',zeros);
-	my_memcpy(end + zeros,tmp,len);
-	
-	return end;
+	return buff;
 }
+
 int my_atoi(char *str, unsigned char base)
 {
 	int end,nb,pow;

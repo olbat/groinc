@@ -3,29 +3,32 @@
 # This software is released under GPL the license
 # see the COPYING file for more informations
 
-CFLAGS= -Wall -O3 -g
+CFLAGS= -Wall -O3 -ansi -g
 CC= gcc ${CFLAGS} 
 SNAME= groinc
-SRC= main.c sniffer.c usage.c parse_options.c check_options.c filter.c prints.c packet_inout.c tools/memory_tools.c tools/math_tools.c tools/network_tools.c network/protocols.c network/parsers.c 
+SRC= main.c usage.c misc.c parse_options.c check_options.c filter.c prints.c packet_inout.c events.c sniffer.c tools/memory_tools.c tools/math_tools.c tools/network_tools.c network/protocols.c network/parsers.c network/printers.c 
 OBJ= $(SRC:.c=.o)
 
 all : ${SNAME} clean
 	@echo success making ${SNAME}
 obj : ${SNAME}
 	@echo success making ${SNAME}
-${SNAME} : ${OBJ}
+${SNAME} : ${OBJ} protos
 	@echo making ${SNAME}
-	@${CC} -o $@ $^
+	@${CC} -o $@ ${OBJ} protocols/*.o
 %.o : %.c
 	@echo -n 'compiling $< ... '
 	@${CC} -o $@ -c $<
 	@echo done
+protos :
+	@(cd protocols/; make;)
 install :
-	cp -f ${SNAME} /usr/sbin
+	cp -f ${SNAME} /usr/bin
 	chmod 755 /usr/bin/${SNAME}
 clean :
 	@echo cleaning object files
-	@rm -f *.o network/*.o tools/*.o
+	@rm -f ${OBJ}
+	@(cd protocols; make clean;)
 cleanall : clean
 	@echo cleaning executable file
 	@rm -f ${SNAME}

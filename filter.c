@@ -24,6 +24,7 @@
 #include "network/parsers.h"
 #include "tools/memory_tools.h"
 #include "tools/network_tools.h"
+#include "network/tmp_headers.h"
 
 int filter_string(char *data)
 {
@@ -55,15 +56,16 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 	char *data;
 	
 	end = 0;
-	if ((!ldestip) && (!ldestport) && (!lsourceip) && (!lsourceport) && (!lglobalip) && (!lglobalport) && (mac_null(lsourcemac)) && (mac_null(ldestmac)) && (ipproto == IPPROTO_RAW) && (!ethproto))
+	
+	if (nofilter)
 	{
 		end = 1;
 	}
 	else
 	{
-		if (network_layerph->id == ethproto)
+		if (((ethproto == ETHPROTO_RAW) || (network_layerph->id == ethproto)) && (network_layerph->len > 0))
 		{
-			if ((datalink_layerph->id == PROTO_ETHER) && ((!mac_null(lsourcemac)) || (!mac_null(ldestmac))))
+			if (((datalink_layerph->id == PROTO_ETHER) && ((!mac_null(lsourcemac)) || (!mac_null(ldestmac)))) && (datalink_layerph->len > 0))
 			{
 				__u8 *sourcemac,*destmac;
 				sourcemac = (__u8 *) ((struct ethernet_header *)datalink_layerph->header)->sourcemac;
@@ -71,23 +73,33 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 				if (!mac_null(lsourcemac))
 				{
 					end = !mac_cmp(lsourcemac,sourcemac);
-					//end = end && (!mac_cmp(lsourcemac,sourcemac));
+					/* end = end && (!mac_cmp(lsourcemac,sourcemac)); */
 				}
 				if (!mac_null(ldestmac))
 					end = end && (!mac_cmp(ldestmac,destmac));
 			}
-			if ((ipproto == IPPROTO_RAW) || (transport_layerph->id == ipproto))
+			if (((ipproto == IPPROTO_RAW) || ((transport_layerph->id == ipproto) && (transport_layerph->len > 0)))
+			&& ((ethproto == ETHPROTO_RAW) || ((ethproto != ETHPROTO_RAW) && (network_layerph->id == ethproto))))
 			{
 				end = 1;
 			}
-			if ((end) && ((network_layerph->id == ETHPROTO_IP) && ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport))))
+			/*
+			if (((ethproto != ETHPROTO_RAW) && (network_layerph->id == ethproto)) && (network_layerph->len > 0))
+			{
+				end = 1;
+			}
+			*/
+
+			if ((end) 
+			&& ((network_layerph->id == ETHPROTO_IP) 
+			 && ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport))))
 			{
 				__u32 sourceip, destip;
 				__u16 sourceport,destport;
 				sourceip = ((struct ipv4_header *)network_layerph->header)->sourceaddr;
 				destip = ((struct ipv4_header *)network_layerph->header)->destaddr;
-				//if (end)
-				//{
+				/* if (end)
+				{ */
 					get_ports(transport_layerph,&sourceport,&destport);
 					
 					if (lglobalip)
@@ -112,8 +124,24 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 						if (ldestport)
 							end = end && (ldestport == destport);
 					}	
-				//}
+				/* } */
 			}
+			/*
+			else
+			{
+				printf("ethproto %d ipproto %d\n",ethproto,ipproto);
+				if (ethproto == ETHPROTO_RAW)
+				{
+					if (!(transport_layerph->id == ipproto))
+						end = 0;
+				}
+				else 
+				{
+					if (!(network_layerph->id == ethproto))
+						end = 0;
+				}
+			}
+			*/
 		}
 	}
 	
