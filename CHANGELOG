@@ -17,7 +17,7 @@
 	-memory freeing bugs fixed
 	-add a modulable gestion of protocols, 
 	  each protocol have his file and his functions
-	-add a little API for the protocols to print and filter (see protocols/)
-	  each protocol need to implement a filtering and a printing function 
+	-add a little API for the protocols to print and parsing(see protocols/)
+	  each protocol need to implement a parsing and a printing function 
 	-new protocols availables : ICMP, ARP
 
