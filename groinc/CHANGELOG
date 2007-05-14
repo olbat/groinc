@@ -1,0 +1,23 @@
+0.0.8 / 2007-01-29
+	-filter with filtering options (IPaddr/port/MACaddr/protocol)
+	-display options (simple/detailed/raw data)
+	-application layout regex filter
+	-save/load captures a file
+	-display protocols names when cant detail
+	-protocols availables : Ethernet, IPv4, TCP, UDP
+
+0.0.9 / 2007-05-??
+	-statistics display when quit
+	-hexadecimal display option
+	-quiet display option
+	-display is now more clean (separators between packets, ...)
+	-license and version displaying options
+	-option to limit the number of packet to be filtered before stop
+	-option to give the time of capture
+	-memory freeing bugs fixed
+	-add a modulable gestion of protocols, 
+	  each protocol have his file and his functions
+	-add a little API for the protocols to print and filter (see protocols/)
+	  each protocol need to implement a filtering and a printing function 
+	-new protocols availables : ICMP, ARP
+
