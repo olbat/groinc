@@ -25,7 +25,7 @@
 int print_usage(char *cmdname)
 {
 	print_format(headerfd,
-	"usage : %s [-option] [-DSG ip addr] [-dsg port number] [-oO filename] [-f string] [-F regex] [-pP protocolname] [-l number]\n"
+	"usage : %s [-option] [-DSG ip addr] [-dsg port number] [-oO filename] [-f string] [-F regex] [-pP protocolname] [-l number] [-t time(seconds))n"
 	"  -a	--displaydata		Display the received (application layer) data\n"
 	"  -A 	--simpledisplay		Enable the simple display\n"
 	"  -b 	--displayprototransport	Display the name/size of the transport layer protocol\n"
