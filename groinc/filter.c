@@ -91,8 +91,8 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 			*/
 
 			if ((end) 
-			&& ((network_layerph->id == ETHPROTO_IP) 
-			 && ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport))))
+			&& (network_layerph->id == ETHPROTO_IP) 
+			&& ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport)))
 			{
 				__u32 sourceip, destip;
 				__u16 sourceport,destport;
@@ -125,6 +125,14 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 							end = end && (ldestport == destport);
 					}	
 				/* } */
+			}
+			else
+			{
+				if (end)
+				{
+					if ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport))
+						end  = 0;
+				}
 			}
 			/*
 			else

@@ -1,5 +1,5 @@
 -revision prints.c and other print files
--REVISION OF THE FILTER NEEDED (ugly code)
+-REVISION OF THE FILTER NEEDED (VERY ugly hacks)
 -revision of the user option names
 -make a manual
 -make structures/functions for dynamic structures
