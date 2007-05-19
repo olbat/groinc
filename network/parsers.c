@@ -72,9 +72,12 @@ void parse_transport_layer(struct data *datagram,struct protocol_header *transpo
 		datagram->len = (datagram->len + transport_layerph->len);
 }
 
-void get_ports(struct protocol_header *transport_layerph, __u16 *sourceport, __u16 *destport)	
+__u16 get_source_port(struct protocol_header *transport_layerph)
 {
-	*sourceport = ntohs(*((__u16 *)transport_layerph->header));
-	*destport = ntohs(*((__u16 *)(transport_layerph->header + sizeof(__u16))));
+	return ntohs(*((__u16 *)transport_layerph->header));
 }
 
+__u16 get_dest_port(struct protocol_header *transport_layerph)
+{
+	return ntohs(*((__u16 *)(transport_layerph->header + sizeof(__u16))));
+}

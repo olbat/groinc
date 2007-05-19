@@ -36,7 +36,10 @@ extern	int 	datafd,
    		headerfd;
 
 extern char	sniffer_stop,
-		nofilter;
+		nofilter,
+		filter_datalink,
+		filter_network,
+		filter_transport;
 
 extern	regex_t filterregex;
 extern struct timeval 	timestart,

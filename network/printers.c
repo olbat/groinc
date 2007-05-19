@@ -104,11 +104,7 @@ void print_data(int fd,struct data *data)
 void print_simple(int fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
 	if (network_layerph->id == ETHPROTO_IP)
-	{
-		__u16 sourceport,destport;
-		get_ports(transport_layerph,&sourceport,&destport);
-		print_ipv4_simple(fd,network_layerph->header,sourceport,destport);
-	}
+		print_ipv4_simple(fd,network_layerph->header,get_source_port(transport_layerph),get_dest_port(transport_layerph));
 }
 
 void print_datalink_layer_proto(int fd,struct protocol_header *datalink_layerph)

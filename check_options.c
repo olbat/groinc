@@ -49,6 +49,7 @@ int check_options()
 		{
 			ipproto = (unsigned int) tmp;
 		}
+		filter_transport = 1;
 	}
 	if (*ethprotoname)
 	{
@@ -62,6 +63,7 @@ int check_options()
 		{
 			ethproto = (unsigned int) tmp;
 		}
+		filter_network = 1;
 	}
 	if (*protoname)
 	{
@@ -75,38 +77,47 @@ int check_options()
 		{
 			proto = (unsigned int) tmp;
 		}
+		filter_datalink = 1;
 	}
 	if (*fsourceport)
 	{
 		lsourceport = my_atoi(fsourceport,10);
+		filter_transport = 1;
 	}
 	if (*fdestport)
 	{
 		ldestport = my_atoi(fdestport,10);
+		filter_transport = 1;
 	}
 	if (*fglobalport)
 	{
 		lglobalport = my_atoi(fglobalport,10);
+		filter_transport = 1;
 	}
 	if (*fglobalip)
 	{
 		lglobalip = ipv4_aton(fglobalip);
+		filter_network = 1;
 	}
 	if (*fsourceip)
 	{
 		lsourceip = ipv4_aton(fsourceip);
+		filter_network = 1;
 	}
 	if (*fdestip)
 	{
 		ldestip = ipv4_aton(fdestip);
+		filter_network = 1;
 	}
 	if (*fdestmac)
 	{
 		mac_aton(fdestmac,ldestmac);
+		filter_datalink = 1;
 	}
 	if (*fsourcemac)
 	{
 		mac_aton(fsourcemac,lsourcemac);
+		filter_datalink = 1;
 	}
 	if (*flimitnb)
 	{
