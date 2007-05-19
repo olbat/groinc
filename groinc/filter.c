@@ -26,11 +26,14 @@
 #include "tools/network_tools.h"
 #include "network/tmp_headers.h"
 
+/*
+enum { FILER_STRING,FILTER_REGEX,FILTER_IPDST,FILTER_IPSRC,FILTER_MACDST,FILTER_MACSRC,FILTER_PORTSRC,FILTER_PORTDST }
+*/
+
 int filter_string(char *data)
 {
 	int end;
 	end = 1;
-	if (*filterstr)
 	{
 		end = findstr(data,filterstr);
 	}
@@ -41,12 +44,9 @@ int filter_regex(char *data)
 {
 	int end;
 	end = 1;
-	if (*filterregexstr)
-	{
-		/* the compilation of the regex been checked in check_options */
-		if (regexec(&filterregex,data,0,0,0))
-			end = 0;
-	}
+	/* the compilation of the regex been checked in check_options */
+	if (regexec(&filterregex,data,0,0,0))
+		end = 0;
 	return end;
 }
 
@@ -54,110 +54,96 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 {
 	int end;
 	char *data;
-	
-	end = 0;
-	
-	if (nofilter)
-	{
-		end = 1;
-	}
-	else
-	{
-		if (((ethproto == ETHPROTO_RAW) || (network_layerph->id == ethproto)) && (network_layerph->len > 0))
-		{
-			if (((datalink_layerph->id == PROTO_ETHER) && ((!mac_null(lsourcemac)) || (!mac_null(ldestmac)))) && (datalink_layerph->len > 0))
-			{
-				__u8 *sourcemac,*destmac;
-				sourcemac = (__u8 *) ((struct ethernet_header *)datalink_layerph->header)->sourcemac;
-				destmac = (__u8 *) ((struct ethernet_header *)datalink_layerph->header)->destmac;
-				if (!mac_null(lsourcemac))
-				{
-					end = !mac_cmp(lsourcemac,sourcemac);
-					/* end = end && (!mac_cmp(lsourcemac,sourcemac)); */
-				}
-				if (!mac_null(ldestmac))
-					end = end && (!mac_cmp(ldestmac,destmac));
-			}
-			if (((ipproto == IPPROTO_RAW) || ((transport_layerph->id == ipproto) && (transport_layerph->len > 0)))
-			&& ((ethproto == ETHPROTO_RAW) || ((ethproto != ETHPROTO_RAW) && (network_layerph->id == ethproto))))
-			{
-				end = 1;
-			}
-			/*
-			if (((ethproto != ETHPROTO_RAW) && (network_layerph->id == ethproto)) && (network_layerph->len > 0))
-			{
-				end = 1;
-			}
-			*/
 
-			if ((end) 
-			&& (network_layerph->id == ETHPROTO_IP) 
-			&& ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport)))
+	end = 1;
+
+	if (!nofilter)
+	{
+		if (filter_datalink)
+		{
+			if (datalink_layerph->len > 0)
 			{
-				__u32 sourceip, destip;
-				__u16 sourceport,destport;
-				sourceip = ((struct ipv4_header *)network_layerph->header)->sourceaddr;
-				destip = ((struct ipv4_header *)network_layerph->header)->destaddr;
-				/* if (end)
-				{ */
-					get_ports(transport_layerph,&sourceport,&destport);
-					
+				if ((!mac_null(lsourcemac)) || (!mac_null(ldestmac)) || (proto))
+				{
+					if (proto != PROTO_ETHER)
+						end = end && (datalink_layerph->id == proto);
+					if ((end) || ((datalink_layerph->id == PROTO_ETHER)))
+					{
+						struct ethernet_header *ethh = (struct ethernet_header *)datalink_layerph->header;
+						if (!mac_null(lsourcemac))
+							end = !mac_cmp(lsourcemac,(__u8 *)ethh->sourcemac);
+						if (!mac_null(ldestmac))
+							end = end && (!mac_cmp(ldestmac,(__u8 *)ethh->destmac));
+					}
+				}
+			}
+			else
+			{
+				end = 0;
+			}
+		}
+		if ((end) && (filter_network))
+		{
+			if (network_layerph->len > 0)
+			{
+				if (ethproto != ETHPROTO_RAW)
+					end = end && (network_layerph->id == ethproto);
+				if ((end) && ((lsourceip) || (ldestip) || (lglobalip)))
+				{
+					struct ipv4_header *iph = (struct ipv4_header *)network_layerph->header;
 					if (lglobalip)
 					{
-						end = end && ((destip == lglobalip) || (sourceip == lglobalip));
+						end = end && ((iph->sourceaddr == lglobalip) || (iph->destaddr == lglobalip));
 					}
 					else
 					{
 						if (ldestip)
-							end = end && (ldestip == destip);
+							end = end && (iph->destaddr == ldestip);
 						if (lsourceip)
-							end = end && (lsourceip == sourceip);
+							end = end && (iph->sourceaddr == lsourceip);
 					}
+				}
+			}
+			else
+			{
+				end = 0;
+			}
+		}
+		if ((end) && (filter_transport))
+		{
+			if (transport_layerph->len > 0)
+			{
+				if (ipproto != IPPROTO_RAW)
+					end = end && (transport_layerph->id == ipproto);
+				if ((end) && ((ldestport) || (lsourceport) || (lglobalport)))
+				{
 					if (lglobalport)
 					{
-						end = end && ((destport == lglobalport) || (sourceport == lglobalport));
+						end = end && ((get_dest_port(transport_layerph) == lglobalport) || (get_source_port(transport_layerph) == lglobalport));
 					}
 					else
 					{
 						if (lsourceport)
-							end = end && (lsourceport == sourceport);
+							end = end && (get_source_port(transport_layerph) == lsourceport);
 						if (ldestport)
-							end = end && (ldestport == destport);
+							end = end && (get_dest_port(transport_layerph) == ldestport);
 					}	
-				/* } */
+				}
+
 			}
 			else
 			{
-				if (end)
-				{
-					if ((lsourceip) || (ldestip) || (ldestport) || (lsourceport) || (lglobalip) || (lglobalport))
-						end  = 0;
-				}
+				end = 0;
 			}
-			/*
-			else
-			{
-				printf("ethproto %d ipproto %d\n",ethproto,ipproto);
-				if (ethproto == ETHPROTO_RAW)
-				{
-					if (!(transport_layerph->id == ipproto))
-						end = 0;
-				}
-				else 
-				{
-					if (!(network_layerph->id == ethproto))
-						end = 0;
-				}
-			}
-			*/
 		}
 	}
-	
+
 	data = datagram->data + datagram->len;
-	if (end)
+	
+	if ((end) && (*filterregexstr))
 		end = filter_string(data);
-	if (end)
+	if ((end) && (*filterstr))
 		end = filter_regex(data);
+
 	return end;
 }
-

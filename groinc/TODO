@@ -1,5 +1,4 @@
 -revision prints.c and other print files
--REVISION OF THE FILTER NEEDED (VERY ugly hacks)
 -revision of the user option names
 -make a manual
 -make structures/functions for dynamic structures
@@ -10,8 +9,11 @@
 -complete verification of the arguments in the check_options
 -give the choice of the interface
 -make a session layer filter
+-stack for the received packet, keep the times
+-time received functions
 -ntohs / ntohl
 -make the filter work for fragmented data (tcp,ip) 
+-make the code fit correctly on a 80x24 console
 
 -code optimization
 -comment

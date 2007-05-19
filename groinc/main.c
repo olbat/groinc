@@ -88,6 +88,9 @@ int 	datafd,
 
 char	sniffer_stop,
 	nofilter,
+	filter_datalink,
+	filter_network,
+	filter_transport,
 	opt_displaydlproto,
 	opt_displaynlproto,
 	opt_displaytlproto,
@@ -165,6 +168,10 @@ int main(int argc, char **argv)
 	packetstot = 0;
 	packetsfiltred = 0;
 	
+	filter_datalink = 0;
+	filter_network = 0;
+	filter_transport = 0;
+
 	opt_displaydlproto = 0;
 	opt_displaynlproto = 0;
 	opt_displaytlproto = 0;
