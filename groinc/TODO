@@ -1,6 +1,6 @@
+-fix bug when read from a file (the socket is open)
 -revision prints.c and other print files
 -revision of the user option names
--make a manual
 -make structures/functions for dynamic structures
 -enable filtering of encapsuled protocol headers (like IP header in ICMP) 
 -options to display detailed layer protocol description

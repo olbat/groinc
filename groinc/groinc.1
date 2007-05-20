@@ -1,0 +1,146 @@
+.TH GROINC 1 "2007-05-20" "version 0.0.9" "Groinc"
+.SH NAME
+groinc \- The simple network sniffer
+.SH SYNOPSIS
+.TP
+.B groinc
+.RB [ \-option ]
+.RB [ \-DSG 
+.IR "ip addr" ]
+.RB [ \-dsg
+.IR "port number" ]
+.RB [ \-F 
+.IR regex ]
+.RB [ \-QpP
+.IR "protocol name" ]
+.RB [ \-l
+.IR number ]
+.RB [ \-t 
+.IR time (seconds)]
+.SH DESCRIPTION
+Groinc is a simple text-mode sniffer. You can use complexe filters for 
+datalink,network and transport layer protocols and data. 
+.PP
+There is a regex filter for layers over the transport layer. You can
+save or load your captures in a file. You have the choice between a lot 
+of type of display (from simple to very detailed). A lot of protocols 
+are available.
+.SH OPTIONS
+.TP
+.B -a	--displaydata \c
+\& Display the received (application layer) data
+.TP
+.B -A 	--simpledisplay \c
+\& Enable the simple display
+.TP
+.B -b 	--displayprototransport \c
+\& Display the name/size of the transport layer protocol
+.TP
+.B -B 	--displayprotonetwork \c
+\& Display the name/size of the network layer protocol
+.TP
+.B -c 	--displayprotodatalink \c
+\& Display the name/size of the datalink layer protocol
+.TP
+.BI "-d 	--destport " "port number" \c
+\& The destination port number to be scan
+.TP
+.BI "-D 	--destip " "IP address" \c
+\& The destination IP adress to be scan
+.TP
+.BI "-f 	--filter " "string" \c
+\& Enable (application layer) filter with a string
+.TP
+.BI "-F	--filter-regex " "regular expression" \c
+\& Enable (application layer) filter with a regular expression (POSIX)
+.TP
+.BI "-g	--globalport " "port" \c
+\& The source or destination port to be scan
+.TP
+.BI "-G	--globalip " "IP address" \c
+\& The source or destination IP to be scan
+.TP
+.B -h 	--help \c
+\& Display the help
+.TP
+.B -H	--hexa \c
+\& Display data in hexadecimal
+.TP
+.BI "-l	--limitnb " "number" \c
+\& Give the number of packets to display before stop the sniffing
+.TP
+.BI "-m	--sourcemac " "MAC address" \c
+\& The MAC adress of the source
+.TP
+.BI "-M	--destmac " "MAC address" \c
+\& The MAC adress of the destination
+.TP
+.B -n 	--displaypackets \c
+\& Display the length of the received packets
+.TP
+.B -N 	--displayallpackets \c
+\& Display the length of all the not filtred received packets
+.TP
+.BI "-o 	--outputdata " "file" \c
+\& The output file name (for the data)
+.TP
+.BI "-O 	--output " "file"\c
+\& The output file name (for the headers)
+.TP
+.B -q 	--quiet \c
+\& Do not display packets
+.TP
+.BI "-Q 	--protocol " "name"\c
+\& Specify the datalink layer protocol name
+.TP
+.BI "-p 	--ipprotocol " "name" \c
+\& Specify the transport layer (ip)protocol name
+.TP
+.BI "-P 	--ethprotocol " "name" \c
+\& Specify the network layer (ethernet)protocol name
+.TP
+.BI "-r	--read " "file" \c
+\& Load data from a saved file
+.TP
+.BI "-s 	--sourceport " "port number" \c
+\& The source port number to be scan
+.TP
+.BI "-S 	--sourceip " "IP address" \c
+\& The source IP adress to be scan
+.TP
+.BI "-t 	--timelimit " "number"\c
+\& Give a limit of time to sniff (seconds)
+.TP
+.B -v 	--verbose \c
+\& Verbose mode, display the headers of the scanned packets
+.TP
+.BI "-w	--write " "file" \c
+\& Save the data in an outputfile
+.TP
+.B -z	--dontdisplayemptysp \c
+\& Dont display the empty application layer packets
+.TP
+.B --version \c
+\& Display the version of the software
+.TP
+.B --license \c
+\& Display the copyright informations
+.SH EXAMPLES
+.TP 
+To sniff TCP trafic on port 80, display protocols headers: \c
+.B groinc -v -p tcp -g 80
+.TP
+To sniff ARP trafic, stop after 20 packets received, use hexadecimal display: \c
+.B groinc -a -H -P arp -l 20
+.TP
+To sniff UDP trafic which have destination IP 127.0.0.1 and destination port 53, save capture in file.cap: \c
+.B groinc -q -w file.cap -p udp -D 127.0.0.1 -d 53
+.TP
+To sniff all the trafic during 20 seconds, display headers and data: \c
+.B groinc -v -a -t 20
+.SH AUTHOR
+.RB "The " "groinc" " software and this manual page was written by Luc Sarzyniec <olbat@xiato.com>"
+.SH BUGS
+.RI "You can report bugs to <groinc-bugs@nongnu.org> or visit " "http://groinc.nongnu.org/"
+.SH COPYRIGHT
+Copyright (C) 2006-2007 Luc Sarzyniec

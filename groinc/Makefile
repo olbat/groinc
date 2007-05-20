@@ -3,6 +3,8 @@
 # This software is released under GPL the license
 # see the COPYING file for more informations
 
+BINDIR= /usr/bin
+MANDIR= /usr/share/man/man1
 CFLAGS= -Wall -O3 -ansi -g
 CC= gcc ${CFLAGS} 
 SNAME= groinc
@@ -23,9 +25,10 @@ ${SNAME} : ${OBJ} protos
 protos :
 	@(cd protocols/; make;)
 install :
-	cp -f ${SNAME} /usr/bin
-	chmod 755 /usr/bin/${SNAME}
-	cp -f ${SNAME}.1.gz /usr/share/man/man1/
+	cp -f ${SNAME} ${BINDIR}
+	chmod 755 ${BINDIR}/${SNAME}
+	cp -f ${SNAME}.1 ${MANDIR}
+	gzip -f ${MANDIR}/${SNAME}.1
 clean :
 	@echo cleaning object files
 	@rm -f ${OBJ}

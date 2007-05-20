@@ -253,9 +253,14 @@ int main(int argc, char **argv)
 	else
 		outputfd = -1;
 	if (*inputfile)
+	{
 		inputfd = open(inputfile,O_RDONLY);
+		printf("PROUTEREE\n");
+	}
 	else
+	{
 		inputfd = socket(PF_PACKET,SOCK_RAW,htons(ETH_P_ALL));
+	}
 	if (inputfd < 0)
 	{
 		perror("socket/open");
