@@ -25,6 +25,7 @@ protos :
 install :
 	cp -f ${SNAME} /usr/bin
 	chmod 755 /usr/bin/${SNAME}
+	cp -f ${SNAME}.1.gz /usr/share/man/man1/
 clean :
 	@echo cleaning object files
 	@rm -f ${OBJ}
@@ -32,6 +33,3 @@ clean :
 cleanall : clean
 	@echo cleaning executable file
 	@rm -f ${SNAME}
-targz :
-	@echo making compressed archive tar.gz
-	@tar -zcvf ${SNAME}.tar.gz  ${SRC} *.h network/*.h tools/*.h Makefile COPYING 
