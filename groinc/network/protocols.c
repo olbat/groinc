@@ -21,6 +21,27 @@
 #include "protocols.h"
 #include "../tools/memory_tools.h"
 
+#define LOOKUP_PROTOCOLID(N,T) \
+	int end,i; \
+	end = -1; \
+	i = PROTO_MIN; \
+	while ((T[i].id != PROTO_MAX) && (my_strcmp(T[i].name,N))) \
+		i++; \
+	if (T[i].id != PROTO_MAX) \
+		end = T[i].id; \
+	return end; 
+
+#define LOOKUP_PROTOCOLNAME(I,T) \
+	char *end; \
+	int i; \
+	end = ""; \
+	i = PROTO_MIN; \
+	while ((T[i].id != PROTO_MAX) && (T[i].id != I)) \
+		i++; \
+	if (T[i].id != PROTO_MAX) \
+		end = T[i].name; \
+	return end;
+
 /* all the names are in upper case, use toupper() in your functions */
 static struct protoname protonames[] = {
 	{	PROTO_MIN,	""			},
@@ -144,62 +165,35 @@ static struct protoname ipnames[] = {
 	{	PROTO_MAX,		""		} };
 
 
-char *lookup_protocolname(int id,struct protoname protonames[])
-{
-	char *end;
-	int i;
-	
-	end = "";
-	i = PROTO_MIN;
-	
-	while ((protonames[i].id != PROTO_MAX) && (protonames[i].id != id))
-		i++;
-	if (protonames[i].id != PROTO_MAX)
-		end = protonames[i].name;
-	return end;
-}
-
 char *lookup_protoname(int id)
 {
-	return lookup_protocolname(id,protonames);
+	LOOKUP_PROTOCOLNAME(id,protonames);
 }
 
 char *lookup_ethname(int id)
 {
-	return lookup_protocolname(id,ethnames);
+	LOOKUP_PROTOCOLNAME(id,ethnames);
 }
 
 char *lookup_ipname(int id)
 {
-	return lookup_protocolname(id,ipnames);
+	LOOKUP_PROTOCOLNAME(id,ipnames);
 }
 
 /* all the names are in upper case, use toupper() in your functions */
-int lookup_protocolid(char *name,struct protoname protonames[])
-{
-	int end,i;
-	
-	end = -1;
-	i = PROTO_MIN;
-	while ((protonames[i].id != PROTO_MAX) && (my_strcmp(protonames[i].name,name)))
-		i++;
-	if (protonames[i].id != PROTO_MAX)
-		end = protonames[i].id;
-	return end;
-}
 
 int lookup_protoid(char *name)
 {
-	return lookup_protocolid(name,protonames);
+	LOOKUP_PROTOCOLID(name,protonames);
 }
 
 int lookup_ethid(char *name)
 {
-	return lookup_protocolid(name,ethnames);
+	LOOKUP_PROTOCOLID(name,ethnames);
 }
 
 int lookup_ipid(char *name)
 {
-	return lookup_protocolid(name,ipnames);
+	LOOKUP_PROTOCOLID(name,ipnames);
 }
 
