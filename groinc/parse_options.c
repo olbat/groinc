@@ -1,22 +1,21 @@
 /* this file is a part of groinc
  * 
- * copyright (c) 2006, 2007 sarzyniec luc <olbat@xiato.com>
- * 
- * this program is free software; you can redistribute it and/or modify
- * it under the terms of the gnu general public license as published by
- * the free software foundation; either version 2 of the license, or
+ * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * this program is distributed in the hope that it will be useful,
- * but without any warranty; without even the implied warranty of
- * merchantability or fitness for a particular purpose.  see the
- * gnu general public license for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * you should have received a copy of the gnu general public license
- * along with this program; if not, write to the free software
- * foundation, inc., 51 franklin st, fifth floor, boston, ma  02110-1301  usa
- * 
- * see the copying file for more informations */
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * see the COPYING file for more informations */
 
 #include "parse_options.h"
 #include "globals_args.h"
