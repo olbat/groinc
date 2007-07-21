@@ -25,6 +25,7 @@
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/time.h>
+#include <regex.h>
 
 #include "tools/memory_tools.h"
 #include "packet_inout.h"
@@ -98,6 +99,7 @@ int start_sniff(int inputfd,int outputfd)
 
 					datagram->len = 0;
 					datagram->totlen = packet_len;
+					*(datagram->data + datagram->totlen) = 0;
 
 					datalink_layerph->len = 0;
 					network_layerph->len = 0;
@@ -271,6 +273,8 @@ int cleanup_sniff()
 	free(transport_layerph);
 	close(curinputfd);
 	close(curoutputfd);
+	if (filterregexstr)
+		regfree(&filterregex);
 
 	return 0;
 }

@@ -139,9 +139,9 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 
 	data = datagram->data + datagram->len;
 	
-	if ((end) && (*filterregexstr))
-		end = filter_string(data);
 	if ((end) && (*filterstr))
+		end = filter_string(data);
+	if ((end) && (*filterregexstr))
 		end = filter_regex(data);
 
 	return end;
