@@ -30,7 +30,7 @@ int check_options()
 	end = 0;
 	if (*filterregexstr)
 	{
-		if (regcomp(&filterregex,filterregexstr,0))
+		if (regcomp(&filterregex,filterregexstr,REG_NOSUB))
 		{
 			co_error = filterregexstr;
 			end = 1;
