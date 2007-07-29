@@ -36,7 +36,7 @@ struct icmp_header
 	__u32 field;
 };
 
-void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph);
+void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
 void print_icmp(int fd, char *datagram);
 
 #endif

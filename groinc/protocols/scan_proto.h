@@ -25,8 +25,8 @@
 void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph);
 void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph, struct protocol_header *transport_layerph);
 void scan_arp(struct data *datagram, struct protocol_header *network_layerph, struct protocol_header *transport_layerph);
-void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph);
-void scan_udp(struct data *datagram, struct protocol_header *transport_layerph);
-void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph);
+void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
+void scan_udp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
+void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
 
 #endif

@@ -31,7 +31,7 @@
 /* buffers for the IP string versions */
 static char gatewayip[IPV4_STR_MAXSIZE];
 
-void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph)
+void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph)
 {
 	struct icmp_header *icmph;
 	icmph = (struct icmp_header *) transport_layerph->header;

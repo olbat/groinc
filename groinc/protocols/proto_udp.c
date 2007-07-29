@@ -26,7 +26,7 @@
 #include "printp.h"
 #include <netinet/in.h>
 
-void scan_udp(struct data *datagram, struct protocol_header *transport_layerph)
+void scan_udp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph)
 {
 	transport_layerph->len = sizeof(struct udp_header);
 }
@@ -35,5 +35,5 @@ void print_udp(int fd, char *datagram)
 {
 	struct udp_header *udph;
 	udph = (struct udp_header *) datagram;
-	print_proto(fd,"[UDP/ source port:%hd dest port:%hd udpdatalen:%hd checksum:%#x]",ntohs(udph->sourceport),ntohs(udph->destport),ntohs(udph->udpdatalen),udph->udpchecksum);
+	print_proto(fd,"[UDP/ source port:%hu dest port:%hu udpdatalen:%hd checksum:%#x]",ntohs(udph->sourceport),ntohs(udph->destport),ntohs(udph->udpdatalen),udph->udpchecksum);
 }
