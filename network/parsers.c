@@ -26,12 +26,15 @@ void parse_datalink_layer(struct data *datagram,struct protocol_header *datalink
 	datalink_layerph->id = PROTO_ETHER;
 
 	datalink_layerph->header = (datagram->data + datagram->len);
+	(*lookup_protoscan(datalink_layerph->id))(datagram,datalink_layerph,network_layerph);
+	/*
 	switch (datalink_layerph->id)
 	{
 		case PROTO_ETHER :
 			scan_ether(datagram,datalink_layerph,network_layerph);
 			break;
 	}
+	*/
 	if ((datagram->len + datalink_layerph->len) < datagram->totlen)
 		datagram->len = (datagram->len + datalink_layerph->len);
 }
@@ -39,6 +42,8 @@ void parse_datalink_layer(struct data *datagram,struct protocol_header *datalink
 void parse_network_layer(struct data *datagram,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
 	network_layerph->header = (datagram->data + datagram->len);
+	(*lookup_ethscan(network_layerph->id))(datagram,network_layerph,transport_layerph);
+	/*
 	switch (network_layerph->id)
 	{
 		case ETHPROTO_IP :
@@ -48,6 +53,7 @@ void parse_network_layer(struct data *datagram,struct protocol_header *network_l
 			scan_arp(datagram,network_layerph,transport_layerph);
 			break;
 	}
+	*/
 	if ((datagram->len + network_layerph->len) < datagram->totlen)
 		datagram->len = (datagram->len + network_layerph->len);
 } 
@@ -55,18 +61,21 @@ void parse_network_layer(struct data *datagram,struct protocol_header *network_l
 void parse_transport_layer(struct data *datagram,struct protocol_header *transport_layerph)
 {
 	transport_layerph->header = (datagram->data + datagram->len);
+	(*lookup_ipscan(transport_layerph->id))(datagram,transport_layerph,0);
+	/*
 	switch (transport_layerph->id)
 	{
 		case IPPROTO_ICMP :
-			scan_icmp(datagram,transport_layerph);
+			scan_icmp(datagram,transport_layerph,0);
 			break;
 		case IPPROTO_TCP :
-			scan_tcp(datagram,transport_layerph);
+			scan_tcp(datagram,transport_layerph,0);
 			break;
 		case IPPROTO_UDP :
-			scan_udp(datagram,transport_layerph);
+			scan_udp(datagram,transport_layerph,0);
 			break;
 	}
+	*/
 	if ((datagram->len + transport_layerph->len) < datagram->totlen)
 		datagram->len = (datagram->len + transport_layerph->len);
 }

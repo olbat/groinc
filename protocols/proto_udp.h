@@ -36,7 +36,7 @@ struct udp_header
 	__u16 udpchecksum;
 };
 
-void scan_udp(struct data *datagram, struct protocol_header *transport_layerph);
+void scan_udp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
 void print_udp(int fd,  char *datagram);
 
 #endif

@@ -26,7 +26,7 @@
 #include "printp.h"
 #include <netinet/in.h>
 
-void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph)
+void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph)
 {
 	transport_layerph->len = (((struct tcp_header *)transport_layerph->header)->tcphdrlen * 4);
 }

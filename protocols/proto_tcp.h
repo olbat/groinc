@@ -48,7 +48,7 @@ struct tcp_header
 	__u16 tcpchecksum;
 	__u16 urgptr;
 };
-void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph);
+void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
 void print_tcp(int fd, char *datagram);
 
 #endif
