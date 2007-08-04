@@ -41,6 +41,8 @@ void print_datalink_layer(int fd, struct protocol_header *datalink_layerph)
 	if (datalink_layerph->len >= 0)
 	{
 		(*lookup_protoprint(datalink_layerph->id))(fd,datalink_layerph->header);
+		/* >>> TODO: make the print_unknown work with the new structure */
+
 		/*
 		switch(datalink_layerph->id)
 		{
@@ -48,7 +50,7 @@ void print_datalink_layer(int fd, struct protocol_header *datalink_layerph)
 				print_ether(fd,datalink_layerph->header);
 				break;
 			default :
-		>>>		print_unknown(fd,"datalink",lookup_protoname(datalink_layerph->id));
+				print_unknown(fd,"datalink",lookup_protoname(datalink_layerph->id));
 				break;
 		}
 		*/
@@ -60,6 +62,9 @@ void print_network_layer(int fd, struct protocol_header *network_layerph)
 	if (network_layerph->len >= 0)
 	{
 		(*lookup_ethprint(network_layerph->id))(fd,network_layerph->header);
+		/* >>> TODO: make the print_unknown work with the new structure */
+
+		
 		/*
 		switch (network_layerph->id)
 		{
@@ -70,7 +75,7 @@ void print_network_layer(int fd, struct protocol_header *network_layerph)
 				print_arp(fd,network_layerph->header);
 				break;
 			default :
-		>>>		print_unknown(fd,"network",lookup_ethname(network_layerph->id));
+				print_unknown(fd,"network",lookup_ethname(network_layerph->id));
 				break;
 		}
 		*/
@@ -82,6 +87,8 @@ void print_transport_layer(int fd, struct protocol_header *transport_layerph)
 	if (transport_layerph->len >= 0)
 	{
 		(*lookup_ipprint(transport_layerph->id))(fd,transport_layerph->header);
+		/* >>> TODO: make the print_unknown work with the new structure */
+
 		/*
 		switch (transport_layerph->id)
 		{

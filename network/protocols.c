@@ -23,25 +23,31 @@
 #include "../tools/memory_tools.h"
 
 #define LOOKUP_PROTOCOLID(N,T) \
+({ \
 	int end,i; \
-	end = -1; \
 	i = PROTO_MIN; \
 	while ((T[i].id != PROTO_MAX) && (my_strcmp(T[i].name,N))) \
 		i++; \
 	if (T[i].id != PROTO_MAX) \
 		end = T[i].id; \
-	return end; 
+	else \
+		end = -1; \
+	end; \
+})
 
 #define LOOKUP_PROTOCOLNAME(I,T) \
+({ \
 	char *end; \
 	int i; \
-	end = ""; \
 	i = PROTO_MIN; \
 	while ((T[i].id != PROTO_MAX) && (T[i].id != I)) \
 		i++; \
 	if (T[i].id != PROTO_MAX) \
 		end = T[i].name; \
-	return end;
+	else \
+		end = ""; \
+	end; \
+)}
 
 #define LOOKUP_PROTOCOLST(I,T,V) \
 	int i; \
@@ -227,16 +233,16 @@ void (*lookup_ipprint(int id))(int, char *)
 
 int lookup_protoid(char *name)
 {
-	LOOKUP_PROTOCOLID(name,st_proto);
+	return LOOKUP_PROTOCOLID(name,st_proto);
 }
 
 int lookup_ethid(char *name)
 {
-	LOOKUP_PROTOCOLID(name,st_ether);
+	return LOOKUP_PROTOCOLID(name,st_ether);
 }
 
 int lookup_ipid(char *name)
 {
-	LOOKUP_PROTOCOLID(name,st_ip);
+	return LOOKUP_PROTOCOLID(name,st_ip);
 }
 

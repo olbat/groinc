@@ -30,6 +30,7 @@
 #include "network/my_types.h"
 #include "parse_options.h"
 #include "check_options.h"
+#include "tools/linked_list.h"
 #include "usage.h"
 #include "sniffer.h"
 #include "tools/network_tools.h" /* to be removed */
@@ -112,6 +113,8 @@ struct timeval 	timestart,
 		timefirstpacket,
 		timelimit;
 
+struct linked_list *list_filter; 
+
 int main(int argc, char **argv)
 {
 	int inputfd,outputfd,poptret;
@@ -189,7 +192,8 @@ int main(int argc, char **argv)
 	timefirstpacket.tv_usec = 0;
 	timelimit.tv_sec = 0;
 
-	
+	list_filter = linked_list_init();
+
 	if (opt_output != 0)
 	{
 		headerfd = open(output,O_CREAT|O_WRONLY);

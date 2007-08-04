@@ -22,5 +22,25 @@
 
 int check_options();
 
+__inline__ int chk_output(char *val);
+__inline__ int chk_outputdata(char *val);
+__inline__ int chk_inputfile(char *val);
+__inline__ int chk_outputfile(char *val);
+__inline__ int chk_flt_dstport(char *val);
+__inline__ int chk_flt_srcport(char *val);
+__inline__ int chk_flt_globalport(char *val);
+__inline__ int chk_flt_srcip(char *val);
+__inline__ int chk_flt_dstip(char *val);
+__inline__ int chk_flt_globalip(char *val);
+__inline__ int chk_flt_srcmac(char *val);
+__inline__ int chk_flt_dstmac(char *val);
+__inline__ int chk_flt_limitnb(char *val);
+__inline__ int chk_flt_timelimit(char *val);
+__inline__ int chk_flt_filterstr(char *val);
+__inline__ int chk_flt_filterregex(char *val);
+__inline__ int chk_flt_protocol(char *val);
+__inline__ int chk_flt_ethprotocol(char *val);
+__inline__ int chk_flt_ipprotocol(char *val);
+
 #endif
 

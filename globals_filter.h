@@ -60,5 +60,7 @@ extern struct timeval 	timestart,
 			timefirstpacket,
 			timelimit;
 
+extern struct linked_list *list_filter;
+
 #endif
 
