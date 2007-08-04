@@ -1,7 +1,11 @@
 -new protocols (to be done)
--new options
--new filters
+-new options (to be done)
+-new filters (to be done)
+-put the filtering, parsing and checking functions in the protocols/ files
+
 -interactive mode
+-use standard libs
+-use standard status as END_STATUS_OK
 -revision prints.c and other print files
 -revision of the user's options names
 -make structures/functions for dynamic structures
@@ -16,7 +20,7 @@
 -time received options 
 -ntohs / ntohl
 -make the filter work for fragmented data (tcp,ip) 
--make the code fit correctly on a 80x24 console
+-make the code fit on a 80x24 console
 
 -code optimization
 -comment

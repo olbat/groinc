@@ -35,6 +35,7 @@
 #include "filter.h"
 #include "globals_filter.h"
 #include "globals_option.h"
+#include "tools/linked_list.h"
 
 #define DATAGRAM_SIZE 4096
 
@@ -271,6 +272,7 @@ int cleanup_sniff()
 	free(datalink_layerph);
 	free(network_layerph);
 	free(transport_layerph);
+	linked_list_free(list_filter); 
 	close(curinputfd);
 	close(curoutputfd);
 	if (filterregexstr)

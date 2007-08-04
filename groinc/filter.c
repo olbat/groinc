@@ -20,7 +20,9 @@
 #include "filter.h"
 #include "globals_filter.h"
 #include "network/protocols.h"
+#include "network/headers.h"
 #include "network/parsers.h"
+#include "tools/linked_list.h"
 #include "tools/memory_tools.h"
 #include "tools/network_tools.h"
 #include "network/tmp_headers.h"
@@ -29,25 +31,6 @@
 enum { FILER_STRING,FILTER_REGEX,FILTER_IPDST,FILTER_IPSRC,FILTER_MACDST,FILTER_MACSRC,FILTER_PORTSRC,FILTER_PORTDST }
 */
 
-int filter_string(char *data)
-{
-	int end;
-	end = 1;
-	{
-		end = findstr(data,filterstr);
-	}
-	return end;
-}
-
-int filter_regex(char *data)
-{
-	int end;
-	end = 1;
-	/* the compilation of the regex been checked in check_options */
-	if (regexec(&filterregex,data,0,0,0))
-		end = 0;
-	return end;
-}
 
 int filter(struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph,struct data *datagram)
 {
@@ -58,6 +41,13 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 
 	if (!nofilter)
 	{
+		struct linked_list *ptr = list_filter;
+		while ((ptr) && (end))
+		{
+			end = end && (ptr->value->u.flt->func_flt)(datalink_layerph,network_layerph,transport_layerph,ptr->value->u.flt->val);
+			ptr = ptr->next;
+		}
+			
 		if (filter_datalink)
 		{
 			if (datalink_layerph->len > 0)
@@ -145,4 +135,77 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 		end = filter_regex(data);
 
 	return end;
+}
+
+int filter_string(char *data)
+{
+	int end;
+	if (*data)
+		end = findstr(data,filterstr);
+	else
+		end = 1;
+	return end;
+}
+
+int filter_regex(char *data)
+{
+	int end;
+	/* the compilation of the regex been checked in check_options */
+	if (regexec(&filterregex,data,0,0,0))
+		end = 0;
+	else
+		end = 1;
+	return end;
+}
+
+#define FLT_DL_MAC(HDR,V,E) \
+({ \
+	struct ethernet_header *ethh = (struct ethernet_header *) HDR; \
+	!mac_cmp(V,(__u8 *)ethh->E); \
+})
+
+__inline__ int flt_dl_mac_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (datalink_layerph->id == PROTO_ETHER)
+		return FLT_DL_MAC(datalink_layerph->header,flt_val,sourcemac);
+	else
+		return FLT_ERROR;
+}
+
+__inline__ int flt_dl_mac_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (datalink_layerph->id == PROTO_ETHER)
+		return FLT_DL_MAC(datalink_layerph->header,flt_val,destmac);
+	else
+		return FLT_ERROR;
+}
+
+#define FLT_DL_IP(HDR,V,E) \
+({ \
+	struct ipv4_header *iph = (struct ipv4_header *) HDR; \
+	(iph->V == E); \
+})
+
+__inline__ int flt_nl_ip_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (network_layerph->id == ETHPROTO_IP)
+		return FLT_DL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val));
+	else
+		return FLT_ERROR;
+}
+
+__inline__ int flt_nl_ip_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (network_layerph->id == ETHPROTO_IP)
+		return FLT_DL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val));
+	else
+		return FLT_ERROR;
+}
+
+__inline__ int flt_nl_ip_global(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (network_layerph->id == ETHPROTO_IP)
+		return FLT_DL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val)) || FLT_DL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val));
+	else
+		return FLT_ERROR;
 }

@@ -19,7 +19,7 @@
 #ifndef _MATH_TOOLS_H
 #define _MATH_TOOLS_H
 
-unsigned int my_pow(unsigned int n, unsigned int p);
+unsigned int my_pow(unsigned int n, unsigned int p) __attribute__((const));
 int my_atoi(char *str, unsigned char base);
 int my_atoi_len(char *str, unsigned int len, unsigned char base);
 unsigned int my_itoa_buffer_size(unsigned int number, unsigned char base);

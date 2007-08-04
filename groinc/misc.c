@@ -27,7 +27,7 @@ void print_misc(enum miscno no)
 		print_format(headerfd,GROINC_VERSION "\nThis is free software; see the source or use --license for copying conditions.\n");
 	else if (no == MISCNO_LICENSE)
 		print_format(headerfd,	"Groinc is Copyright 2006,2007 by Sarzyniec Luc <olbat@xiato.com>.\n\n"
-					"Groinc is free software, covered by the \"GNU General Public License\", you are\n"
+					"Groinc is free software, covered by the \"GNU General Public License version 3\", you are\n"
 					"welcome to change it and/or distribute copies of it under certain conditions.\n"
 					"There is absolutely no warranty for groinc.\n\n"
 					"See the source for copying conditions.\n"

@@ -23,6 +23,7 @@
 #include "tools/memory_tools.h"
 #include "tools/network_tools.h"
 #include "tools/math_tools.h"
+#include "parse_options.h"
 
 int check_options()
 {
@@ -141,3 +142,101 @@ int check_options()
 
 	return end;
 }
+
+__inline__ int chk_output(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_outputdata(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_inputfile(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_outputfile(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_dstport(char *val)
+{
+	/* test valid port */
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_srcport(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_globalport(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_srcip(char *val)
+{
+	/* test valid ip */
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_dstip(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_globalip(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_srcmac(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_dstmac(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_limitnb(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_timelimit(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_filterstr(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_filterregex(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_protocol(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_ethprotocol(char *val)
+{
+	return OPT_OK;
+}
+
+__inline__ int chk_flt_ipprotocol(char *val)
+{
+	return OPT_OK;
+}
+

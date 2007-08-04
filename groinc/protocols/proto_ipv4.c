@@ -50,5 +50,5 @@ void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport)
 	struct ipv4_header *iph;
 	iph = (struct ipv4_header *) datagram;
 
-	print_proto(fd,"[%s:%hu<-%s:%hu] ",ipv4_ntoa(ntohl(iph->destaddr),destip),destport,ipv4_ntoa(ntohl(iph->sourceaddr),sourceip),sourceport);
+	print_proto(fd,"[%s:%hu->%s:%hu] ",ipv4_ntoa(ntohl(iph->sourceaddr),sourceip),sourceport,ipv4_ntoa(ntohl(iph->destaddr),destip),destport);
 }
