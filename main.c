@@ -43,29 +43,10 @@
 
 /* declaration of the globals */
 
-__u16 	ldestport,
-	lsourceport,
-	lglobalport;
-
-__u32	lsourceip,
-	ldestip,
-	lglobalip;
-
-__u8 	lsourcemac[MAC_STR_SIZE],
-	ldestmac[MAC_STR_SIZE];
-
 long int	llimitnb;
 unsigned long int 	packetstot, packetsfiltred;
 
-char	*fsourcemac,
-	*fdestmac,
-	*fsourceip,
-	*fdestip,
-	*fglobalip,
-	*fsourceport,
-	*fdestport,
-	*fglobalport,
-	*outputdata,
+char	*outputdata,
 	*output,
 	*po_error,
 	*co_error,
@@ -87,7 +68,6 @@ int 	datafd,
 	headerfd;
 
 char	sniffer_stop,
-	nofilter,
 	filter_datalink,
 	filter_network,
 	filter_transport,
@@ -115,6 +95,13 @@ struct timeval 	timestart,
 
 struct linked_list *list_filter; 
 
+#define MAIN_CLEANUP() \
+	linked_list_free(list_filter);
+
+#define MAIN_QUIT(V) \
+	MAIN_CLEANUP(); \
+	return V;
+
 int main(int argc, char **argv)
 {
 	int inputfd,outputfd,poptret;
@@ -134,22 +121,6 @@ int main(int argc, char **argv)
 	sniffer_stop = 0;
 
 	/* initialization of the options var */
-	mac_aton("00:00:00:00:00:00",lsourcemac);
-	mac_aton("00:00:00:00:00:00",ldestmac);
-	fdestmac = "";
-	fsourcemac = "";
-	ldestport = 0;
-	fdestip = "";
-	ldestip = 0;
-	fglobalip = "";
-	lglobalip = 0;
-	fdestport = "";
-	fglobalport = "";
-	lglobalport = 0;
-	fsourceport = "";
-	lsourceport = 0;
-	fsourceip = "";
-	lsourceip = 0;
 	outputdata = "";
 	output = "";
 	po_error = "";
@@ -195,27 +166,21 @@ int main(int argc, char **argv)
 	list_filter = linked_list_init();
 
 	if (opt_output != 0)
-	{
 		headerfd = open(output,O_CREAT|O_WRONLY);
-	}
 	else
-	{
 		headerfd = (int)OUTPUT_HEADER_FILE_DEFAULT;
-	}
+
 	if (opt_outputdata != 0)
-	{
 		datafd = open(outputdata,O_CREAT|O_WRONLY);
-	}
 	else
-	{
 		datafd = (int)OUTPUT_DATA_FILE_DEFAULT;
-	}
-	
+	/*	
 	if (argc <= 1)
 	{
 		print_usage(argv[0]);
-		return 1;
+		MAIN_QUIT(1);
 	}
+	*/
 	
 	poptret = parse_options(argc-1,argv);
 	if (poptret == P_ERROR)
@@ -224,18 +189,18 @@ int main(int argc, char **argv)
 		{
 			print_error_opt(po_error);
 			print_usage(argv[0]);
-			return 1;
+			MAIN_QUIT(1);
 		}
 		else
 		{
 			print_usage(argv[0]);
-			return 0;
+			MAIN_QUIT(0);
 		}
 	}
 	else if (poptret == P_MISC)
 	{
 		print_misc(po_misc);
-		return 0;
+		MAIN_QUIT(0);
 	}
 
 	if (check_options())
@@ -244,29 +209,25 @@ int main(int argc, char **argv)
 		{
 			print_error_setting(co_error);
 			print_usage(argv[0]);
-			return 1;
+			MAIN_QUIT(1);
 		}
 	}
 	
 	/* if ((inputfd = socket(AF_INET,SOCK_RAW,proto)) < 0) */
 	if (*outputfile)
-	{
 		outputfd = open(outputfile,O_CREAT|O_WRONLY|O_TRUNC);
-	}
 	else
 		outputfd = -1;
+
 	if (*inputfile)
-	{
 		inputfd = open(inputfile,O_RDONLY);
-	}
 	else
-	{
 		inputfd = socket(PF_PACKET,SOCK_RAW,htons(ETH_P_ALL));
-	}
+
 	if (inputfd < 0)
 	{
 		perror("socket/open");
-		return 1;
+		MAIN_QUIT(1);
 	}
 	else
 	{

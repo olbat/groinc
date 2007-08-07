@@ -20,15 +20,7 @@
 #ifndef _GLOBALS_ARGS_H
 #define _GLOBALS_ARGS_H
 
-extern	char 	*fsourcemac,
-		*fdestmac,
-		*fsourceip,
-		*fdestip,
-		*fglobalip,
-		*fsourceport,
-		*fdestport,
-		*fglobalport,
-		*filterstr,
+extern	char	*filterstr,
 		*filterregexstr,
 		*outputdata,
 		*output,

@@ -87,14 +87,14 @@ struct opt_flt_type
 	unsigned int flt_size;
 };
 
-struct optlist 
+struct linked_list_opt_value 
 {
 	char name_short;
 	char *name_long;
 	enum optid id;
 	int flags;
 	int (*func_chk)(char *);
-	int (*func_prs)(struct optlist *, char *);
+	int (*func_prs)(struct linked_list_opt_value *, char *);
 	union optu {
 		struct opt_dsp_type dsp;
 		struct opt_flt_type flt;
@@ -102,43 +102,45 @@ struct optlist
 	enum opttype type;
 };
 
-int lookup_options(int argc, char **argv,struct optlist *optlist, struct optlist **elem);
+#include "tools/linked_list.h"
+
+int lookup_options(int argc, char **argv, struct linked_list *optlist, struct linked_list_opt_value **elem);
 int parse_options(int argc, char **argv);
 
-__inline__ int prs_dsp_help(struct optlist *optl, char *val);
-__inline__ int prs_dsp_version(struct optlist *optl, char *val);
-__inline__ int prs_dsp_license(struct optlist *optl, char *val);
-__inline__ int prs_dsp_simpledispla(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displaydata(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displayheader(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displaypackets(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displayallpackets(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displaydlproto(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displaynlproto(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displaytlproto(struct optlist *optl, char *val);
-__inline__ int prs_dsp_dontdisplayemptyslp(struct optlist *optl, char *val);
-__inline__ int prs_dsp_dontdisplaypackets(struct optlist *optl, char *val);
-__inline__ int prs_dsp_displayhexa(struct optlist *optl, char *val);
-__inline__ int prs_dsp_simpledisplay(struct optlist *optl, char *val);
-__inline__ int prs_output(struct optlist *optl, char *val);
-__inline__ int prs_outputdata(struct optlist *optl, char *val);
-__inline__ int prs_inputfile(struct optlist *optl, char *val);
-__inline__ int prs_outputfile(struct optlist *optl, char *val);
-__inline__ int prs_flt_dstport(struct optlist *optl, char *val);
-__inline__ int prs_flt_srcport(struct optlist *optl, char *val);
-__inline__ int prs_flt_globalport(struct optlist *optl, char *val);
-__inline__ int prs_flt_srcip(struct optlist *optl, char *val);
-__inline__ int prs_flt_dstip(struct optlist *optl, char *val);
-__inline__ int prs_flt_globalip(struct optlist *optl, char *val);
-__inline__ int prs_flt_srcmac(struct optlist *optl, char *val);
-__inline__ int prs_flt_dstmac(struct optlist *optl, char *val);
-__inline__ int prs_flt_limitnb(struct optlist *optl, char *val);
-__inline__ int prs_flt_timelimit(struct optlist *optl, char *val);
-__inline__ int prs_flt_filterstr(struct optlist *optl, char *val);
-__inline__ int prs_flt_filterregex(struct optlist *optl, char *val);
-__inline__ int prs_flt_protocol(struct optlist *optl, char *val);
-__inline__ int prs_flt_ethprotocol(struct optlist *optl, char *val);
-__inline__ int prs_flt_ipprotocol(struct optlist *optl, char *val);
+__inline__ int prs_dsp_help(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_version(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_license(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_simpledispla(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displaydata(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displayheader(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displaypackets(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displayallpackets(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displaydlproto(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displaynlproto(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displaytlproto(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_dontdisplayemptyslp(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_dontdisplaypackets(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displayhexa(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_simpledisplay(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_output(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_outputdata(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_inputfile(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_outputfile(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_dstport(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_srcport(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_globalport(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_srcip(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_dstip(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_globalip(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_srcmac(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_dstmac(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_limitnb(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_timelimit(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_filterstr(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_filterregex(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_protocol(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_ethprotocol(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_flt_ipprotocol(struct linked_list_opt_value *optl, char *val);
 
 #endif
 

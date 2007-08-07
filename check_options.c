@@ -79,46 +79,6 @@ int check_options()
 		}
 		filter_datalink = 1;
 	}
-	if (*fsourceport)
-	{
-		lsourceport = my_atoi(fsourceport,10);
-		filter_transport = 1;
-	}
-	if (*fdestport)
-	{
-		ldestport = my_atoi(fdestport,10);
-		filter_transport = 1;
-	}
-	if (*fglobalport)
-	{
-		lglobalport = my_atoi(fglobalport,10);
-		filter_transport = 1;
-	}
-	if (*fglobalip)
-	{
-		lglobalip = ipv4_aton(fglobalip);
-		filter_network = 1;
-	}
-	if (*fsourceip)
-	{
-		lsourceip = ipv4_aton(fsourceip);
-		filter_network = 1;
-	}
-	if (*fdestip)
-	{
-		ldestip = ipv4_aton(fdestip);
-		filter_network = 1;
-	}
-	if (*fdestmac)
-	{
-		mac_aton(fdestmac,ldestmac);
-		filter_datalink = 1;
-	}
-	if (*fsourcemac)
-	{
-		mac_aton(fsourcemac,lsourcemac);
-		filter_datalink = 1;
-	}
 	if (*flimitnb)
 	{
 		llimitnb = (long int) my_atoi(flimitnb,10);
@@ -127,17 +87,6 @@ int check_options()
 	{
 		gettimeofday(&timelimit,0);
 		timelimit.tv_sec = timelimit.tv_sec + my_atoi(ftimelimit,10);
-	}
-
-	if ((!ldestip) && (!ldestport) && (!lsourceip) && (!lsourceport)
-	&& (!lglobalip) && (!lglobalport) && (mac_null(lsourcemac)) 
-	&& (mac_null(ldestmac)) && (ipproto == IPPROTO_RAW) && (ethproto == ETHPROTO_RAW))
-	{
-		nofilter = 1;
-	}
-	else
-	{
-		nofilter = 0;
 	}
 
 	return end;
