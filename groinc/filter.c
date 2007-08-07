@@ -39,91 +39,50 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 
 	end = 1;
 
-	if (!nofilter)
+	struct linked_list *ptr = list_filter;
+	while ((ptr) && (end))
 	{
-		struct linked_list *ptr = list_filter;
-		while ((ptr) && (end))
+		end = end && (ptr->value->u.flt->func_flt)(datalink_layerph,network_layerph,transport_layerph,ptr->value->u.flt->val);
+		ptr = ptr->next;
+	}
+		
+	if (filter_datalink)
+	{
+		if (datalink_layerph->len > 0)
 		{
-			end = end && (ptr->value->u.flt->func_flt)(datalink_layerph,network_layerph,transport_layerph,ptr->value->u.flt->val);
-			ptr = ptr->next;
-		}
-			
-		if (filter_datalink)
-		{
-			if (datalink_layerph->len > 0)
+			if (proto)
 			{
-				if ((!mac_null(lsourcemac)) || (!mac_null(ldestmac)) || (proto))
-				{
-					if (proto != PROTO_ETHER)
-						end = end && (datalink_layerph->id == proto);
-					if ((end) || ((datalink_layerph->id == PROTO_ETHER)))
-					{
-						struct ethernet_header *ethh = (struct ethernet_header *)datalink_layerph->header;
-						if (!mac_null(lsourcemac))
-							end = !mac_cmp(lsourcemac,(__u8 *)ethh->sourcemac);
-						if (!mac_null(ldestmac))
-							end = end && (!mac_cmp(ldestmac,(__u8 *)ethh->destmac));
-					}
-				}
-			}
-			else
-			{
-				end = 0;
+				if (proto != PROTO_ETHER)
+					end = end && (datalink_layerph->id == proto);
 			}
 		}
-		if ((end) && (filter_network))
+		else
 		{
-			if (network_layerph->len > 0)
-			{
-				if (ethproto != ETHPROTO_RAW)
-					end = end && (network_layerph->id == ethproto);
-				if ((end) && ((lsourceip) || (ldestip) || (lglobalip)))
-				{
-					struct ipv4_header *iph = (struct ipv4_header *)network_layerph->header;
-					if (lglobalip)
-					{
-						end = end && ((iph->sourceaddr == lglobalip) || (iph->destaddr == lglobalip));
-					}
-					else
-					{
-						if (ldestip)
-							end = end && (iph->destaddr == ldestip);
-						if (lsourceip)
-							end = end && (iph->sourceaddr == lsourceip);
-					}
-				}
-			}
-			else
-			{
-				end = 0;
-			}
+			end = 0;
 		}
-		if ((end) && (filter_transport))
+	}
+	if ((end) && (filter_network))
+	{
+		if (network_layerph->len > 0)
 		{
-			if (transport_layerph->len > 0)
-			{
-				if (ipproto != IPPROTO_RAW)
-					end = end && (transport_layerph->id == ipproto);
-				if ((end) && ((ldestport) || (lsourceport) || (lglobalport)))
-				{
-					if (lglobalport)
-					{
-						end = end && ((get_dest_port(transport_layerph) == lglobalport) || (get_source_port(transport_layerph) == lglobalport));
-					}
-					else
-					{
-						if (lsourceport)
-							end = end && (get_source_port(transport_layerph) == lsourceport);
-						if (ldestport)
-							end = end && (get_dest_port(transport_layerph) == ldestport);
-					}	
-				}
-
-			}
-			else
-			{
-				end = 0;
-			}
+			if (ethproto != ETHPROTO_RAW)
+				end = end && (network_layerph->id == ethproto);
+		}
+		else
+		{
+			end = 0;
+		}
+	}
+	if ((end) && (filter_transport))
+	{
+		if (transport_layerph->len > 0)
+		{
+			if (ipproto != IPPROTO_RAW)
+				end = end && (transport_layerph->id == ipproto);
+		}
+		else
+		{
+			end = 0;
 		}
 	}
 
@@ -174,13 +133,13 @@ __inline__ int flt_dl_mac_src(struct protocol_header *datalink_layerph, struct p
 
 __inline__ int flt_dl_mac_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if (datalink_layerph->id == PROTO_ETHER)
+	if ((datalink_layerph->len > 0) && (datalink_layerph->id == PROTO_ETHER))
 		return FLT_DL_MAC(datalink_layerph->header,flt_val,destmac);
 	else
-		return FLT_ERROR;
+		return 0;
 }
 
-#define FLT_DL_IP(HDR,V,E) \
+#define FLT_NL_IP(HDR,V,E) \
 ({ \
 	struct ipv4_header *iph = (struct ipv4_header *) HDR; \
 	(iph->V == E); \
@@ -188,24 +147,51 @@ __inline__ int flt_dl_mac_dst(struct protocol_header *datalink_layerph, struct p
 
 __inline__ int flt_nl_ip_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if (network_layerph->id == ETHPROTO_IP)
-		return FLT_DL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val));
+	if ((network_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
+		return FLT_NL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val));
 	else
-		return FLT_ERROR;
+		return 0;
 }
 
 __inline__ int flt_nl_ip_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if (network_layerph->id == ETHPROTO_IP)
-		return FLT_DL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val));
+	if ((network_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
+		return FLT_NL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val));
 	else
-		return FLT_ERROR;
+		return 0;
 }
 
 __inline__ int flt_nl_ip_global(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if (network_layerph->id == ETHPROTO_IP)
-		return FLT_DL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val)) || FLT_DL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val));
+	
+	if ((network_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
+		return (FLT_NL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val)) || FLT_NL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val)));
 	else
-		return FLT_ERROR;
+		return 0;
 }
+
+
+__inline__ int flt_tl_port_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (transport_layerph->len > 0)
+		return (get_source_port(transport_layerph) == *((__u16 *)flt_val));
+	else
+		return 0;
+}
+
+__inline__ int flt_tl_port_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (transport_layerph->len > 0)
+		return (get_dest_port(transport_layerph) == *((__u16 *)flt_val));
+	else
+		return 0;
+}
+
+__inline__ int flt_tl_port_global(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (transport_layerph->len > 0)
+		return ((get_source_port(transport_layerph) == *((__u16 *)flt_val)) || (get_dest_port(transport_layerph) == *((__u16 *)flt_val)));
+	else
+		return 0;
+}
+

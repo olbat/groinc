@@ -25,17 +25,6 @@
 #include <regex.h>
 #include <sys/time.h>
 
-extern	__u16 	ldestport,
-		lsourceport,
-		lglobalport;
-
-extern __u32	ldestip,
-		lsourceip,
-		lglobalip;
-
-extern __u8	lsourcemac[MAC_STR_SIZE],
-		ldestmac[MAC_STR_SIZE];
-
 extern long int 	llimitnb;
 extern unsigned long int 	packetstot, packetsfiltred;
 
