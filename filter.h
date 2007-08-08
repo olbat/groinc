@@ -44,5 +44,8 @@ __inline__ int flt_nl_ip_global(struct protocol_header *datalink_layerph, struct
 __inline__ int flt_tl_port_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val);
 __inline__ int flt_tl_port_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val);
 __inline__ int flt_tl_port_global(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val);
+__inline__ int flt_dl_protocol(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val);
+__inline__ int flt_nl_protocol(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val);
+__inline__ int flt_tl_protocol(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val);
 
 #endif

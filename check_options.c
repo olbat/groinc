@@ -37,48 +37,7 @@ int check_options()
 			end = 1;
 		}
 	}
-	if (*ipprotoname)
-	{
-		int tmp;	
-		if ((tmp = lookup_ipid(strupr(ipprotoname))) < 0)
-		{
-			co_error = ipprotoname;
-			end = 1;
-		}
-		else
-		{
-			ipproto = (unsigned int) tmp;
-		}
-		filter_transport = 1;
-	}
-	if (*ethprotoname)
-	{
-		int tmp;	
-		if ((tmp = lookup_ethid(strupr(ethprotoname))) < 0)
-		{
-			co_error = ethprotoname;
-			end = 1;
-		}
-		else
-		{
-			ethproto = (unsigned int) tmp;
-		}
-		filter_network = 1;
-	}
-	if (*protoname)
-	{
-		int tmp;	
-		if ((tmp = lookup_protoid(strupr(protoname))) < 0)
-		{
-			co_error = protoname;
-			end = 1;
-		}
-		else
-		{
-			proto = (unsigned int) tmp;
-		}
-		filter_datalink = 1;
-	}
+
 	if (*flimitnb)
 	{
 		llimitnb = (long int) my_atoi(flimitnb,10);
@@ -176,16 +135,40 @@ __inline__ int chk_flt_filterregex(char *val)
 
 __inline__ int chk_flt_protocol(char *val)
 {
-	return OPT_OK;
+	if (lookup_protoid(strupr(val)) < 0)
+	{
+		co_error = val;
+		return OPT_ERROR;
+	}
+	else
+	{
+		return OPT_OK;
+	}
 }
 
 __inline__ int chk_flt_ethprotocol(char *val)
 {
-	return OPT_OK;
+	if (lookup_ethid(strupr(val)) < 0)
+	{
+		co_error = val;
+		return OPT_ERROR;
+	}
+	else
+	{
+		return OPT_OK;
+	}
 }
 
 __inline__ int chk_flt_ipprotocol(char *val)
 {
-	return OPT_OK;
+	if (lookup_ipid(strupr(val)) < 0)
+	{
+		co_error = val;
+		return OPT_ERROR;
+	}
+	else
+	{
+		return OPT_OK;
+	}
 }
 

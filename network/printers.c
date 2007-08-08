@@ -124,10 +124,7 @@ void print_simple(int fd,struct protocol_header *network_layerph,struct protocol
 
 void print_datalink_layer_proto(int fd,struct protocol_header *datalink_layerph)
 {
-	if (*protoname)
-		fprintf((FILE *)fd,"[%s %d]",protoname,datalink_layerph->len);
-	else
-		fprintf((FILE *)fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
+	fprintf((FILE *)fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
 }
 
 void print_network_layer_proto(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph)
@@ -139,6 +136,7 @@ void print_network_layer_proto(int fd,struct protocol_header *datalink_layerph,s
 			break;
 	}
 }
+
 void print_transport_layer_proto(int fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
 	switch (network_layerph->id)
@@ -149,28 +147,20 @@ void print_transport_layer_proto(int fd,struct protocol_header *network_layerph,
 	}
 }
 
+/* >>> TODO: use inline functions */
 void print_protoproto(int fd,struct protocol_header *datalink_layerph)
 {
-	if (*protoname)
-		fprintf((FILE *)fd,"[%s %d]",protoname,datalink_layerph->len);
-	else
-		fprintf((FILE *)fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
+	fprintf((FILE *)fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
 }
 
 void print_ethproto(int fd,struct protocol_header *network_layerph)
 {
-	if (*ethprotoname)
-		fprintf((FILE *)fd,"[%s %d]",ethprotoname,network_layerph->len);
-	else
-		fprintf((FILE *)fd,"[%s %d]",lookup_ethname(network_layerph->id),network_layerph->len);
+	fprintf((FILE *)fd,"[%s %d]",lookup_ethname(network_layerph->id),network_layerph->len);
 }
 
 void print_ipproto(int fd,struct protocol_header *transport_layerph)
 {
-	if (*ipprotoname)
-		fprintf((FILE *)fd,"[%s %d]",ipprotoname,transport_layerph->len);
-	else
-		fprintf((FILE *)fd,"[%s %d]",lookup_ipname(transport_layerph->id),transport_layerph->len);
+	fprintf((FILE *)fd,"[%s %d]",lookup_ipname(transport_layerph->id),transport_layerph->len);
 }
 
 void print_packetnb(int fd, int size)

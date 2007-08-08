@@ -26,9 +26,6 @@ extern	char	*filterstr,
 		*output,
 		*po_error,
 		*co_error,
-		*protoname,
-		*ethprotoname,
- 		*ipprotoname,
 		*flimitnb,
 		*ftimelimit;
 

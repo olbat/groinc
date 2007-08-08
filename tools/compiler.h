@@ -1,5 +1,4 @@
-/* This file is a part of groinc
- * 
+/*
  * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,32 +16,10 @@
  *
  * see the COPYING file for more informations */
 
-#ifndef _GLOBALS_FILTER_H
-#define _GLOBALS_FILTER_H
+#ifndef _COMPILER_H
+#define _COMPILER_H
 
-#include "network/my_types.h"
-#include "tools/network_tools.h"
-#include <regex.h>
-#include <sys/time.h>
-
-extern long int 	llimitnb;
-extern unsigned long int 	packetstot, packetsfiltred;
-
-extern char 	*filterstr,
-       		*filterregexstr;	
-
-extern	int 	datafd,
-   		headerfd;
-
-extern char	sniffer_stop;
-
-extern	regex_t filterregex;
-
-extern struct timeval 	timestart,
-			timefirstpacket,
-			timelimit;
-
-extern struct linked_list *list_filter;
+#define likely(X) __builtin_expect(!!(X),1)
+#define unlikely(X) __builtin_expect(!!(X),0)
 
 #endif
-
