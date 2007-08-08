@@ -24,6 +24,7 @@
 #include "network/parsers.h"
 #include "tools/linked_list.h"
 #include "tools/memory_tools.h"
+#include "tools/compiler.h"
 #include "tools/network_tools.h"
 #include "network/tmp_headers.h"
 
@@ -42,48 +43,9 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 	struct linked_list *ptr = list_filter;
 	while ((ptr) && (end))
 	{
-		end = end && (ptr->value->u.flt->func_flt)(datalink_layerph,network_layerph,transport_layerph,ptr->value->u.flt->val);
+		if (unlikely(ptr->value))
+			end = end && (ptr->value->u.flt->func_flt)(datalink_layerph,network_layerph,transport_layerph,ptr->value->u.flt->val);
 		ptr = ptr->next;
-	}
-		
-	if (filter_datalink)
-	{
-		if (datalink_layerph->len > 0)
-		{
-			if (proto)
-			{
-				if (proto != PROTO_ETHER)
-					end = end && (datalink_layerph->id == proto);
-			}
-		}
-		else
-		{
-			end = 0;
-		}
-	}
-	if ((end) && (filter_network))
-	{
-		if (network_layerph->len > 0)
-		{
-			if (ethproto != ETHPROTO_RAW)
-				end = end && (network_layerph->id == ethproto);
-		}
-		else
-		{
-			end = 0;
-		}
-	}
-	if ((end) && (filter_transport))
-	{
-		if (transport_layerph->len > 0)
-		{
-			if (ipproto != IPPROTO_RAW)
-				end = end && (transport_layerph->id == ipproto);
-		}
-		else
-		{
-			end = 0;
-		}
 	}
 
 	data = datagram->data + datagram->len;
@@ -125,7 +87,7 @@ int filter_regex(char *data)
 
 __inline__ int flt_dl_mac_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if (datalink_layerph->id == PROTO_ETHER)
+	if ((likely(datalink_layerph->len > 0)) && (datalink_layerph->id == PROTO_ETHER))
 		return FLT_DL_MAC(datalink_layerph->header,flt_val,sourcemac);
 	else
 		return FLT_ERROR;
@@ -133,7 +95,7 @@ __inline__ int flt_dl_mac_src(struct protocol_header *datalink_layerph, struct p
 
 __inline__ int flt_dl_mac_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if ((datalink_layerph->len > 0) && (datalink_layerph->id == PROTO_ETHER))
+	if ((likely(datalink_layerph->len > 0)) && (datalink_layerph->id == PROTO_ETHER))
 		return FLT_DL_MAC(datalink_layerph->header,flt_val,destmac);
 	else
 		return 0;
@@ -147,7 +109,7 @@ __inline__ int flt_dl_mac_dst(struct protocol_header *datalink_layerph, struct p
 
 __inline__ int flt_nl_ip_src(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if ((network_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
+	if ((likely(network_layerph->len > 0)) && (network_layerph->id == ETHPROTO_IP))
 		return FLT_NL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val));
 	else
 		return 0;
@@ -155,7 +117,7 @@ __inline__ int flt_nl_ip_src(struct protocol_header *datalink_layerph, struct pr
 
 __inline__ int flt_nl_ip_dst(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
-	if ((network_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
+	if ((likely(network_layerph->len > 0)) && (network_layerph->id == ETHPROTO_IP))
 		return FLT_NL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val));
 	else
 		return 0;
@@ -164,7 +126,7 @@ __inline__ int flt_nl_ip_dst(struct protocol_header *datalink_layerph, struct pr
 __inline__ int flt_nl_ip_global(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
 {
 	
-	if ((network_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
+	if ((likely(network_layerph->len > 0)) && (network_layerph->id == ETHPROTO_IP))
 		return (FLT_NL_IP(network_layerph->header,sourceaddr,*((__u32 *)flt_val)) || FLT_NL_IP(network_layerph->header,destaddr,*((__u32 *)flt_val)));
 	else
 		return 0;
@@ -195,3 +157,26 @@ __inline__ int flt_tl_port_global(struct protocol_header *datalink_layerph, stru
 		return 0;
 }
 
+__inline__ int flt_dl_protocol(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (likely(datalink_layerph->len > 0))
+		return (datalink_layerph->id == *((unsigned int *)flt_val));
+	else
+		return 0;
+}
+
+__inline__ int flt_nl_protocol(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (likely(network_layerph->len > 0))
+		return (network_layerph->id == *((unsigned int *)flt_val));
+	else
+		return 0;
+}
+
+__inline__ int flt_tl_protocol(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, __u8 *flt_val)
+{
+	if (transport_layerph->len > 0)
+		return (transport_layerph->id == *((unsigned int *)flt_val));
+	else
+		return 0;
+}

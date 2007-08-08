@@ -52,25 +52,15 @@ char	*outputdata,
 	*co_error,
 	*filterstr,
 	*filterregexstr,
-	*protoname,
-	*ethprotoname,
-	*ipprotoname,
 	*inputfile,
 	*outputfile,
 	*flimitnb,
 	*ftimelimit;
 
-unsigned int 	proto,
-		ethproto,
-		ipproto;
-
 int 	datafd,
 	headerfd;
 
 char	sniffer_stop,
-	filter_datalink,
-	filter_network,
-	filter_transport,
 	opt_displaydlproto,
 	opt_displaynlproto,
 	opt_displaytlproto,
@@ -127,12 +117,6 @@ int main(int argc, char **argv)
 	co_error = "";
 	filterstr = "";
 	filterregexstr = "";
-	proto = PROTO_ETHER;
-	protoname = "";
-	ethproto = ETHPROTO_RAW;
-	ethprotoname = "";
-	ipproto = IPPROTO_RAW;
-	ipprotoname = "";
 	inputfile = "";
 	outputfile = "";
 	flimitnb = "";
@@ -141,10 +125,6 @@ int main(int argc, char **argv)
 	packetstot = 0;
 	packetsfiltred = 0;
 	
-	filter_datalink = 0;
-	filter_network = 0;
-	filter_transport = 0;
-
 	opt_displaydlproto = 0;
 	opt_displaynlproto = 0;
 	opt_displaytlproto = 0;
