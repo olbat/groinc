@@ -22,27 +22,21 @@
 
 #include "network/my_types.h"
 #include "tools/network_tools.h"
-#include <regex.h>
 #include <sys/time.h>
 
 extern long int 	llimitnb;
 extern unsigned long int 	packetstot, packetsfiltred;
-
-extern char 	*filterstr,
-       		*filterregexstr;	
 
 extern	int 	datafd,
    		headerfd;
 
 extern char	sniffer_stop;
 
-extern	regex_t filterregex;
-
 extern struct timeval 	timestart,
 			timefirstpacket,
 			timelimit;
 
-extern struct linked_list *list_filter;
+extern struct linked_list 	*list_filter;
 
 #endif
 

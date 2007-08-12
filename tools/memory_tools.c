@@ -42,13 +42,10 @@ char *my_memcpy(char *dest,char *src,int size)
 
 int my_strlen(char *str)
 {
-	unsigned int end;
-	end = 0;
-	while (*str++)
-	{
-		end++;
-	}
-	return end;
+	char *ptr = str;
+	while (*ptr)
+		ptr++;
+	return (ptr - str);
 }
 
 int my_strcmp(char *str1, char *str2)
@@ -84,7 +81,7 @@ int my_strcmp(char *str1, char *str2)
 
 char to_upper(char c)
 {
-	return (c & 0xdf); /* 0xdf = !0x20 */
+	return (c & 0xdf); /* 0xdf == ~0x20 */
 }
 char to_lower(char c)
 {
@@ -115,9 +112,8 @@ int findstr(char *str,char *filterstr)
 	{
 		if (*str == *ptr)
 			ptr++;
-		else /* need to be optimized */
+		else if (ptr != filterstr)
 			ptr = filterstr;
-
 		str++;
 	}
 	if (*ptr)

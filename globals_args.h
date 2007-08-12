@@ -20,14 +20,10 @@
 #ifndef _GLOBALS_ARGS_H
 #define _GLOBALS_ARGS_H
 
-extern	char	*filterstr,
-		*filterregexstr,
-		*outputdata,
+extern	char	*outputdata,
 		*output,
 		*po_error,
-		*co_error,
-		*flimitnb,
-		*ftimelimit;
+		*co_error;
 
 extern enum miscno	po_misc;
 

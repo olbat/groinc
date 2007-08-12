@@ -1,6 +1,8 @@
 -new protocols (to be done)
 -new options (to be done)
 -new filters (to be done)
+-new error managing system
+-display expression option
 -put the filtering, parsing and checking functions in the protocols/ files
 
 -interactive mode

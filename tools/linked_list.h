@@ -25,6 +25,7 @@
 enum linked_list_type
 {
 	LKD_TYPE_FLT,
+	LKD_TYPE_DSP,
 	LKD_TYPE_OPT
 };
 
@@ -33,6 +34,7 @@ struct linked_list_value
 	union linked_list_union
 	{
 		struct linked_list_flt_value *flt;
+		struct linked_list_dsp_value *dsp;
 		struct linked_list_opt_value *opt;
 	} u;
 	enum linked_list_type type;
@@ -45,18 +47,23 @@ struct linked_list
 	struct linked_list *next;
 };
 
-#include "../parse_options.h"
 #include "../filter.h"
+#include "../display.h"
+#include "../parse_options.h"
 
 struct linked_list *linked_list_init();
 void linked_list_free(struct linked_list *l);
 struct linked_list_value *linked_list_add(struct linked_list *l,struct linked_list_value *val);
 void linked_list_value_free(struct linked_list_value *val);
 
-struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol_header *, struct protocol_header *, struct protocol_header *, __u8 *), __u8 *, unsigned int);
+struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *, __u8 *), __u8 *, unsigned int);
 void linked_list_flt_value_free(struct linked_list_value *val);
-struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, __u8 *), unsigned int flt_size);
-struct linked_list_value *linked_list_opt_value_init_dsp(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), __u32 optid);
+
+struct linked_list_value *linked_list_dsp_value_init(void (*func)(int, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *));
+void linked_list_dsp_value_free(struct linked_list_value *val);
+
+struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,__u8 *), unsigned int flt_size);
+struct linked_list_value *linked_list_opt_value_init_dsp(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram));
 void linked_list_opt_value_free(struct linked_list_value *val);
 
 #endif
