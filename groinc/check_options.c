@@ -25,31 +25,7 @@
 #include "tools/math_tools.h"
 #include "parse_options.h"
 
-int check_options()
-{
-	int end;
-	end = 0;
-	if (*filterregexstr)
-	{
-		if (regcomp(&filterregex,filterregexstr,REG_NOSUB))
-		{
-			co_error = filterregexstr;
-			end = 1;
-		}
-	}
-
-	if (*flimitnb)
-	{
-		llimitnb = (long int) my_atoi(flimitnb,10);
-	}
-	if (*ftimelimit)
-	{
-		gettimeofday(&timelimit,0);
-		timelimit.tv_sec = timelimit.tv_sec + my_atoi(ftimelimit,10);
-	}
-
-	return end;
-}
+#include <regex.h>
 
 __inline__ int chk_output(char *val)
 {
@@ -130,7 +106,18 @@ __inline__ int chk_flt_filterstr(char *val)
 
 __inline__ int chk_flt_filterregex(char *val)
 {
-	return OPT_OK;
+	regex_t tmp;
+	if (regcomp(&tmp,val,REG_NOSUB))
+	{
+		regfree(&tmp);
+		co_error = val;
+		return OPT_ERROR;
+	}
+	else
+	{
+		regfree(&tmp);
+		return OPT_OK;
+	}
 }
 
 __inline__ int chk_flt_protocol(char *val)

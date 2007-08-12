@@ -17,21 +17,14 @@
  *
  * see the COPYING file for more informations */
 
-#ifndef _GLOBALS_OPTION_H
-#define _GLOBALS_OPTION_H
+#ifndef _GLOBALS_DISPLAY_H
+#define _GLOBALS_DISPLAY_H
+
+#include "tools/linked_list.h"
 
 extern char	opt_output,
 		opt_outputdata,
-		opt_simpledisplay,
-		opt_displaydata,
-		opt_displayheader,
-		opt_displaypackets,
-		opt_displayallpackets,
 		opt_ndisplayemptyslp,
-		opt_displaydlproto,
-		opt_displaynlproto,
-		opt_displaytlproto,
-		opt_displayhexa,
 		opt_ndisplaypackets;
 
 extern char	*inputfile,
@@ -39,6 +32,8 @@ extern char	*inputfile,
 
 extern int 	datafd,
       		headerfd;
+
+extern struct linked_list 	*list_display;
 
 #endif
 

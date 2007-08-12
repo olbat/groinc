@@ -18,7 +18,7 @@
  * see the COPYING file for more informations */
 
 #include "misc.h"
-#include "globals_option.h"
+#include "globals_display.h"
 #include "prints.h"
 
 void print_misc(enum miscno no)

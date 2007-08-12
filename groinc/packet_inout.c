@@ -17,7 +17,7 @@
  *
  * see the COPYING file for more informations */
 
-#include "globals_option.h"
+#include "globals_display.h"
 #include <unistd.h>
 
 int read_packet(int fd,char *buffer, int size)

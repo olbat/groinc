@@ -18,7 +18,7 @@
  * see the COPYING file for more informations */
 
 #include "usage.h"
-#include "globals_option.h"
+#include "globals_display.h"
 #include "prints.h"
 
 int print_usage(char *cmdname)

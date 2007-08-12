@@ -78,12 +78,12 @@ enum opttype
 
 struct opt_dsp_type
 {
-	__u32 id;
+	void (*func_dsp)(int, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *);
 };
 
 struct opt_flt_type 
 {
-	int (*func_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, __u8 *);
+	int (*func_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *, __u8 *);
 	unsigned int flt_size;
 };
 
@@ -110,18 +110,9 @@ int parse_options(int argc, char **argv);
 __inline__ int prs_dsp_help(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_dsp_version(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_dsp_license(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_simpledispla(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displaydata(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displayheader(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displaypackets(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displayallpackets(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displaydlproto(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displaynlproto(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displaytlproto(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_displayopt(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_dsp_dontdisplayemptyslp(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_dsp_dontdisplaypackets(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_displayhexa(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_simpledisplay(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_output(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_outputdata(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_inputfile(struct linked_list_opt_value *optl, char *val);

@@ -21,7 +21,6 @@
 #include <linux/if_ether.h>
 #include <fcntl.h>
 #include <stdio.h> /* stdin/stdout */
-#include <regex.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <sys/time.h>
@@ -50,43 +49,30 @@ char	*outputdata,
 	*output,
 	*po_error,
 	*co_error,
-	*filterstr,
-	*filterregexstr,
 	*inputfile,
-	*outputfile,
-	*flimitnb,
-	*ftimelimit;
+	*outputfile;
 
 int 	datafd,
 	headerfd;
 
 char	sniffer_stop,
-	opt_displaydlproto,
-	opt_displaynlproto,
-	opt_displaytlproto,
-	opt_simpledisplay,
-	opt_displaydata,
-	opt_displayheader,
-	opt_displaypackets,
-	opt_displayallpackets,
 	opt_output,
 	opt_outputdata,
 	opt_ndisplayemptyslp,
-	opt_displayhexa,
 	opt_ndisplaypackets;
 	
-regex_t filterregex;
-
 enum miscno	po_misc;
 
 struct timeval 	timestart,
 		timefirstpacket,
 		timelimit;
 
-struct linked_list *list_filter; 
+struct linked_list 	*list_filter,
+			*list_display;
 
 #define MAIN_CLEANUP() \
-	linked_list_free(list_filter);
+	linked_list_free(list_filter); \
+	linked_list_free(list_display);
 
 #define MAIN_QUIT(V) \
 	MAIN_CLEANUP(); \
@@ -115,28 +101,15 @@ int main(int argc, char **argv)
 	output = "";
 	po_error = "";
 	co_error = "";
-	filterstr = "";
-	filterregexstr = "";
 	inputfile = "";
 	outputfile = "";
-	flimitnb = "";
-	ftimelimit = "";
 	llimitnb = -1;
 	packetstot = 0;
 	packetsfiltred = 0;
 	
-	opt_displaydlproto = 0;
-	opt_displaynlproto = 0;
-	opt_displaytlproto = 0;
-	opt_simpledisplay = 0;
-	opt_displaydata = 0;
-	opt_displayheader = 0;
-	opt_displaypackets = 0;
-	opt_displayallpackets = 0;
 	opt_output = 0;
 	opt_outputdata = 0;
 	opt_ndisplayemptyslp = 0;
-	opt_displayhexa = 0;
 	opt_ndisplaypackets = 0;
 
 	timefirstpacket.tv_sec = 0;
@@ -144,6 +117,7 @@ int main(int argc, char **argv)
 	timelimit.tv_sec = 0;
 
 	list_filter = linked_list_init();
+	list_display = linked_list_init();
 
 	if (opt_output != 0)
 		headerfd = open(output,O_CREAT|O_WRONLY);
@@ -182,7 +156,7 @@ int main(int argc, char **argv)
 		print_misc(po_misc);
 		MAIN_QUIT(0);
 	}
-
+	/*
 	if (check_options())
 	{
 		if (*co_error)
@@ -192,6 +166,7 @@ int main(int argc, char **argv)
 			MAIN_QUIT(1);
 		}
 	}
+	*/
 	
 	/* if ((inputfd = socket(AF_INET,SOCK_RAW,proto)) < 0) */
 	if (*outputfile)
