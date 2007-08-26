@@ -24,7 +24,6 @@
 #include <unistd.h>
 #include <sys/select.h>
 #include <sys/time.h>
-#include <sys/time.h>
 #include <regex.h>
 
 #include "tools/memory_tools.h"
@@ -35,6 +34,7 @@
 #include "filter.h"
 #include "globals_filter.h"
 #include "globals_display.h"
+#include "globals_error.h"
 #include "tools/linked_list.h"
 
 #define DATAGRAM_SIZE 4096
@@ -93,7 +93,6 @@ int start_sniff(int inputfd,int outputfd)
 		timeptr = 0;
 	}
 
-	gettimeofday(&timestart,0);
 	
 	while ((!sniffer_stop) && (!end) && (llimitnb))
 	{
@@ -126,111 +125,42 @@ int start_sniff(int inputfd,int outputfd)
 						parse_network_layer(&datagram,&network_layerph,&transport_layerph);
 					if (transport_layerph.len >= 0)
 						parse_transport_layer(&datagram,&transport_layerph);
-
-					if ((datagram.len < datagram.totlen) || (!opt_ndisplayemptyslp)) /* if the session layer is empty */
+					/*
+					if ((datagram.len < datagram.totlen) || (!opt_ndisplayemptyslp))
 					{
-						if (filter(&datalink_layerph,&network_layerph,&transport_layerph,&datagram) != 0)
+					*/
+					if (filter(&datalink_layerph,&network_layerph,&transport_layerph,&datagram))
+					{
+						/* >>> TODO: Report system */
+						if ((!timefirstpacket.tv_sec) && (!timefirstpacket.tv_usec))
+							gettimeofday(&timefirstpacket,0);
+						
+						packetsfiltred++;
+						
+						if (llimitnb >= 0)
+							llimitnb--;
+
+						if (outputfd >= 0)
 						{
-							if ((!timefirstpacket.tv_sec) && (!timefirstpacket.tv_usec))
-								gettimeofday(&timefirstpacket,0);
-							packetsfiltred++;
-							if (llimitnb >= 0)
+							if (write_packet(outputfd,datagram.data,packet_len) < 0)
 							{
-								llimitnb--;
+								perror("write_output");
+								return 1;
 							}
-							if (outputfd >= 0)
-							{
-								if (write_packet(outputfd,datagram.data,packet_len) < 0)
-								{
-									perror("write_output");
-									return 1;
-								}
-							}
-							display(headerfd,&datalink_layerph,&network_layerph,&transport_layerph,&datagram);
-							/*
-							if (!opt_ndisplaypackets)
-							{
-								if (opt_displaypackets)
-								{
-									print_packetnb(headerfd,datagram.len);
-								}
-								if (opt_displaynlproto)
-								{
-									print_network_layer_proto(headerfd,&datalink_layerph,&network_layerph);
-								}
-								if (opt_displaydlproto)
-								{
-									print_datalink_layer_proto(headerfd,&datalink_layerph);
-								}
-								if (opt_displaytlproto)
-								{
-									print_transport_layer_proto(headerfd,&network_layerph,&transport_layerph);
-								}
-								if (opt_simpledisplay)
-								{
-									print_simple(headerfd,&network_layerph,&transport_layerph);
-								}
-								else if (opt_displayheader)
-								{
-									if (opt_displayhexa)
-									{
-										print_protoproto(headerfd,&datalink_layerph);
-										print_hexa(headerfd,datalink_layerph.header,datalink_layerph.len);
-										
-										print_newline(headerfd);
-										print_ethproto(headerfd,&network_layerph);
-										print_hexa(headerfd,network_layerph.header,network_layerph.len);
-										
-										print_newline(headerfd);
-										print_ipproto(headerfd,&transport_layerph);
-										print_hexa(headerfd,transport_layerph.header,transport_layerph.len);
-										print_newline(headerfd);
-									}
-									else
-									{
-										print_datalink_layer(headerfd,&datalink_layerph);
-										print_network_layer(headerfd,&network_layerph);
-										print_transport_layer(headerfd,&transport_layerph);
-									}
-								}
-								if (opt_displaydata)
-								{
-									if (opt_displayhexa)
-									{
-										print_packetnb(headerfd,(datagram.totlen - datagram.len));
-										print_hexa(headerfd,(datagram.data + datagram.len),(datagram.totlen - datagram.len));
-									}
-									else
-									{
-										print_data(datafd,&datagram);
-									}
-								}
-								if (!opt_displaypackets && !opt_simpledisplay && !opt_displayheader && !opt_displaydata)
-								{
-									print_ipproto(headerfd,&transport_layerph);
-									print_simple(headerfd,&network_layerph,&transport_layerph);
-									if (opt_displayhexa)
-										print_hexa(headerfd,(datagram.data + datagram.len),(datagram.totlen - datagram.len));
-									else
-										print_data(datafd,&datagram);
-								}
-								print_newline(headerfd);
-								print_separator(headerfd);
-								print_newline(headerfd);
-							}
-							*/
 						}
+
+						display_packet(headerfd,&datalink_layerph,&network_layerph,&transport_layerph,&datagram);
+					}
+					/*
 					}
 					else
 					{
-						/* >>> TODO: look what this option was for */
-						/*
 						if (opt_displayallpackets)
 						{
 							print_packetnb(headerfd,datagram.len);
 						}
-						*/
 					}
+					*/
 				}
 				else
 				{
@@ -252,6 +182,7 @@ int start_sniff(int inputfd,int outputfd)
 
 int stop_sniff()
 {
+	display_report(headerfd);
 	struct timeval timecur;
 	time_t totsec, filsec;
 	suseconds_t totusec, filusec;
@@ -279,7 +210,7 @@ int stop_sniff()
 		filusec = 0;
 	}
 
-	/* >>> TODO: put this display on the display file using a function, make modulable ending display */	
+	/* >>> TODO: put this display on the display file using a function, make modulable ending display => REPORT SYSTEM */	
 
 	print_format(headerfd,  "\nTime - [total: %hds %hdms] [since first filtred packet: %hds %hdms]"
 				"\nPackets - [total: %hd packets] [filtred: %hd packets]\n\n",
@@ -296,7 +227,9 @@ int cleanup_sniff()
 	/* free(network_layerph); */
 	/* free(transport_layerph); */
 	linked_list_free(list_filter);
-	linked_list_free(list_display);
+	linked_list_free(list_display_packet);
+	linked_list_free(list_display_report);
+	linked_list_free(list_error);
 	close(curinputfd);
 	close(curoutputfd);
 

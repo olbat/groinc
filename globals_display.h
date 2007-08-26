@@ -23,9 +23,7 @@
 #include "tools/linked_list.h"
 
 extern char	opt_output,
-		opt_outputdata,
-		opt_ndisplayemptyslp,
-		opt_ndisplaypackets;
+		opt_outputdata;
 
 extern char	*inputfile,
 		*outputfile;
@@ -33,7 +31,8 @@ extern char	*inputfile,
 extern int 	datafd,
       		headerfd;
 
-extern struct linked_list 	*list_display;
+extern struct linked_list 	*list_display_packet,
+				*list_display_report;
 
 #endif
 

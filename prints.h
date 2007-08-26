@@ -25,6 +25,7 @@ void print_str(int fd, unsigned int nb, char *str, ...);
 void print_format(int fd, char *format, ...);
 void print_separator(int fd);
 void print_newline(int fd);
+void print_error(int fd, int nb, char *str, ...);
 
 #endif
 

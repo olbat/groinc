@@ -1,10 +1,9 @@
 -new protocols (to be done)
--new options (to be done)
--new filters (to be done)
--new error managing system
+-make the report system work
 -display expression option
 -put the filtering, parsing and checking functions in the protocols/ files
 
+-remove the mistakes in the manual
 -interactive mode
 -use standard libs
 -use standard status as END_STATUS_OK
@@ -14,7 +13,6 @@
 -enable filtering of encapsuled protocol headers (like IP header in ICMP) 
 -options to display detailed layer protocol description
 -use sprintf instead of fprintf in prints.c
--revision of filter.c to be flexible as protocol.c
 -complete verification of the arguments in the check_options
 -give the choice of the interface
 -make a session layer filter

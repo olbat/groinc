@@ -20,12 +20,15 @@
 #ifndef _MISC_H
 #define _MISC_H
 
-#define GROINC_VERSION "groinc 0.0.9rc3 (20070513)"
+#define SOFT_NAME "groinc"
+#define SOFT_VERSION "groinc 0.0.9rc3 (20070513)"
+
 
 enum miscno 
 {
 	MISCNO_LICENSE,
-	MISCNO_VERSION
+	MISCNO_VERSION,
+	MISCNO_HELP
 };
 
 void print_misc(enum miscno no);

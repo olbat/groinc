@@ -47,5 +47,7 @@ __inline__ int flt_nl_protocol(struct protocol_header *, struct protocol_header 
 __inline__ int flt_tl_protocol(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,  __u8 *flt_val);
 __inline__ int flt_regex(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,  __u8 *flt_val);
 __inline__ int flt_string(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,  __u8 *flt_val);
+__inline__ int flt_sl_nempty(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,  __u8 *flt_val);
+__inline__ int flt_dontdisplaypackets(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,  __u8 *flt_val);
 
 #endif

@@ -72,14 +72,42 @@ struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol
 	return end;
 }
 
-struct linked_list_value *linked_list_dsp_value_init(void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
+struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
 {
 	struct linked_list_value *end;
 
 	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
-	end->type = LKD_TYPE_DSP;
-	end->u.dsp = (struct linked_list_dsp_value *) malloc(sizeof(struct linked_list_dsp_value));
-	end->u.dsp->func_dsp = func;
+	end->type = LKD_TYPE_DSP_PKT;
+	end->u.dsp_pkt = (struct linked_list_dsp_pkt_value *) malloc(sizeof(struct linked_list_dsp_pkt_value));
+	end->u.dsp_pkt->func_dsp_pkt = func;
+
+	return end;
+}
+
+struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(int, __u8 *), __u8 *val, unsigned int size)
+{
+	struct linked_list_value *end;
+
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
+	end->type = LKD_TYPE_DSP_RPT;
+	end->u.dsp_rpt = (struct linked_list_dsp_rpt_value *) malloc(sizeof(struct linked_list_dsp_rpt_value));
+	end->u.dsp_rpt->func_dsp_rpt = func;
+	end->u.dsp_rpt->val = (__u8 *) malloc(size * sizeof(__u8));
+	my_memcpy((char *)end->u.dsp_rpt->val,(char *)val,size);
+
+	return end;
+}
+
+struct linked_list_value *linked_list_rpt_value_init(void(*func)(__u8 *), __u8 *val, unsigned int size)
+{
+	struct linked_list_value *end;
+
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
+	end->type = LKD_TYPE_RPT;
+	end->u.rpt = (struct linked_list_rpt_value *) malloc(sizeof(struct linked_list_rpt_value));
+	end->u.rpt->func_rpt = func;
+	end->u.rpt->val = (__u8 *) malloc(size * sizeof(__u8));
+	my_memcpy((char *)end->u.rpt->val,(char *)val,size);
 
 	return end;
 }
@@ -93,7 +121,7 @@ struct linked_list_value *linked_list_dsp_value_init(void (*func)(int, struct pr
 	V->func_prs = PRS; \
 	V->type = TY;
 
-struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *datagram, __u8 *), unsigned int flt_size)
+struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *datagram, __u8 *))
 {
 	struct linked_list_value *end;
 	
@@ -103,12 +131,11 @@ struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum
 	end->u.opt = (struct linked_list_opt_value *) malloc(sizeof(struct linked_list_opt_value));
 	LKD_OPT_VALUE_INIT(end->u.opt,ns,nl,id,fl,f_chk,f_prs,OPT_TYPE_FLT);
 	end->u.opt->u.flt.func_flt = f_flt;
-	end->u.opt->u.flt.flt_size = flt_size;
 	
 	return end;
 }
 
-struct linked_list_value *linked_list_opt_value_init_dsp(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
+struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
 {
 	struct linked_list_value *end;
 	
@@ -116,9 +143,37 @@ struct linked_list_value *linked_list_opt_value_init_dsp(char ns, char *nl, enum
 	end->type = LKD_TYPE_OPT;
 
 	end->u.opt = (struct linked_list_opt_value *) malloc(sizeof(struct linked_list_opt_value));
-	LKD_OPT_VALUE_INIT(end->u.opt,ns,nl,id,fl,f_chk,f_prs,OPT_TYPE_FLT);
-	end->u.opt->u.dsp.func_dsp = func;
+	LKD_OPT_VALUE_INIT(end->u.opt,ns,nl,id,fl,f_chk,f_prs,OPT_TYPE_DSP_PKT);
+	end->u.opt->u.dsp_pkt.func_dsp_pkt = func;
 	
+	return end;
+}
+
+struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, __u8 *))
+{
+	struct linked_list_value *end;
+	
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value));
+	end->type = LKD_TYPE_OPT;
+
+	end->u.opt = (struct linked_list_opt_value *) malloc(sizeof(struct linked_list_opt_value));
+	LKD_OPT_VALUE_INIT(end->u.opt,ns,nl,id,fl,f_chk,f_prs,OPT_TYPE_DSP_RPT);
+	end->u.opt->u.dsp_rpt.func_dsp_rpt = func;
+	
+	return end;
+}
+
+struct linked_list_value *linked_list_err_value_init(enum err_id id, char *arg)
+{
+	struct linked_list_value *end;
+	
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value));
+	end->type = LKD_TYPE_ERR;
+
+	end->u.err = (struct linked_list_err_value *) malloc(sizeof(struct linked_list_err_value));
+	end->u.err->id = id;
+	end->u.err->arg = arg;
+
 	return end;
 }
 
@@ -135,9 +190,29 @@ void linked_list_flt_value_free(struct linked_list_value *val)
 	free(val);
 }
 
-void linked_list_dsp_value_free(struct linked_list_value *val)
+void linked_list_dsp_pkt_value_free(struct linked_list_value *val)
 {
-	free(val->u.dsp);
+	free(val->u.dsp_pkt);
+	free(val);
+}
+
+void linked_list_dsp_rpt_value_free(struct linked_list_value *val)
+{
+	free(val->u.dsp_rpt->val);
+	free(val->u.dsp_rpt);
+	free(val);
+}
+
+void linked_list_rpt_value_free(struct linked_list_value *val)
+{
+	free(val->u.rpt->val);
+	free(val->u.rpt);
+	free(val);
+}
+
+void linked_list_err_value_free(struct linked_list_value *val)
+{
+	free(val->u.err);
 	free(val);
 }
 
@@ -150,11 +225,20 @@ void linked_list_value_free(struct linked_list_value *val)
 			case LKD_TYPE_FLT : 
 				linked_list_flt_value_free(val);
 				break;
-			case LKD_TYPE_DSP : 
-				linked_list_dsp_value_free(val);
+			case LKD_TYPE_DSP_PKT : 
+				linked_list_dsp_pkt_value_free(val);
+				break;
+			case LKD_TYPE_DSP_RPT : 
+				linked_list_dsp_rpt_value_free(val);
+				break;
+			case LKD_TYPE_RPT : 
+				linked_list_rpt_value_free(val);
 				break;
 			case LKD_TYPE_OPT : 
 				linked_list_opt_value_free(val);
+				break;
+			case LKD_TYPE_ERR : 
+				linked_list_err_value_free(val);
 				break;
 		}
 	}

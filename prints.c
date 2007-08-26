@@ -81,3 +81,13 @@ void print_newline(int fd)
 	/*fflush((FILE *)fd);*/
 }
 
+void print_error(int fd, int nb, char *str, ...)
+{
+	va_list ap;
+	va_start(ap,str);
+	fputs(str,(FILE *)fd);
+	while (--nb)
+		fputs(va_arg(ap,char *),(FILE *)fd);
+	va_end(ap);
+}
+

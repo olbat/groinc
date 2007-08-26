@@ -19,11 +19,13 @@
 
 #include "globals_filter.h"
 #include "globals_args.h"
+#include "globals_error.h"
 #include "network/protocols.h"
 #include "tools/memory_tools.h"
 #include "tools/network_tools.h"
 #include "tools/math_tools.h"
 #include "parse_options.h"
+#include "error.h"
 
 #include <regex.h>
 
@@ -110,7 +112,7 @@ __inline__ int chk_flt_filterregex(char *val)
 	if (regcomp(&tmp,val,REG_NOSUB))
 	{
 		regfree(&tmp);
-		co_error = val;
+		ERR_SET(list_error,EREGEX_INVAL,val);
 		return OPT_ERROR;
 	}
 	else
@@ -124,7 +126,7 @@ __inline__ int chk_flt_protocol(char *val)
 {
 	if (lookup_protoid(strupr(val)) < 0)
 	{
-		co_error = val;
+		ERR_SET(list_error,EARG_INVAL,val);
 		return OPT_ERROR;
 	}
 	else
@@ -137,7 +139,7 @@ __inline__ int chk_flt_ethprotocol(char *val)
 {
 	if (lookup_ethid(strupr(val)) < 0)
 	{
-		co_error = val;
+		ERR_SET(list_error,EARG_INVAL,val);
 		return OPT_ERROR;
 	}
 	else
@@ -150,7 +152,7 @@ __inline__ int chk_flt_ipprotocol(char *val)
 {
 	if (lookup_ipid(strupr(val)) < 0)
 	{
-		co_error = val;
+		ERR_SET(list_error,EARG_INVAL,val);
 		return OPT_ERROR;
 	}
 	else

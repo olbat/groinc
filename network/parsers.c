@@ -23,69 +23,51 @@
 
 void parse_datalink_layer(struct data *datagram,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph)
 {
+	void (*ptr)(struct data *, struct protocol_header *, struct protocol_header *);
+/* >>> TODO: make the datalink layer parsing system work for all protocols */
 	datalink_layerph->id = PROTO_ETHER;
 
-	datalink_layerph->header = (datagram->data + datagram->len);
-	(*lookup_protoscan(datalink_layerph->id))(datagram,datalink_layerph,network_layerph);
-	/*
-	switch (datalink_layerph->id)
+	if ((ptr = lookup_protoscan(datalink_layerph->id)))
 	{
-		case PROTO_ETHER :
-			scan_ether(datagram,datalink_layerph,network_layerph);
-			break;
+		datalink_layerph->header = (datagram->data + datagram->len);
+		(*ptr)(datagram,datalink_layerph,network_layerph);
+		if ((datagram->len + datalink_layerph->len) < datagram->totlen)
+			datagram->len = (datagram->len + datalink_layerph->len);
 	}
-	*/
-	if ((datagram->len + datalink_layerph->len) < datagram->totlen)
-		datagram->len = (datagram->len + datalink_layerph->len);
 }
 
 void parse_network_layer(struct data *datagram,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
-	network_layerph->header = (datagram->data + datagram->len);
-	(*lookup_ethscan(network_layerph->id))(datagram,network_layerph,transport_layerph);
-	/*
-	switch (network_layerph->id)
+	void (*ptr)(struct data *, struct protocol_header *, struct protocol_header *);
+
+	if ((ptr = lookup_ethscan(network_layerph->id)))
 	{
-		case ETHPROTO_IP :
-			scan_ipv4(datagram,network_layerph,transport_layerph);
-			break;
-		case ETHPROTO_ARP :
-			scan_arp(datagram,network_layerph,transport_layerph);
-			break;
+		network_layerph->header = (datagram->data + datagram->len);
+		(*ptr)(datagram,network_layerph,transport_layerph);
+		if ((datagram->len + network_layerph->len) < datagram->totlen)
+			datagram->len = (datagram->len + network_layerph->len);
 	}
-	*/
-	if ((datagram->len + network_layerph->len) < datagram->totlen)
-		datagram->len = (datagram->len + network_layerph->len);
 } 
 
 void parse_transport_layer(struct data *datagram,struct protocol_header *transport_layerph)
 {
-	transport_layerph->header = (datagram->data + datagram->len);
-	(*lookup_ipscan(transport_layerph->id))(datagram,transport_layerph,0);
-	/*
-	switch (transport_layerph->id)
+	void (*ptr)(struct data *, struct protocol_header *, struct protocol_header *);
+
+	if ((ptr = lookup_ipscan(transport_layerph->id)))
 	{
-		case IPPROTO_ICMP :
-			scan_icmp(datagram,transport_layerph,0);
-			break;
-		case IPPROTO_TCP :
-			scan_tcp(datagram,transport_layerph,0);
-			break;
-		case IPPROTO_UDP :
-			scan_udp(datagram,transport_layerph,0);
-			break;
+		transport_layerph->header = (datagram->data + datagram->len);
+		(*lookup_ipscan(transport_layerph->id))(datagram,transport_layerph,0);
+		if ((datagram->len + transport_layerph->len) < datagram->totlen)
+			datagram->len = (datagram->len + transport_layerph->len);
 	}
-	*/
-	if ((datagram->len + transport_layerph->len) < datagram->totlen)
-		datagram->len = (datagram->len + transport_layerph->len);
 }
 
-__u16 get_source_port(struct protocol_header *transport_layerph)
+__inline__ __u16 get_source_port(struct protocol_header *transport_layerph)
 {
 	return ntohs(*((__u16 *)transport_layerph->header));
 }
 
-__u16 get_dest_port(struct protocol_header *transport_layerph)
+__inline__ __u16 get_dest_port(struct protocol_header *transport_layerph)
 {
 	return ntohs(*((__u16 *)(transport_layerph->header + sizeof(__u16))));
 }
