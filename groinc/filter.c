@@ -164,3 +164,13 @@ __inline__ int flt_string(struct protocol_header *datalink_layerph, struct proto
 {
 	return findstr((datagram->data + datagram->len),(char *)flt_val);
 }
+
+__inline__ int flt_sl_nempty(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram, __u8 *flt_val)
+{
+	return (datagram->totlen > datagram->len);
+}
+
+__inline__ int flt_dontdisplaypackets(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram, __u8 *flt_val)
+{
+	return 0;
+}

@@ -6,7 +6,7 @@
 	-display protocols names when cant detail
 	-protocols availables : Ethernet, IPv4, TCP, UDP
 
-0.0.9 / 2007-05-??
+0.0.9 / 2007-05-20
 	-statistics display when quit
 	-hexadecimal display option
 	-quiet display option

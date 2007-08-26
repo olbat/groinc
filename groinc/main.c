@@ -29,10 +29,9 @@
 #include "network/my_types.h"
 #include "parse_options.h"
 #include "check_options.h"
+#include "error.h"
 #include "tools/linked_list.h"
-#include "usage.h"
 #include "sniffer.h"
-#include "tools/network_tools.h" /* to be removed */
 #include "events.h"
 #include "misc.h"
 
@@ -43,12 +42,12 @@
 /* declaration of the globals */
 
 long int	llimitnb;
-unsigned long int 	packetstot, packetsfiltred;
+
+unsigned long int 	packetstot, 
+			packetsfiltred;
 
 char	*outputdata,
 	*output,
-	*po_error,
-	*co_error,
 	*inputfile,
 	*outputfile;
 
@@ -57,9 +56,7 @@ int 	datafd,
 
 char	sniffer_stop,
 	opt_output,
-	opt_outputdata,
-	opt_ndisplayemptyslp,
-	opt_ndisplaypackets;
+	opt_outputdata;
 	
 enum miscno	po_misc;
 
@@ -68,19 +65,27 @@ struct timeval 	timestart,
 		timelimit;
 
 struct linked_list 	*list_filter,
-			*list_display;
+			*list_display_packet,
+			*list_display_report,
+			*list_error;
 
 #define MAIN_CLEANUP() \
+({ \
 	linked_list_free(list_filter); \
-	linked_list_free(list_display);
+	linked_list_free(list_display_packet); \
+	linked_list_free(list_display_report); \
+	linked_list_free(list_error); \
+})
 
 #define MAIN_QUIT(V) \
+({ \
 	MAIN_CLEANUP(); \
-	return V;
+	return V; \
+})
 
 int main(int argc, char **argv)
 {
-	int inputfd,outputfd,poptret;
+	int inputfd,outputfd;
 	
 	/* signals settings */
 	signal(SIGINT,event_stop);
@@ -96,11 +101,8 @@ int main(int argc, char **argv)
 
 	sniffer_stop = 0;
 
-	/* initialization of the options var */
 	outputdata = "";
 	output = "";
-	po_error = "";
-	co_error = "";
 	inputfile = "";
 	outputfile = "";
 	llimitnb = -1;
@@ -109,15 +111,15 @@ int main(int argc, char **argv)
 	
 	opt_output = 0;
 	opt_outputdata = 0;
-	opt_ndisplayemptyslp = 0;
-	opt_ndisplaypackets = 0;
 
 	timefirstpacket.tv_sec = 0;
 	timefirstpacket.tv_usec = 0;
 	timelimit.tv_sec = 0;
 
 	list_filter = linked_list_init();
-	list_display = linked_list_init();
+	list_display_packet = linked_list_init();
+	list_display_report = linked_list_init();
+	list_error = linked_list_init();
 
 	if (opt_output != 0)
 		headerfd = open(output,O_CREAT|O_WRONLY);
@@ -128,46 +130,16 @@ int main(int argc, char **argv)
 		datafd = open(outputdata,O_CREAT|O_WRONLY);
 	else
 		datafd = (int)OUTPUT_DATA_FILE_DEFAULT;
-	/*	
-	if (argc <= 1)
-	{
-		print_usage(argv[0]);
-		MAIN_QUIT(1);
-	}
-	*/
 	
-	poptret = parse_options(argc-1,argv);
-	if (poptret == P_ERROR)
-	{
-		if (*po_error != 0)
-		{
-			print_error_opt(po_error);
-			print_usage(argv[0]);
-			MAIN_QUIT(1);
-		}
-		else
-		{
-			print_usage(argv[0]);
-			MAIN_QUIT(0);
-		}
-	}
-	else if (poptret == P_MISC)
+	if (parse_options(argc-1,argv) == P_MISC)
 	{
 		print_misc(po_misc);
 		MAIN_QUIT(0);
 	}
-	/*
-	if (check_options())
-	{
-		if (*co_error)
-		{
-			print_error_setting(co_error);
-			print_usage(argv[0]);
-			MAIN_QUIT(1);
-		}
-	}
-	*/
 	
+	if (error_display())
+		MAIN_QUIT(1);
+
 	/* if ((inputfd = socket(AF_INET,SOCK_RAW,proto)) < 0) */
 	if (*outputfile)
 		outputfd = open(outputfile,O_CREAT|O_WRONLY|O_TRUNC);

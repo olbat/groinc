@@ -21,9 +21,7 @@
 #define _GLOBALS_ARGS_H
 
 extern	char	*outputdata,
-		*output,
-		*po_error,
-		*co_error;
+		*output;
 
 extern enum miscno	po_misc;
 

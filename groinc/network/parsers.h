@@ -26,8 +26,8 @@
 void parse_datalink_layer(struct data *datagram,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph);
 void parse_network_layer(struct data *datagram,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
 void parse_transport_layer(struct data *datagram,struct protocol_header *transport_layerph);
-__u16 get_source_port(struct protocol_header *transport_layerph);
-__u16 get_dest_port(struct protocol_header *transport_layerph);
+__inline__ __u16 get_source_port(struct protocol_header *transport_layerph);
+__inline__ __u16 get_dest_port(struct protocol_header *transport_layerph);
 
 #endif
 

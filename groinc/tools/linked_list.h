@@ -25,8 +25,11 @@
 enum linked_list_type
 {
 	LKD_TYPE_FLT,
-	LKD_TYPE_DSP,
-	LKD_TYPE_OPT
+	LKD_TYPE_DSP_PKT,
+	LKD_TYPE_DSP_RPT,
+	LKD_TYPE_RPT,
+	LKD_TYPE_OPT,
+	LKD_TYPE_ERR
 };
 
 struct linked_list_value
@@ -34,8 +37,11 @@ struct linked_list_value
 	union linked_list_union
 	{
 		struct linked_list_flt_value *flt;
-		struct linked_list_dsp_value *dsp;
+		struct linked_list_dsp_pkt_value *dsp_pkt;
+		struct linked_list_dsp_rpt_value *dsp_rpt;
+		struct linked_list_rpt_value *rpt;
 		struct linked_list_opt_value *opt;
+		struct linked_list_err_value *err;
 	} u;
 	enum linked_list_type type;
 };
@@ -47,23 +53,34 @@ struct linked_list
 	struct linked_list *next;
 };
 
-#include "../filter.h"
-#include "../display.h"
-#include "../parse_options.h"
 
 struct linked_list *linked_list_init();
-void linked_list_free(struct linked_list *l);
-struct linked_list_value *linked_list_add(struct linked_list *l,struct linked_list_value *val);
-void linked_list_value_free(struct linked_list_value *val);
+void linked_list_free(struct linked_list *);
+struct linked_list_value *linked_list_add(struct linked_list *,struct linked_list_value *);
+void linked_list_value_free(struct linked_list_value *);
 
+#include "../filter.h"
 struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *, __u8 *), __u8 *, unsigned int);
-void linked_list_flt_value_free(struct linked_list_value *val);
+void linked_list_flt_value_free(struct linked_list_value *);
 
-struct linked_list_value *linked_list_dsp_value_init(void (*func)(int, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *));
-void linked_list_dsp_value_free(struct linked_list_value *val);
+#include "../display.h"
+struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(int, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *));
+void linked_list_dsp_pkt_value_free(struct linked_list_value *);
+struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(int, __u8 *), __u8 *, unsigned int);
+void linked_list_dsp_rpt_value_free(struct linked_list_value *);
 
-struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,__u8 *), unsigned int flt_size);
-struct linked_list_value *linked_list_opt_value_init_dsp(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram));
-void linked_list_opt_value_free(struct linked_list_value *val);
+#include "../report.h"
+struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *), __u8 *, unsigned int);
+void linked_list_rpt_value_free(struct linked_list_value *);
+
+#include "../parse_options.h"
+struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *,__u8 *));
+struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram));
+struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, __u8 *));
+void linked_list_opt_value_free(struct linked_list_value *);
+
+#include "../error.h"
+struct linked_list_value *linked_list_err_value_init(enum err_id, char *);
+void linked_list_err_value_free(struct linked_list_value *val);
 
 #endif
