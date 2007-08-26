@@ -19,73 +19,96 @@
 
 #include "display.h"
 #include "globals_display.h"
+#include "globals_filter.h"
 #include "tools/compiler.h"
 #include "network/headers.h"
 #include "network/printers.h"
 #include "prints.h"
 
-void display(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+#include <sys/time.h>
+
+void display_packet(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
-	struct linked_list *ptr = list_display;
+	struct linked_list *ptr = list_display_packet;
 	if (likely(ptr->value))
 	{
 		while (ptr)
 		{
-			(ptr->value->u.dsp->func_dsp)(fd,datalink_layerph,network_layerph,transport_layerph,datagram);
+			(ptr->value->u.dsp_pkt->func_dsp_pkt)(fd,datalink_layerph,network_layerph,transport_layerph,datagram);
 			ptr = ptr->next;
 			print_newline(fd);
 		}
 	}
 	else
 	{
-		dsp_simple(fd,datalink_layerph,network_layerph,transport_layerph,datagram);
+		dsp_pkt_simple(fd,datalink_layerph,network_layerph,transport_layerph,datagram);
 		print_newline(fd);
-		dsp_data(fd,datalink_layerph,network_layerph,transport_layerph,datagram);
+		dsp_pkt_data(fd,datalink_layerph,network_layerph,transport_layerph,datagram);
 		print_newline(fd);
 	}
 	print_separator(fd);
 	print_newline(fd);
 }
 
-__inline__ void dsp_packets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void display_report(int fd)
+{
+	struct linked_list *ptr = list_display_report;
+	if (likely(ptr->value))
+	{
+		print_newline(fd);
+		while (ptr)
+		{
+			(ptr->value->u.dsp_rpt->func_dsp_rpt)(fd,ptr->value->u.dsp_rpt->val);
+			ptr = ptr->next;
+			print_newline(fd);
+		}
+	}
+	else
+	{
+	}
+
+	print_newline(fd);
+}
+
+__inline__ void dsp_pkt_packets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_packetnb(fd,datagram->len);
 }
 
-__inline__ void dsp_dlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_dlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_datalink_layer_proto(fd,datalink_layerph);
 }
 
-__inline void dsp_nlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline void dsp_pkt_nlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_network_layer_proto(fd,datalink_layerph,network_layerph);
 }
 
-__inline__ void dsp_tlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_tlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_transport_layer_proto(fd,network_layerph,transport_layerph);
 }
 
-__inline__ void dsp_simple(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_simple(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_ipproto(fd,transport_layerph);
 	print_simple(fd,network_layerph,transport_layerph);
 }
 
-__inline__ void dsp_header(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_header(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_datalink_layer(fd,datalink_layerph);
 	print_network_layer(fd,network_layerph);
 	print_transport_layer(fd,transport_layerph);
 }
 
-__inline__ void dsp_data(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_data(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_data(datafd,datagram);
 }
 
-__inline__ void dsp_hexa(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_hexa(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_protoproto(fd,datalink_layerph);
 	print_hexa(fd,datalink_layerph->header,datalink_layerph->len);
@@ -104,8 +127,26 @@ __inline__ void dsp_hexa(int fd, struct protocol_header *datalink_layerph, struc
 	print_hexa(fd,(datagram->data + datagram->len),(datagram->totlen - datagram->len));
 }
 
-__inline__ void dsp_allpackets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+__inline__ void dsp_pkt_allpackets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_packetnb(fd,datagram->len);
 }
 
+void dsp_rpt_timetot(int fd, __u8 *val)
+{
+	struct timeval timecur,*timesta;
+	time_t totsec;
+	suseconds_t totusec;
+	
+	timesta = (struct timeval *) val;
+	gettimeofday(&timecur,0);
+
+	totsec = (timecur.tv_sec - timesta->tv_sec);
+	if ((totusec = (timecur.tv_usec - timesta->tv_usec)) < 0)
+	{
+		totsec--;
+		totusec = (1000000 - timesta->tv_usec) + timecur.tv_usec;
+	}
+
+	print_format(fd, "[Time total: %hds %hdms]",totsec,(totusec / 1000));
+}
