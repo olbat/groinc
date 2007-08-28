@@ -18,26 +18,41 @@
  * see the COPYING file for more informations */
 
 #include "report.h"
+#include "globals_display.h"
+#include "tools/compiler.h"
 
-void report(void)
+void report(long int id_dl, long int id_nl, long int id_tl)
 {
 	struct linked_list *ptr = list_report;
 	if (likely(ptr->value))
 	{
 		while (ptr)
 		{
-			(ptr->value->u.rpt->func_rpt)(ptr->value->u.rpt->val);
+			(ptr->value->u.rpt->func_rpt)(ptr->value->u.rpt->val,id_dl,id_nl,id_tl);
 			ptr = ptr->next;
-			print_newline(fd);
 		}
 	}
 	else
 	{
+		/*
+		rpt_countpacketstot(val,id_dl,id_nl,id_tl);
+		rpt_countpacketsfiltred(val,id_dl,id_nl,id_tl);
+		*/
 	}
 }
 
+#define RPT_COUNT_PACKETS_INC(V) \
+({ \
+	*V = (*((unsigned int *) V) + 1); \
+})
 
-void rpt_countpackettot(__u8 *val)
+void rpt_countpacketstot(__u8 *val, long int id_dl, long int id_nl, long int id_tl)
 {
-	*val = *val + 1;
+	RPT_COUNT_PACKETS_INC(val);
+}
+
+void rpt_countpacketsfiltred(__u8 *val, long int id_dl, long int id_nl, long int id_tl)
+{
+	if ((id_dl != -1) || (id_nl != -1) || (id_tl != -1))
+		RPT_COUNT_PACKETS_INC(val);
 }

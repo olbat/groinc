@@ -65,8 +65,13 @@ void display_report(int fd)
 	}
 	else
 	{
+		/*
+		dsp_rpt_countpacketstot(fd,val);
+		dsp_rpt_countpacketsfiltred(fd,val);
+		print_newline(fd);
+		dsp_rpt_timetot(fd,val);
+		*/
 	}
-
 	print_newline(fd);
 }
 
@@ -149,4 +154,19 @@ void dsp_rpt_timetot(int fd, __u8 *val)
 	}
 
 	print_format(fd, "[Time total: %hds %hdms]",totsec,(totusec / 1000));
+}
+
+#define DSP_RPT_COUNT_PACKETS_CAST(V) \
+({ \
+	*((unsigned int *) *((unsigned int *) val)); \
+})
+
+void dsp_rpt_countpacketstot(int fd, __u8 *val)
+{
+	print_format(fd,"[Packets total : %hu packets]",DSP_RPT_COUNT_PACKETS_CAST(val));
+}
+
+void dsp_rpt_countpacketsfiltred(int fd, __u8 *val)
+{
+	print_format(fd,"[Packets filtred : %hu packets]",DSP_RPT_COUNT_PACKETS_CAST(val));
 }

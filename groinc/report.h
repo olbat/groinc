@@ -24,10 +24,12 @@
 
 struct linked_list_rpt_value
 {
-	void (*func_rpt)(__u8 *);
+	void (*func_rpt)(__u8 *,long int,long int,long int);
 	__u8 *val;
 };
 
-void rpt_countpackettot(__u8 *val);
+void report(long int id_dl, long int id_nl, long int id_tl);
+void rpt_countpacketstot(__u8 *val,long int id_dl, long int id_nl, long int id_tl);
+void rpt_countpacketsfiltred(__u8 *val, long int id_dl, long int id_nl, long int id_tl);
 
 #endif

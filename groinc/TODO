@@ -1,5 +1,6 @@
 -new protocols (to be done)
--make the report system work
+-make the defaults for the report system
+-update the manual
 -display expression option
 -put the filtering, parsing and checking functions in the protocols/ files
 

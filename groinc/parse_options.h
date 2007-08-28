@@ -54,6 +54,8 @@ enum optid
 	OPT_DSP_PKT_LICENSE,
 
 	OPT_DSP_RPT_TIMETOT,
+	OPT_DSP_RPT_COUNTPACKETSTOT,
+	OPT_DSP_RPT_COUNTPACKETSFILTRED,
 	
 	OPT_FLT_DSTPORT,
 	OPT_FLT_DSTIP,
@@ -83,6 +85,7 @@ enum opttype
 struct opt_dsp_rpt_type
 {
 	void (*func_dsp_rpt)(int, __u8 *);
+	void (*func_rpt)(__u8 *,long int, long int, long int);
 };
 
 struct opt_dsp_pkt_type
@@ -122,6 +125,7 @@ __inline__ int prs_dsp_pkt_license(struct linked_list_opt_value *optl, char *val
 __inline__ int prs_dsp_pkt_displayopt(struct linked_list_opt_value *optl, char *val);
 
 __inline__ int prs_dsp_rpt_timetot(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_dsp_rpt_countpackets(struct linked_list_opt_value *optl, char *val);
 
 __inline__ int prs_output(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_outputdata(struct linked_list_opt_value *optl, char *val);
