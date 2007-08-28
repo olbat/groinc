@@ -67,6 +67,7 @@ struct timeval 	timestart,
 struct linked_list 	*list_filter,
 			*list_display_packet,
 			*list_display_report,
+			*list_report,
 			*list_error;
 
 #define MAIN_CLEANUP() \
@@ -74,6 +75,7 @@ struct linked_list 	*list_filter,
 	linked_list_free(list_filter); \
 	linked_list_free(list_display_packet); \
 	linked_list_free(list_display_report); \
+	linked_list_free(list_report); \
 	linked_list_free(list_error); \
 })
 
@@ -119,6 +121,7 @@ int main(int argc, char **argv)
 	list_filter = linked_list_init();
 	list_display_packet = linked_list_init();
 	list_display_report = linked_list_init();
+	list_report = linked_list_init();
 	list_error = linked_list_init();
 
 	if (opt_output != 0)

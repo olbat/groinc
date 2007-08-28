@@ -47,5 +47,7 @@ __inline__ void dsp_pkt_data(int fd, struct protocol_header *datalink_layerph, s
 __inline__ void dsp_pkt_hexa(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
 __inline__ void dsp_pkt_allpackets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
 void dsp_rpt_timetot(int fd, __u8 *);
+void dsp_rpt_countpacketstot(int fd, __u8 *val);
+void dsp_rpt_countpacketsfiltred(int fd, __u8 *val);
 
 #endif

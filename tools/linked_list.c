@@ -98,7 +98,7 @@ struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(int, __u8 
 	return end;
 }
 
-struct linked_list_value *linked_list_rpt_value_init(void(*func)(__u8 *), __u8 *val, unsigned int size)
+struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *,long int,long int,long int), __u8 *val, unsigned int size)
 {
 	struct linked_list_value *end;
 
@@ -149,7 +149,7 @@ struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, 
 	return end;
 }
 
-struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, __u8 *))
+struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(int, __u8 *), void (*func_rpt)(__u8 *,long int, long int, long int))
 {
 	struct linked_list_value *end;
 	
@@ -158,7 +158,8 @@ struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, 
 
 	end->u.opt = (struct linked_list_opt_value *) malloc(sizeof(struct linked_list_opt_value));
 	LKD_OPT_VALUE_INIT(end->u.opt,ns,nl,id,fl,f_chk,f_prs,OPT_TYPE_DSP_RPT);
-	end->u.opt->u.dsp_rpt.func_dsp_rpt = func;
+	end->u.opt->u.dsp_rpt.func_dsp_rpt = func_dsp;
+	end->u.opt->u.dsp_rpt.func_rpt = func_rpt;
 	
 	return end;
 }

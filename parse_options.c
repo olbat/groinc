@@ -24,6 +24,7 @@
 #include "globals_filter.h"
 #include "globals_error.h"
 #include "display.h"
+#include "report.h"
 #include "error.h"
 #include "tools/memory_tools.h"
 #include "tools/math_tools.h"
@@ -72,11 +73,11 @@ static char *value;
 	end; \
 })
 
-#define OPTLIST_ADD_DSP_PKT(O,SH,LG,ID,FL,CK,PR,N) \
-	linked_list_add(O,linked_list_opt_value_init_dsp_pkt(SH,LG,ID,FL,CK,PR,N));
+#define OPTLIST_ADD_DSP_PKT(O,SH,LG,ID,FL,CK,PR,D) \
+	linked_list_add(O,linked_list_opt_value_init_dsp_pkt(SH,LG,ID,FL,CK,PR,D));
 
-#define OPTLIST_ADD_DSP_RPT(O,SH,LG,ID,FL,CK,PR,N) \
-	linked_list_add(O,linked_list_opt_value_init_dsp_rpt(SH,LG,ID,FL,CK,PR,N));
+#define OPTLIST_ADD_DSP_RPT(O,SH,LG,ID,FL,CK,PR,D,R) \
+	linked_list_add(O,linked_list_opt_value_init_dsp_rpt(SH,LG,ID,FL,CK,PR,D,R));
 
 #define OPTLIST_ADD_FLT(O,SH,LG,ID,FL,CK,PR,F) \
 	linked_list_add(O,linked_list_opt_value_init_flt(SH,LG,ID,FL,CK,PR,F));
@@ -96,11 +97,13 @@ static char *value;
 	OPTLIST_ADD_DSP_PKT(OPTL, 'h',	"help", 	OPT_DSP_PKT_HELP,		PO_NOARG, 0,	prs_dsp_pkt_help, 0 ); \
 	OPTLIST_ADD_DSP_PKT(OPTL,  0,	"version",	OPT_DSP_PKT_VERSION,	PO_NOARG, 0,	prs_dsp_pkt_version, 0 ); \
 	OPTLIST_ADD_DSP_PKT(OPTL,  0,	"license",	OPT_DSP_PKT_LICENSE,	PO_NOARG, 0,	prs_dsp_pkt_license, 0 ); \
-	OPTLIST_ADD_DSP_PKT(OPTL, 'c',	"displayprotodatalink",	OPT_DSP_PKT_DISPLAYDLPROTO,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_dlproto); \
+	OPTLIST_ADD_DSP_PKT(OPTL, 'j',	"displayprotodatalink",	OPT_DSP_PKT_DISPLAYDLPROTO,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_dlproto); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'b',	"displayprototransport",OPT_DSP_PKT_DISPLAYTLPROTO,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_tlproto); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'B',	"displayprotonetwork",	OPT_DSP_PKT_DISPLAYNLPROTO,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_nlproto); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'N',	"displayallpackets",	OPT_DSP_PKT_DISPLAYALLPACKETS,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_allpackets); \
-	OPTLIST_ADD_DSP_RPT(OPTL, 'T',	"reportotaltime",	OPT_DSP_RPT_TIMETOT,		PO_NOARG, 0,	prs_dsp_rpt_timetot, dsp_rpt_timetot); \
+	OPTLIST_ADD_DSP_RPT(OPTL, 'T',	"reportotaltime",	OPT_DSP_RPT_TIMETOT,		PO_NOARG, 0,	prs_dsp_rpt_timetot, dsp_rpt_timetot, 0); \
+	OPTLIST_ADD_DSP_RPT(OPTL, 'c',	"countpacketstot",	OPT_DSP_RPT_COUNTPACKETSTOT,	PO_NOARG, 0,	prs_dsp_rpt_countpackets, dsp_rpt_countpacketstot, rpt_countpacketstot); \
+	OPTLIST_ADD_DSP_RPT(OPTL, 'C',	"countpacketsfiltred",	OPT_DSP_RPT_COUNTPACKETSFILTRED,	PO_NOARG, 0,	prs_dsp_rpt_countpackets, dsp_rpt_countpacketsfiltred, rpt_countpacketsfiltred); \
 	OPTLIST_ADD_FLT(OPTL, 'd',	"destport",	OPT_FLT_DSTPORT,	PO_ARG, chk_flt_dstport,	prs_flt_dstport,	flt_tl_port_dst); \
 	OPTLIST_ADD_FLT(OPTL, 'D',	"destip",	OPT_FLT_DSTIP,		PO_ARG, chk_flt_dstip,		prs_flt_dstip,		flt_nl_ip_dst); \
 	OPTLIST_ADD_FLT(OPTL, 's',	"sourceport",	OPT_FLT_SRCPORT,	PO_ARG, chk_flt_srcport,	prs_flt_srcport,	flt_tl_port_src); \
@@ -248,7 +251,14 @@ __inline__ int prs_dsp_pkt_displayopt(struct linked_list_opt_value *optl, char *
 }
 
 #define PRS_DSP_RPT_LKD_ADD(L,O,V,S) \
-	linked_list_add(L, linked_list_dsp_rpt_value_init(O->u.dsp_rpt.func_dsp_rpt,V,S));
+({ \
+	linked_list_add(L, linked_list_dsp_rpt_value_init(O->u.dsp_rpt.func_dsp_rpt,V,S)); \
+})
+
+#define PRS_RPT_LKD_ADD(L,O,V,S) \
+({ \
+	linked_list_add(L, linked_list_rpt_value_init(O->u.dsp_rpt.func_rpt,V,S)); \
+})
 
 __inline__ int prs_dsp_rpt_timetot(struct linked_list_opt_value *optl, char *val)
 {
@@ -257,6 +267,18 @@ __inline__ int prs_dsp_rpt_timetot(struct linked_list_opt_value *optl, char *val
 	gettimeofday(&tmp,0);
 
 	PRS_DSP_RPT_LKD_ADD(list_display_report,optl,(__u8 *)&tmp,sizeof(struct timeval));
+
+	return OPT_OK;
+}
+
+__inline__ int prs_dsp_rpt_countpackets(struct linked_list_opt_value *optl, char *val)
+{
+	unsigned int tmp = 0;
+	struct linked_list_value *ptr,*p;
+
+	ptr = PRS_RPT_LKD_ADD(list_report,optl,(__u8 *)&tmp,sizeof(unsigned int));
+	p = PRS_DSP_RPT_LKD_ADD(list_display_report,optl,(__u8 *)&(ptr->u.rpt->val),sizeof(ptr->u.rpt->val));
+	/* printf("L %hu\n",*((unsigned int *) *((unsigned int *) p->u.dsp_rpt->val))); */
 
 	return OPT_OK;
 }

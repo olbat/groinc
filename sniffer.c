@@ -32,6 +32,7 @@
 #include "network/printers.h"
 #include "prints.h"
 #include "filter.h"
+#include "report.h"
 #include "globals_filter.h"
 #include "globals_display.h"
 #include "globals_error.h"
@@ -92,7 +93,6 @@ int start_sniff(int inputfd,int outputfd)
 	{
 		timeptr = 0;
 	}
-
 	
 	while ((!sniffer_stop) && (!end) && (llimitnb))
 	{
@@ -148,8 +148,12 @@ int start_sniff(int inputfd,int outputfd)
 								return 1;
 							}
 						}
-
+						report(datalink_layerph.id,network_layerph.id,transport_layerph.id);
 						display_packet(headerfd,&datalink_layerph,&network_layerph,&transport_layerph,&datagram);
+					}
+					else
+					{
+						report(-1,-1,-1);
 					}
 					/*
 					}
@@ -211,7 +215,7 @@ int stop_sniff()
 	}
 
 	/* >>> TODO: put this display on the display file using a function, make modulable ending display => REPORT SYSTEM */	
-
+	
 	print_format(headerfd,  "\nTime - [total: %hds %hdms] [since first filtred packet: %hds %hdms]"
 				"\nPackets - [total: %hd packets] [filtred: %hd packets]\n\n",
 				totsec,(totusec / 1000),filsec,(filusec / 1000),packetstot,packetsfiltred);
@@ -229,6 +233,7 @@ int cleanup_sniff()
 	linked_list_free(list_filter);
 	linked_list_free(list_display_packet);
 	linked_list_free(list_display_report);
+	linked_list_free(list_report);
 	linked_list_free(list_error);
 	close(curinputfd);
 	close(curoutputfd);
