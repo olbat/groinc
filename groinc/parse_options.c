@@ -22,10 +22,12 @@
 #include "globals_args.h"
 #include "globals_display.h"
 #include "globals_filter.h"
+#include "globals_report.h"
 #include "globals_error.h"
 #include "display.h"
 #include "report.h"
 #include "error.h"
+#include "defaults.h"
 #include "tools/memory_tools.h"
 #include "tools/math_tools.h"
 #include "tools/linked_list.h"
@@ -38,6 +40,7 @@
 static char *value;
 
 #define LOOKUP_SHORT(N,C,P) \
+__extension__ \
 ({ \
 	int end; \
 	struct linked_list *p; \
@@ -56,6 +59,7 @@ static char *value;
 })
 
 #define LOOKUP_LONG(N,S,P) \
+__extension__ \
 ({ \
 	int end; \
 	struct linked_list *p; \
@@ -166,7 +170,7 @@ int lookup_options(int argc, char **argv, struct linked_list *optlist, struct li
 					}
 				}
 				args++;
-				end = OPT_OK;
+				end = ptrr->u.opt->id;
 				*elem = ptrr->u.opt;
 			}
 			else
@@ -191,6 +195,7 @@ int lookup_options(int argc, char **argv, struct linked_list *optlist, struct li
 }
 
 #define OPT_PARSE_ERROR(L,V) \
+__extension__ \
 ({ \
 	linked_list_free(L); \
 	return V; \
@@ -198,14 +203,18 @@ int lookup_options(int argc, char **argv, struct linked_list *optlist, struct li
 
 int parse_options(int argc, char **argv)
 {
-	int o;
+	int o,defaults;
 	struct linked_list_opt_value *optval;
 	struct linked_list *optlist = linked_list_init();
 	OPTLIST_INIT(optlist);
+	defaults = 0;
+
 	while ((o = lookup_options(argc,argv,optlist,&optval)) != OPT_END)
 	{
-		if (o == OPT_OK)
+		if (o >= OPT_OK)
 		{
+			if ((o > OPT_DSP_RPT_START) && (o < OPT_DSP_RPT_END))
+				defaults = defaults | OPT_TYPE_DSP_RPT;
 			if (optval->func_chk)
 			{
 				if (optval->func_chk(value) != OPT_OK)
@@ -219,7 +228,12 @@ int parse_options(int argc, char **argv)
 			}
 		}
 	}
-	linked_list_free(optlist); 
+
+	linked_list_free(optlist);
+
+	if (!(defaults & OPT_TYPE_DSP_RPT))
+		default_rpt_init();
+
 	return 0;
 }
 
@@ -251,11 +265,13 @@ __inline__ int prs_dsp_pkt_displayopt(struct linked_list_opt_value *optl, char *
 }
 
 #define PRS_DSP_RPT_LKD_ADD(L,O,V,S) \
+__extension__ \
 ({ \
 	linked_list_add(L, linked_list_dsp_rpt_value_init(O->u.dsp_rpt.func_dsp_rpt,V,S)); \
 })
 
 #define PRS_RPT_LKD_ADD(L,O,V,S) \
+__extension__ \
 ({ \
 	linked_list_add(L, linked_list_rpt_value_init(O->u.dsp_rpt.func_rpt,V,S)); \
 })

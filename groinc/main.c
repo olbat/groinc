@@ -30,6 +30,7 @@
 #include "parse_options.h"
 #include "check_options.h"
 #include "error.h"
+#include "defaults.h"
 #include "tools/linked_list.h"
 #include "sniffer.h"
 #include "events.h"
@@ -42,9 +43,6 @@
 /* declaration of the globals */
 
 long int	llimitnb;
-
-unsigned long int 	packetstot, 
-			packetsfiltred;
 
 char	*outputdata,
 	*output,
@@ -60,9 +58,7 @@ char	sniffer_stop,
 	
 enum miscno	po_misc;
 
-struct timeval 	timestart,
-		timefirstpacket,
-		timelimit;
+struct timeval timelimit;
 
 struct linked_list 	*list_filter,
 			*list_display_packet,
@@ -70,16 +66,21 @@ struct linked_list 	*list_filter,
 			*list_report,
 			*list_error;
 
+struct default_report default_report;
+
 #define MAIN_CLEANUP() \
+__extension__ \
 ({ \
 	linked_list_free(list_filter); \
 	linked_list_free(list_display_packet); \
 	linked_list_free(list_display_report); \
 	linked_list_free(list_report); \
 	linked_list_free(list_error); \
+	default_free(); \
 })
 
 #define MAIN_QUIT(V) \
+__extension__ \
 ({ \
 	MAIN_CLEANUP(); \
 	return V; \
@@ -108,14 +109,10 @@ int main(int argc, char **argv)
 	inputfile = "";
 	outputfile = "";
 	llimitnb = -1;
-	packetstot = 0;
-	packetsfiltred = 0;
 	
 	opt_output = 0;
 	opt_outputdata = 0;
 
-	timefirstpacket.tv_sec = 0;
-	timefirstpacket.tv_usec = 0;
 	timelimit.tv_sec = 0;
 
 	list_filter = linked_list_init();
