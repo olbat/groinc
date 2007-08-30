@@ -1,3 +1,5 @@
+-use the new system for the timelimit and packet number options
+-make the "time since first packet" report option work
 -new protocols (to be done)
 -make the defaults for the report system
 -update the manual

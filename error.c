@@ -25,6 +25,7 @@
 #include "tools/compiler.h"
 
 #define ERRLIST_ADD(T,ID,ST,M) \
+__extension__ \
 ({ \
 	char key[my_itoa_buffer_size(ID,10)]; \
 	my_itoa(ID,10,key); \
@@ -32,6 +33,7 @@
 })
 
 #define ERRLIST_INIT(ERRL) \
+__extension__ \
 ({ \
 	ERRLIST_ADD(ERRL,EARG_MISSING,	ERR_ST_ERROR,	"Argument missing"); \
 	ERRLIST_ADD(ERRL,EARG_INVAL,	ERR_ST_ERROR,	"Invalid argument"); \
@@ -43,14 +45,18 @@
 int error_display()
 {
 	int end;
+	struct hashtable *errlist;
+	struct hashtable_err_value *tptr;
+	struct linked_list *ptr;
 
-	struct hashtable *errlist = hashtable_init(4);
+	errlist = hashtable_init(4);
 	ERRLIST_INIT(errlist);
 
 	end = 0;
 	
-	struct linked_list *ptr = list_error;
-	struct hashtable_err_value *tptr;
+	
+	ptr = list_error;
+
 
 	while (ptr)
 	{

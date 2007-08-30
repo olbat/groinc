@@ -63,7 +63,7 @@ void print_arp(int fd, char *datagram)
 	}
 	else
 	{
-		char tmph[arph->hardlen];
+		__extension__ char tmph[arph->hardlen];
 		my_memcpy(tmph,datagram,arph->hardlen);
 		print_proto(fd," sourcehard:%#x",tmph);
 	}
@@ -77,7 +77,7 @@ void print_arp(int fd, char *datagram)
 	}
 	else
 	{
-		char tmpp[arph->protolen];
+		__extension__ char tmpp[arph->protolen];
 		my_memcpy(tmpp,datagram,arph->protolen);
 		print_proto(fd," sourceproto:%#x",tmpp);
 	}
@@ -89,7 +89,7 @@ void print_arp(int fd, char *datagram)
 	}
 	else
 	{
-		char tmph[arph->hardlen];
+		__extension__ char tmph[arph->hardlen];
 		my_memcpy(tmph,datagram,arph->hardlen);
 		print_proto(fd," desthard:%#x",tmph);
 	}
@@ -103,7 +103,7 @@ void print_arp(int fd, char *datagram)
 	}
 	else
 	{
-		char tmpp[arph->protolen];
+		__extension__ char tmpp[arph->protolen];
 		my_memcpy(tmpp,datagram,arph->protolen);
 		print_proto(fd," destproto:%#x",tmpp);
 	}

@@ -18,9 +18,9 @@ struct hashtable *hashtable_init(int size)
 	return end;
 }
 
-unsigned long long hashtable_hash(char *str)
+__extension__ unsigned long long hashtable_hash(char *str)
 {
-	unsigned long long end;
+	__extension__ unsigned long long end;
 	end = 0;
 	while (*str)
 	{
@@ -121,8 +121,8 @@ struct hashtable_err_value *hashtable_err_lookup(struct hashtable *t, enum err_i
 {
 	struct hashtable_value *val;
 
-	char key[my_itoa_buffer_size(id,10)]; \
-	my_itoa(id,10,key); \
+	__extension__ char key[my_itoa_buffer_size(id,10)];
+	my_itoa(id,10,key);
 	if (hashtable_lookup(t,key,&val))
 		return val->u.err;
 	else

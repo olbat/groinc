@@ -32,8 +32,7 @@ extern int 	datafd,
       		headerfd;
 
 extern struct linked_list 	*list_display_packet,
-				*list_display_report,
-				*list_report;
+				*list_display_report;
 
 #endif
 

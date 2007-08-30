@@ -3,7 +3,7 @@
 # This software is released under GPL the license
 # see the COPYING file for more informations
 
-CFLAGS= -Wall -O3 -ansi -g
+CFLAGS= -Wall -O3 -ansi -pedantic -g
 CC= gcc ${CFLAGS} 
 SRC= printp.c 
 OBJ= $(SRC:.c=.o)

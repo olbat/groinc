@@ -23,6 +23,7 @@
 #include "../tools/memory_tools.h"
 
 #define LOOKUP_PROTOCOLID(N,T) \
+__extension__ \
 ({ \
 	int end,i; \
 	i = PROTO_MIN; \
@@ -36,6 +37,7 @@
 })
 
 #define LOOKUP_PROTOCOLNAME(I,T) \
+__extension__ \
 ({ \
 	char *end; \
 	int i; \
@@ -50,6 +52,8 @@
 )}
 
 #define LOOKUP_PROTOCOLST(I,T,V) \
+__extension__ \
+({ \
 	int i; \
 	i = PROTO_MIN; \
 	while ((T[i].id != PROTO_MAX) && (T[i].id != I)) \
@@ -57,7 +61,8 @@
 	if (T[i].id != PROTO_MAX) \
 		return T[i].V; \
 	else \
-		return 0;
+		return 0; \
+})
 
 /* all the names are in upper case, use toupper() in your functions */
 static struct st_protocol st_proto[] = {

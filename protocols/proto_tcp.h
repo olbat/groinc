@@ -34,7 +34,7 @@ struct tcp_header
 	__u16 destport;
 	__u32 seqnum;
 	__u32 acknum;
-	__u16 res:4,
+__extension__ __u16 res:4,
 	      tcphdrlen:4,
 	      fin:1,
 	      syn:1,

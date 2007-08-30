@@ -33,8 +33,8 @@ struct ethernet_header
 
 struct ipv4_header
 {
-	__u8 iphdrlen:4,
-	     version:4;
+__extension__	__u8 iphdrlen:4,
+	     	     version:4;
 	__u8 tos;
 	__u16 totlen;
 	__u16 id;
@@ -65,16 +65,16 @@ struct tcp_header
 	__u16 destport;
 	__u32 seqnum;
 	__u32 acknum;
-	__u16 res:4,
-	      tcphdrlen:4,
-	      fin:1,
-	      syn:1,
-	      rst:1,
-	      psh:1,
-	      ack:1,
-	      urg:1,
-	      ece:1,
-	      ecn:1;
+	__extension__ __u16 res:4,
+			    tcphdrlen:4,
+	      		    fin:1,
+	      		    syn:1,
+	      		    rst:1,
+	      		    psh:1,
+	      	  	    ack:1,
+	      		    urg:1,
+	      		    ece:1,
+	      		    ecn:1;
 	__u16 window;
 	__u16 tcpchecksum;
 	__u16 urgptr;
