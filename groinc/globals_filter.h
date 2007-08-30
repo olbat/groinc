@@ -25,16 +25,13 @@
 #include <sys/time.h>
 
 extern long int 	llimitnb;
-extern unsigned long int 	packetstot, packetsfiltred;
 
 extern	int 	datafd,
    		headerfd;
 
 extern char	sniffer_stop;
 
-extern struct timeval 	timestart,
-			timefirstpacket,
-			timelimit;
+extern struct timeval timelimit;
 
 extern struct linked_list 	*list_filter;
 

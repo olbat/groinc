@@ -5,10 +5,10 @@
 
 BINDIR= $(DESTDIR)/usr/bin
 MANDIR= $(DESTDIR)/usr/share/man/man1
-CFLAGS= -Wall -O3 -ansi -g 
+CFLAGS= -Wall -O3 -ansi -pedantic -g
 CC= gcc ${CFLAGS} 
 SNAME= groinc
-SRC= main.c misc.c error.c parse_options.c check_options.c filter.c report.c display.c prints.c packet_inout.c events.c sniffer.c tools/memory_tools.c tools/math_tools.c tools/network_tools.c tools/linked_list.c tools/hashtable.c network/protocols.c network/parsers.c network/printers.c 
+SRC= main.c misc.c error.c parse_options.c check_options.c filter.c defaults.c report.c display.c prints.c packet_inout.c events.c sniffer.c tools/memory_tools.c tools/math_tools.c tools/network_tools.c tools/linked_list.c tools/hashtable.c network/protocols.c network/parsers.c network/printers.c 
 OBJ= $(SRC:.c=.o)
 
 all : ${SNAME} clean

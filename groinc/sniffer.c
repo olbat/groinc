@@ -35,7 +35,9 @@
 #include "report.h"
 #include "globals_filter.h"
 #include "globals_display.h"
+#include "globals_report.h"
 #include "globals_error.h"
+#include "defaults.h"
 #include "tools/linked_list.h"
 
 #define DATAGRAM_SIZE 4096
@@ -58,13 +60,14 @@ static int curinputfd, curoutputfd;
 
 int start_sniff(int inputfd,int outputfd)
 {
-	if (inputfd < 0)
-		return 1;
-
 	char end, opt;
 	int packet_len;
 	fd_set readfds;
 	struct timeval *timeptr;
+
+	if (inputfd < 0)
+		return 1;
+
 
 	FD_ZERO(&readfds);
 	FD_SET(inputfd,&readfds);
@@ -110,8 +113,6 @@ int start_sniff(int inputfd,int outputfd)
 			{
 				if (packet_len > 0)
 				{
-					packetstot++;
-
 					datagram.len = 0;
 					datagram.totlen = packet_len;
 					*(datagram.data + datagram.totlen) = 0;
@@ -131,12 +132,11 @@ int start_sniff(int inputfd,int outputfd)
 					*/
 					if (filter(&datalink_layerph,&network_layerph,&transport_layerph,&datagram))
 					{
-						/* >>> TODO: Report system */
+						/*
 						if ((!timefirstpacket.tv_sec) && (!timefirstpacket.tv_usec))
 							gettimeofday(&timefirstpacket,0);
-						
-						packetsfiltred++;
-						
+						*/
+
 						if (llimitnb >= 0)
 							llimitnb--;
 
@@ -187,38 +187,6 @@ int start_sniff(int inputfd,int outputfd)
 int stop_sniff()
 {
 	display_report(headerfd);
-	struct timeval timecur;
-	time_t totsec, filsec;
-	suseconds_t totusec, filusec;
-
-	gettimeofday(&timecur,0);
-	
-	totsec = (timecur.tv_sec - timestart.tv_sec);
-	if ((totusec = (timecur.tv_usec - timestart.tv_usec)) < 0)
-	{
-		totsec--;
-		totusec = (1000000 - timestart.tv_usec) + timecur.tv_usec;
-	}
-	if ((timefirstpacket.tv_sec) && (timefirstpacket.tv_usec))
-	{
-		filsec = (timecur.tv_sec - timefirstpacket.tv_sec);
-		if ((filusec = (timecur.tv_usec - timefirstpacket.tv_usec)) < 0)
-		{
-			filsec--;
-			filusec = (1000000 - timefirstpacket.tv_usec) + timecur.tv_usec;
-		}
-	}
-	else
-	{
-		filsec = 0;
-		filusec = 0;
-	}
-
-	/* >>> TODO: put this display on the display file using a function, make modulable ending display => REPORT SYSTEM */	
-	
-	print_format(headerfd,  "\nTime - [total: %hds %hdms] [since first filtred packet: %hds %hdms]"
-				"\nPackets - [total: %hd packets] [filtred: %hd packets]\n\n",
-				totsec,(totusec / 1000),filsec,(filusec / 1000),packetstot,packetsfiltred);
 
 	return 0;
 }
@@ -235,6 +203,7 @@ int cleanup_sniff()
 	linked_list_free(list_display_report);
 	linked_list_free(list_report);
 	linked_list_free(list_error);
+	default_free();
 	close(curinputfd);
 	close(curoutputfd);
 

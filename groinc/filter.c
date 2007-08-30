@@ -33,10 +33,13 @@
 int filter(struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph,struct data *datagram)
 {
 	int end;
+	struct linked_list *ptr;
 
 	end = 1;
 
-	struct linked_list *ptr = list_filter;
+
+	ptr = list_filter;
+	
 	while ((ptr) && (end))
 	{
 		if (likely(ptr->value))
@@ -50,6 +53,7 @@ int filter(struct protocol_header *datalink_layerph,struct protocol_header *netw
 
 
 #define FLT_DL_MAC(HDR,V,E) \
+__extension__ \
 ({ \
 	struct ethernet_header *ethh = (struct ethernet_header *) HDR; \
 	!mac_cmp(V,(__u8 *)ethh->E); \
@@ -72,6 +76,7 @@ __inline__ int flt_dl_mac_dst(struct protocol_header *datalink_layerph, struct p
 }
 
 #define FLT_NL_IP(HDR,V,E) \
+__extension__ \
 ({ \
 	struct ipv4_header *iph = (struct ipv4_header *) HDR; \
 	(iph->V == E); \
@@ -153,9 +158,10 @@ __inline__ int flt_tl_protocol(struct protocol_header *datalink_layerph, struct 
 
 __inline__ int flt_regex(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram, __u8 *flt_val)
 {
+	int end;
 	regex_t tmp;
 	my_memcpy((char *)&tmp,(char *)flt_val,sizeof(regex_t));
-	int end = !regexec(&tmp,(datagram->data + datagram->len),0,0,0);
+	end = !(regexec(&tmp,(datagram->data + datagram->len),0,0,0));
 	regfree(&tmp);
 	return end;
 }

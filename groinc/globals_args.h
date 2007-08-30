@@ -23,7 +23,7 @@
 extern	char	*outputdata,
 		*output;
 
-extern enum miscno	po_misc;
+__extension__ extern enum miscno	po_misc;
 
 #endif
 

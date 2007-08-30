@@ -30,7 +30,7 @@ char *ipv4_ntoa(__u32 longip, char *buff)
 	i = 4;
 	while (i--)
 	{
-		char tmp[tmplen = my_itoa_buffer_size((unsigned char)(longip>>(8*i)),10)];
+		__extension__ char tmp[tmplen = my_itoa_buffer_size((unsigned char)(longip>>(8*i)),10)];
 		my_memcpy((buff + tot),my_itoa((unsigned char)(longip>>(8*i)),10,tmp),(tmplen - 1));
 		tot = tot + (tmplen - 1);
 		if (i)

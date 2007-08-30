@@ -30,7 +30,7 @@
 
 struct ipv4_header
 {
-	__u8 iphdrlen:4,
+__extension__ __u8 iphdrlen:4,
 	     version:4;
 	__u8 tos;
 	__u16 totlen;
