@@ -18,7 +18,7 @@
  * see the COPYING file for more informations */
 
 #include "report.h"
-#include "globals_display.h"
+#include "globals_report.h"
 #include "tools/compiler.h"
 
 void report(long int id_dl, long int id_nl, long int id_tl)
@@ -34,14 +34,18 @@ void report(long int id_dl, long int id_nl, long int id_tl)
 	}
 	else
 	{
+		default_report.countpacketstot++;
+		if ((id_dl != -1) || (id_nl != -1) || (id_tl != -1))
+			default_report.countpacketsfiltred++;
 		/*
-		rpt_countpacketstot(val,id_dl,id_nl,id_tl);
-		rpt_countpacketsfiltred(val,id_dl,id_nl,id_tl);
+		rpt_countpacketstot(default_report,id_dl,id_nl,id_tl);
+		rpt_countpacketsfiltred((default_report + sizeof(unsigned int)),id_dl,id_nl,id_tl);
 		*/
 	}
 }
 
 #define RPT_COUNT_PACKETS_INC(V) \
+__extension__ \
 ({ \
 	*V = (*((unsigned int *) V) + 1); \
 })
@@ -49,6 +53,7 @@ void report(long int id_dl, long int id_nl, long int id_tl)
 void rpt_countpacketstot(__u8 *val, long int id_dl, long int id_nl, long int id_tl)
 {
 	RPT_COUNT_PACKETS_INC(val);
+	
 }
 
 void rpt_countpacketsfiltred(__u8 *val, long int id_dl, long int id_nl, long int id_tl)

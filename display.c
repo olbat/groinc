@@ -19,6 +19,7 @@
 
 #include "display.h"
 #include "globals_display.h"
+#include "globals_report.h"
 #include "globals_filter.h"
 #include "tools/compiler.h"
 #include "network/headers.h"
@@ -71,6 +72,9 @@ void display_report(int fd)
 		print_newline(fd);
 		dsp_rpt_timetot(fd,val);
 		*/
+		print_newline(fd);
+		dsp_rpt_default(fd,0);
+		print_newline(fd);
 	}
 	print_newline(fd);
 }
@@ -157,9 +161,30 @@ void dsp_rpt_timetot(int fd, __u8 *val)
 }
 
 #define DSP_RPT_COUNT_PACKETS_CAST(V) \
+__extension__ \
 ({ \
 	*((unsigned int *) *((unsigned int *) val)); \
 })
+
+void dsp_rpt_default(int fd, __u8 *val)
+{
+	struct timeval timecur;
+	time_t totsec;
+	suseconds_t totusec;
+
+	gettimeofday(&timecur,0);
+	
+	totsec = (timecur.tv_sec - default_report.timestart.tv_sec);
+	if ((totusec = (timecur.tv_usec - default_report.timestart.tv_usec)) < 0)
+	{
+		totsec--;
+		totusec = (1000000 - default_report.timestart.tv_usec) + timecur.tv_usec;
+	}
+
+	print_format(fd,"Time - [total %hds %hdms]\n"
+			"Packets - [total %hu packets] [filtred %hu packets]",
+			totsec,(totusec / 1000),default_report.countpacketstot,default_report.countpacketsfiltred);
+}
 
 void dsp_rpt_countpacketstot(int fd, __u8 *val)
 {
@@ -170,3 +195,4 @@ void dsp_rpt_countpacketsfiltred(int fd, __u8 *val)
 {
 	print_format(fd,"[Packets filtred : %hu packets]",DSP_RPT_COUNT_PACKETS_CAST(val));
 }
+
