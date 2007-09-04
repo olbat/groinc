@@ -49,6 +49,7 @@ void print_hexa(int fd, char *data, int size)
 	}
 }
 
+
 void print_str(int fd, unsigned int nb, char *str, ...)
 {
 	fputs(str,(FILE *)fd);
@@ -56,8 +57,10 @@ void print_str(int fd, unsigned int nb, char *str, ...)
 	{
 		va_list ap;
 		va_start(ap,str);
+
 		while (nb--)
 			fputs(va_arg(ap,char *),(FILE *)fd);
+
 		va_end(ap);
 	}
 }
