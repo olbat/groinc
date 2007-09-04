@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include <netinet/in.h>
 #include "printers.h"
 #include "protocols.h"
@@ -71,9 +72,23 @@ void print_transport_layer(int fd, struct protocol_header *transport_layerph)
 
 __inline__ void print_data(int fd,struct data *data)
 {
-	fwrite((data->data + data->len),sizeof(char),(data->totlen - data->len),(FILE *)fd);
-	/*write(fd,(data->data + data->len),(data->totlen - data->len));
-	fflush((FILE *)fd);*/
+	/* fwrite((data->data + data->len),sizeof(char),(data->totlen - data->len),(FILE *)fd); */
+	/* write(fd,(data->data + data->len),(data->totlen - data->len));
+	fflush((FILE *)fd); */
+	int len;
+	char *ptr;
+
+	len = data->totlen;
+	ptr = data->data + data->len;
+
+	while (len--)
+	{
+		if((isprint(*ptr)) || (*ptr == '\t') || (*ptr == '\n') || (*ptr == '\r'))
+			fputc(*ptr,(FILE *)fd);
+		else
+			fputc('.',(FILE *)fd);
+		ptr++;
+	}
 }
 
 __inline__ void print_simple(int fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
