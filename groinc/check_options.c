@@ -17,6 +17,8 @@
  *
  * see the COPYING file for more informations */
 
+#include <netdb.h>
+
 #include "globals_filter.h"
 #include "globals_args.h"
 #include "globals_error.h"
@@ -28,6 +30,7 @@
 #include "error.h"
 
 #include <regex.h>
+#include <sys/socket.h>
 
 __inline__ int chk_output(char *val)
 {
@@ -65,20 +68,55 @@ __inline__ int chk_flt_globalport(char *val)
 	return OPT_OK;
 }
 
+#define CHK_FLT_HOST_REGEX_HOSTNAME \
+	"^\\([a-zA-Z0-9\\-]\\+\\.\\)*[a-zA-Z0-9\\-]\\{1,63\\}\\." \
+	"[0-9]*[a-zA-Z\\-][a-zA-Z0-9\\-]*$"
+#define CHK_FLT_HOST_REGEX_IP_NUM \
+	"\\([0-9]\\{1,2\\}\\|[01][0-9]\\{2\\}\\|2[0-4][0-9]\\|25[0-5]\\)"
+#define CHK_FLT_HOST_REGEX_IP \
+	"^\\(" CHK_FLT_HOST_REGEX_IP_NUM "\\.\\)\\{3\\}" \
+	CHK_FLT_HOST_REGEX_IP_NUM "$"
+
+#define CHK_FLT_HOST(V) __extension__ \
+	regex_t tmp; \
+	regcomp(&tmp,CHK_FLT_HOST_REGEX_HOSTNAME,REG_NOSUB); \
+	if (regexec(&tmp,V,0,0,0)) \
+	{ \
+		regfree(&tmp); \
+		regcomp(&tmp,CHK_FLT_HOST_REGEX_IP,REG_NOSUB); \
+		if (regexec(&tmp,V,0,0,0)) \
+			goto err; \
+		else \
+			goto out; \
+	} \
+	else \
+		goto out; \
+err: \
+	regfree(&tmp); \
+	ERR_SET(list_error,EHOSTNAME_INVAL,V); \
+	return OPT_ERROR; \
+out: \
+	regfree(&tmp); \
+	if (!gethostbyname(V)) \
+	{ \
+		herror("Cannot resolve hostname"); \
+		goto err; \
+	} \
+	return OPT_OK;
+
 __inline__ int chk_flt_srcip(char *val)
 {
-	/* test valid ip */
-	return OPT_OK;
+	CHK_FLT_HOST(val);
 }
 
 __inline__ int chk_flt_dstip(char *val)
 {
-	return OPT_OK;
+	CHK_FLT_HOST(val);
 }
 
 __inline__ int chk_flt_globalip(char *val)
 {
-	return OPT_OK;
+	CHK_FLT_HOST(val);
 }
 
 __inline__ int chk_flt_srcmac(char *val)
