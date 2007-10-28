@@ -19,7 +19,7 @@
 
 #include "linked_list.h"
 #include <malloc.h>
-#include "memory_tools.h"
+#include <string.h>
 
 struct linked_list *linked_list_init()
 {
@@ -67,7 +67,7 @@ struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol
 	end->u.flt = (struct linked_list_flt_value *) malloc(sizeof(struct linked_list_flt_value));
 	end->u.flt->func_flt = func;
 	end->u.flt->val = (__u8 *) malloc(size * sizeof(__u8));
-	my_memcpy((char *)end->u.flt->val,(char *)val,size);
+	memcpy((char *)end->u.flt->val,(char *)val,size);
 
 	return end;
 }
@@ -93,7 +93,7 @@ struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(int, __u8 
 	end->u.dsp_rpt = (struct linked_list_dsp_rpt_value *) malloc(sizeof(struct linked_list_dsp_rpt_value));
 	end->u.dsp_rpt->func_dsp_rpt = func;
 	end->u.dsp_rpt->val = (__u8 *) malloc(size * sizeof(__u8));
-	my_memcpy((char *)end->u.dsp_rpt->val,(char *)val,size);
+	memcpy((char *)end->u.dsp_rpt->val,(char *)val,size);
 
 	return end;
 }
@@ -107,7 +107,7 @@ struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *,long in
 	end->u.rpt = (struct linked_list_rpt_value *) malloc(sizeof(struct linked_list_rpt_value));
 	end->u.rpt->func_rpt = func;
 	end->u.rpt->val = (__u8 *) malloc(size * sizeof(__u8));
-	my_memcpy((char *)end->u.rpt->val,(char *)val,size);
+	memcpy((char *)end->u.rpt->val,(char *)val,size);
 
 	return end;
 }

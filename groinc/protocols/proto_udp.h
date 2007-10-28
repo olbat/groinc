@@ -25,7 +25,8 @@
 #ifndef _PROTO_UDP_H
 #define _PROTO_UDP_H
 
-#include "../network/my_types.h"
+#include <asm/types.h>
+
 #include "../network/headers.h"
 
 struct udp_header

@@ -26,7 +26,6 @@
 #include <sys/time.h>
 #include <regex.h>
 
-#include "tools/memory_tools.h"
 #include "packet_inout.h"
 #include "network/parsers.h"
 #include "network/printers.h"
@@ -39,6 +38,8 @@
 #include "globals_error.h"
 #include "defaults.h"
 #include "tools/linked_list.h"
+
+#include <string.h>
 
 #define DATAGRAM_SIZE 4096
 
@@ -76,9 +77,9 @@ int start_sniff(int inputfd,int outputfd)
 	curoutputfd = outputfd;
 	
 	/* datagram = (struct data *) malloc(sizeof(struct data));  */
-	my_memset((char *)&datagram,0,sizeof(struct data));
+	memset((char *)&datagram,0,sizeof(struct data));
 	datagram.data = (char *) malloc(sizeof(char)*DATAGRAM_SIZE);
-	my_memset(datagram.data,0,sizeof(char)*DATAGRAM_SIZE);
+	memset(datagram.data,0,sizeof(char)*DATAGRAM_SIZE);
 	
 	/* datalink_layerph = (struct protocol_header *) malloc(sizeof(struct protocol_header)); */
 	/* network_layerph = (struct protocol_header *) malloc(sizeof(struct protocol_header)); */
@@ -104,74 +105,74 @@ int start_sniff(int inputfd,int outputfd)
 
 		if ((!end) && (select(inputfd+1,&readfds,NULL,NULL,timeptr) > 0))
 		{
-			if ((packet_len = read_packet(inputfd,datagram.data,sizeof(char)*DATAGRAM_SIZE)) < 0)
+			if ((packet_len = read_packet(inputfd,datagram.data,sizeof(char)*DATAGRAM_SIZE)) <= 0)
 			{
-				perror("read_input");
-				return 1;
-			}
-			else
-			{
-				if (packet_len > 0)
-				{
-					datagram.len = 0;
-					datagram.totlen = packet_len;
-					*(datagram.data + datagram.totlen) = 0;
-
-					datalink_layerph.len = 0;
-					network_layerph.len = 0;
-					transport_layerph.len = 0;
-					
-					parse_datalink_layer(&datagram,&datalink_layerph,&network_layerph);
-					if (network_layerph.len >= 0)
-						parse_network_layer(&datagram,&network_layerph,&transport_layerph);
-					if (transport_layerph.len >= 0)
-						parse_transport_layer(&datagram,&transport_layerph);
-					/*
-					if ((datagram.len < datagram.totlen) || (!opt_ndisplayemptyslp))
-					{
-					*/
-					if (filter(&datalink_layerph,&network_layerph,&transport_layerph,&datagram))
-					{
-						/*
-						if ((!timefirstpacket.tv_sec) && (!timefirstpacket.tv_usec))
-							gettimeofday(&timefirstpacket,0);
-						*/
-
-						if (llimitnb >= 0)
-							llimitnb--;
-
-						if (outputfd >= 0)
-						{
-							if (write_packet(outputfd,datagram.data,packet_len) < 0)
-							{
-								perror("write_output");
-								return 1;
-							}
-						}
-						report(datalink_layerph.id,network_layerph.id,transport_layerph.id);
-						display_packet(headerfd,&datalink_layerph,&network_layerph,&transport_layerph,&datagram);
-					}
-					else
-					{
-						report(-1,-1,-1);
-					}
-					/*
-					}
-					else
-					{
-						if (opt_displayallpackets)
-						{
-							print_packetnb(headerfd,datagram.len);
-						}
-					}
-					*/
-				}
-				else
+				if (packet_len == 0)
 				{
 					if (*inputfile)
 						close(inputfd);
 					end = 1;
 				}
+				else
+				{
+					perror("read_input");
+					return 1;
+				}
+			}
+			else
+			{
+				datagram.len = 0;
+				datagram.totlen = packet_len;
+				*(datagram.data + datagram.totlen) = 0;
+
+				datalink_layerph.len = 0;
+				network_layerph.len = 0;
+				transport_layerph.len = 0;
+				
+				parse_datalink_layer(&datagram,&datalink_layerph,&network_layerph);
+				if (network_layerph.len >= 0)
+					parse_network_layer(&datagram,&network_layerph,&transport_layerph);
+				if (transport_layerph.len >= 0)
+					parse_transport_layer(&datagram,&transport_layerph);
+				/*
+				if ((datagram.len < datagram.totlen) || (!opt_ndisplayemptyslp))
+				{
+				*/
+				if (filter(&datalink_layerph,&network_layerph,&transport_layerph,&datagram))
+				{
+					/*
+					if ((!timefirstpacket.tv_sec) && (!timefirstpacket.tv_usec))
+						gettimeofday(&timefirstpacket,0);
+					*/
+
+					if (llimitnb >= 0)
+						llimitnb--;
+
+					if (outputfd >= 0)
+					{
+						if (write_packet(outputfd,datagram.data,packet_len) < 0)
+						{
+							perror("write_output");
+							return 1;
+						}
+					}
+					report(datalink_layerph.id,network_layerph.id,transport_layerph.id);
+					display_packet(headerfd,&datalink_layerph,&network_layerph,&transport_layerph,&datagram);
+				}
+				else
+				{
+					report(-1,-1,-1);
+				}
+				/*
+				}
+				else
+				{
+					if (opt_displayallpackets)
+					{
+						print_packetnb(headerfd,datagram.len);
+					}
+				}
+				*/
 			}
 		}
 	}

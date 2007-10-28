@@ -20,7 +20,8 @@
 #ifndef _PROTO_ICMP_H
 #define _PROTO_ICMP_H
 
-#include "../network/my_types.h"
+#include <asm/types.h>
+
 #include "../network/headers.h"
 
 /*

@@ -22,12 +22,14 @@
 #include "../protocols/print_proto.h"
 #include "../tools/memory_tools.h"
 
+#include <string.h>
+
 #define LOOKUP_PROTOCOLID(N,T) \
 __extension__ \
 ({ \
 	int end,i; \
 	i = PROTO_MIN; \
-	while ((T[i].id != PROTO_MAX) && (my_strcmp(T[i].name,N))) \
+	while ((T[i].id != PROTO_MAX) && (strcmp(T[i].name,N))) \
 		i++; \
 	if (T[i].id != PROTO_MAX) \
 		end = T[i].id; \

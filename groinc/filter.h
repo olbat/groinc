@@ -20,7 +20,8 @@
 #ifndef _FILTER_H
 #define _FILTER_H
 
-#include "network/my_types.h"
+#include <asm/types.h>
+
 #include "network/headers.h"
 
 #define FLT_ERROR -1

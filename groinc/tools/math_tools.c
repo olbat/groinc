@@ -18,7 +18,8 @@
  * see the COPYING file for more informations */
 
 #include "math_tools.h"
-#include "memory_tools.h"
+
+#include <string.h>
 
 static const char *lbase = { "0123456789abcdefghijklmnopqrstuvwxyz" };
 static const char *ubase = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
@@ -138,7 +139,7 @@ char *my_itoa_char(unsigned int number, unsigned char nbc,unsigned char base, ch
 	unsigned int len;
 	
 	if ((len = my_itoa_char_char_size(number,nbc,base)))
-		my_memset(buff,c,len);
+		memset(buff,c,len);
 	my_itoa(number,base,(buff + len));
 
 	return buff;

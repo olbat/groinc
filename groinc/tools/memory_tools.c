@@ -19,66 +19,6 @@
 
 #include "memory_tools.h"
 
-char *my_memset(char *ma,char c,int size)
-{
-	char *end = ma;
-	while (size--)
-	{
-		*ma++ = c;
-	}
-	return end;
-}
-
-char *my_memcpy(char *dest,char *src,int size)
-{
-	char *end;
-	end = dest;
-	while (size--)
-	{
-		*dest++ = *src++;
-	}
-	return end;
-}
-
-int my_strlen(char *str)
-{
-	char *ptr = str;
-	while (*ptr)
-		ptr++;
-	return (ptr - str);
-}
-
-int my_strcmp(char *str1, char *str2)
-{
-	int end;
-	end = 0;
-	while ((*str1) &&  (*str2) && (*str1 == *str2))
-	{
-		str1++;
-		str2++;
-	}
-	if (*str1)
-	{
-		if (*str2)
-		{
-			if (*str1 > *str2)
-				end = 1;
-			else
-				end = -1;
-		}
-		else
-		{
-			end = 1;
-		}
-	}
-	else
-	{
-		if (*str2)
-			end = -1;
-	}
-	return end;
-}
-
 char to_upper(char c)
 {
 	return (c & 0xdf); /* 0xdf == ~0x20 */

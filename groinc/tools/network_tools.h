@@ -19,7 +19,7 @@
 #ifndef _NETWORK_TOOLS_H
 #define _NETWORK_TOOLS_H
 
-#include "../network/my_types.h"
+#include <asm/types.h>
 
 #define MAC_STR_SIZE 19
 #define IPV4_STR_MAXSIZE 16

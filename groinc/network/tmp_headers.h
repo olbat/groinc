@@ -20,7 +20,7 @@
 #ifndef _TMP_HEADERS_H
 #define _TMP_HEADERS_H
 
-#include "my_types.h"
+#include <asm/types.h>
 
 /* All in this file is in network-byte-order */
 

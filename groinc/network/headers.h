@@ -20,7 +20,7 @@
 #ifndef _HEADERS_H
 #define _HEADERS_H
 
-#include "my_types.h"
+#include <asm/types.h>
 
 struct data
 {

@@ -1,11 +1,11 @@
 #include "hashtable.h"
 
+#include <asm/types.h>
 #include <malloc.h>
+#include <string.h>
 
-#include "memory_tools.h"
 #include "math_tools.h"
 #include "compiler.h"
-#include "../network/my_types.h"
 #include "../parse_options.h"
 
 struct hashtable *hashtable_init(int size)
@@ -14,7 +14,7 @@ struct hashtable *hashtable_init(int size)
 	end = (struct hashtable *) malloc(sizeof(struct hashtable));
 	end->size = size;
 	end->cells = (struct cell **) malloc(size*sizeof(struct cell *));
-	my_memset((char *)end->cells,0,size*sizeof(struct cell *));
+	memset((char *)end->cells,0,size*sizeof(struct cell *));
 	return end;
 }
 
@@ -38,7 +38,7 @@ struct cell *hashtable_lookup(struct hashtable *t, char *key, struct hashtable_v
 	end = 0;
 	while ((c) && (!end))
 	{
-		if (!my_strcmp(c->key,key))
+		if (!strcmp(c->key,key))
 			end = c;
 		else
 			c = c->next;
@@ -75,10 +75,10 @@ struct hashtable *hashtable_add(struct hashtable *t, char *key, struct hashtable
 
 	table = (t->cells + (hashtable_hash(key) % t->size));
 	newcell = (struct cell *) malloc(sizeof(struct cell));
-	len = my_strlen(key);
+	len = strlen(key);
 	
 	newcell->key = (char *) malloc(len*sizeof(char));
-	my_memcpy(newcell->key,key,len);
+	memcpy(newcell->key,key,len);
 	newcell->key[len] = 0;
 	newcell->value = value;
 

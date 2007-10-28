@@ -17,6 +17,7 @@
  *
  * see the COPYING file for more informations */
 
+#include <asm/types.h>
 #include <sys/socket.h>
 #include <linux/if_ether.h>
 #include <fcntl.h>
@@ -26,7 +27,6 @@
 #include <sys/time.h>
 
 #include "network/protocols.h"
-#include "network/my_types.h"
 #include "parse_options.h"
 #include "check_options.h"
 #include "error.h"
