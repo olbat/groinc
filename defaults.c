@@ -18,8 +18,8 @@
  * see the COPYING file for more informations */
 
 #include "globals_report.h"
-#include "network/my_types.h"
 #include "tools/memory_tools.h"
+#include <asm/types.h>
 #include <malloc.h>
 #include <sys/time.h>
 

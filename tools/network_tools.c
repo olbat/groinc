@@ -18,9 +18,10 @@
  * see the COPYING file for more informations */
 
 #include "network_tools.h"
-#include "memory_tools.h"
 #include "math_tools.h"
+
 #include <netinet/in.h>
+#include <string.h>
 
 char *ipv4_ntoa(__u32 longip, char *buff)
 {
@@ -31,7 +32,7 @@ char *ipv4_ntoa(__u32 longip, char *buff)
 	while (i--)
 	{
 		__extension__ char tmp[tmplen = my_itoa_buffer_size((unsigned char)(longip>>(8*i)),10)];
-		my_memcpy((buff + tot),my_itoa((unsigned char)(longip>>(8*i)),10,tmp),(tmplen - 1));
+		memcpy((buff + tot),my_itoa((unsigned char)(longip>>(8*i)),10,tmp),(tmplen - 1));
 		tot = tot + (tmplen - 1);
 		if (i)
 			buff[tot++] = '.';
@@ -68,7 +69,7 @@ __u8 *mac_aton(char *str, __u8 *buff)
 	
 	/* 
 	end = (__u8 *) malloc(6*sizeof(__u8));
-	my_memset((char *)end,0,8);
+	memset((char *)end,0,8);
 	*/
 
 	p = buff;

@@ -24,12 +24,13 @@
  * 	RFC 2390 - Inverse Address Resolution Protocol (http://ietf.org/rfc/rfc2390.txt)
  */
 
+#include <asm/types.h>
+#include <netinet/in.h>
+#include <string.h>
+
 #include "proto_arp.h"
 #include "printp.h"
-#include <netinet/in.h>
-#include "../network/my_types.h"
 #include "../tools/network_tools.h"
-#include "../tools/memory_tools.h"
 
 /* buffers for the MAC string versions */
 static char sourcehardmac[MAC_STR_SIZE];
@@ -64,7 +65,7 @@ void print_arp(int fd, char *datagram)
 	else
 	{
 		__extension__ char tmph[arph->hardlen];
-		my_memcpy(tmph,datagram,arph->hardlen);
+		memcpy(tmph,datagram,arph->hardlen);
 		print_proto(fd," sourcehard:%#x",tmph);
 	}
 	
@@ -72,13 +73,13 @@ void print_arp(int fd, char *datagram)
 	if (ntohs(arph->prototype) == PROTOARP_PROTO_IP)
 	{
 		__u32 tmpp;
-		my_memcpy((char *)&tmpp,datagram,sizeof(__u32));
+		memcpy((char *)&tmpp,datagram,sizeof(__u32));
 		print_proto(fd," sourceproto:%s",ipv4_ntoa(ntohl(tmpp),sourceprotoip));
 	}
 	else
 	{
 		__extension__ char tmpp[arph->protolen];
-		my_memcpy(tmpp,datagram,arph->protolen);
+		memcpy(tmpp,datagram,arph->protolen);
 		print_proto(fd," sourceproto:%#x",tmpp);
 	}
 
@@ -90,7 +91,7 @@ void print_arp(int fd, char *datagram)
 	else
 	{
 		__extension__ char tmph[arph->hardlen];
-		my_memcpy(tmph,datagram,arph->hardlen);
+		memcpy(tmph,datagram,arph->hardlen);
 		print_proto(fd," desthard:%#x",tmph);
 	}
 
@@ -98,13 +99,13 @@ void print_arp(int fd, char *datagram)
 	if (ntohs(arph->prototype) == PROTOARP_PROTO_IP)
 	{
 		__u32 tmpp;
-		my_memcpy((char *)&tmpp,datagram,sizeof(__u32));
+		memcpy((char *)&tmpp,datagram,sizeof(__u32));
 		print_proto(fd," destproto:%s",ipv4_ntoa(ntohl(tmpp),destprotoip));
 	}
 	else
 	{
 		__extension__ char tmpp[arph->protolen];
-		my_memcpy(tmpp,datagram,arph->protolen);
+		memcpy(tmpp,datagram,arph->protolen);
 		print_proto(fd," destproto:%#x",tmpp);
 	}
 

@@ -20,7 +20,8 @@
 #ifndef _GLOBALS_FILTER_H
 #define _GLOBALS_FILTER_H
 
-#include "network/my_types.h"
+#include <asm/types.h>
+
 #include "tools/network_tools.h"
 #include <sys/time.h>
 

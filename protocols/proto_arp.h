@@ -27,7 +27,8 @@
 #ifndef _PROTO_ARP_H
 #define _PROTO_ARP_H
 
-#include "../network/my_types.h"
+#include <asm/types.h>
+
 #include "../network/headers.h"
 
 #define 	PROTOARP_HARD_ETHERNET					01 	/* Ethernet (10Mb) [JBP] */

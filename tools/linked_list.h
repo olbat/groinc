@@ -19,8 +19,9 @@
 #ifndef _LINKED_LIST_H
 #define _LINKED_LIST_H
 
+#include <asm/types.h>
+
 #include "../network/headers.h"
-#include "../network/my_types.h"
 
 enum linked_list_type
 {

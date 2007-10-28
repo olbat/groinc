@@ -20,7 +20,8 @@
 #ifndef _PROTO_ETHER_H
 #define _PROTO_ETHER_H
 
-#include "../network/my_types.h"
+#include <asm/types.h>
+
 #include "../network/headers.h"
 
 /*

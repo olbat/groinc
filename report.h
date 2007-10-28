@@ -20,7 +20,7 @@
 #ifndef _REPORT_H
 #define _REPORT_H
 
-#include "network/my_types.h"
+#include <asm/types.h>
 
 struct linked_list_rpt_value
 {
