@@ -18,29 +18,21 @@
  * see the COPYING file for more informations */
 
 #include "parse_options.h"
+#include "parse_args.h"
 #include "check_options.h"
-#include "globals_args.h"
-#include "globals_display.h"
-#include "globals_filter.h"
-#include "globals_report.h"
 #include "globals_error.h"
 #include "display.h"
 #include "report.h"
 #include "error.h"
 #include "defaults.h"
-#include "tools/memory_tools.h"
 #include "tools/math_tools.h"
-#include "tools/linked_list.h"
-#include "network/protocols.h"
-#include "misc.h"
 #include "filter.h"
 
-#include <regex.h>
+#include <string.h>
 
 static char *value;
 
-#define LOOKUP_SHORT(N,C,P) \
-__extension__ \
+#define LOOKUP_SHORT(N,C,P) __extension__ \
 ({ \
 	int end; \
 	struct linked_list *p; \
@@ -58,8 +50,7 @@ __extension__ \
 	end; \
 })
 
-#define LOOKUP_LONG(N,S,P) \
-__extension__ \
+#define LOOKUP_LONG(N,S,P) __extension__ \
 ({ \
 	int end; \
 	struct linked_list *p; \
@@ -67,7 +58,7 @@ __extension__ \
 	end = OPT_NULL; \
 	while ((p) && (end == OPT_NULL)) \
 	{ \
-		if (!my_strcmp(p->value->u.opt->name_long,(S))) \
+		if (!strcmp(p->value->u.opt->name_long,(S))) \
 		{ \
 			P = p->value; \
 			end = OPT_OK; \
@@ -194,8 +185,7 @@ int lookup_options(int argc, char **argv, struct linked_list *optlist, struct li
 	return end;
 }
 
-#define OPT_PARSE_ERROR(L,V) \
-__extension__ \
+#define OPT_PARSE_ERROR(L,V) __extension__ \
 ({ \
 	linked_list_free(L); \
 	return V; \
@@ -215,16 +205,18 @@ int parse_options(int argc, char **argv)
 		{
 			if ((o > OPT_DSP_RPT_START) && (o < OPT_DSP_RPT_END))
 				defaults = defaults | OPT_TYPE_DSP_RPT;
+			
 			if (optval->func_chk)
+				o = optval->func_chk(value);
+			else
+				o = OPT_OK;
+			if (o == OPT_OK)
 			{
-				if (optval->func_chk(value) != OPT_OK)
+				if (optval->func_prs)
 				{
+					if ((o = optval->func_prs(optval,value)) != OPT_OK)
+						OPT_PARSE_ERROR(optlist,o);
 				}
-			}
-			if (optval->func_prs)
-			{
-				if ((o = optval->func_prs(optval,value)) != OPT_OK)
-					OPT_PARSE_ERROR(optlist,o);
 			}
 		}
 	}
@@ -235,221 +227,5 @@ int parse_options(int argc, char **argv)
 		default_rpt_init();
 
 	return 0;
-}
-
-#define PRS_DSP_PKT_LKD_ADD(L,O) \
-	linked_list_add(L, linked_list_dsp_pkt_value_init(O->u.dsp_pkt.func_dsp_pkt));
-
-__inline__ int prs_dsp_pkt_help(struct linked_list_opt_value *optl, char *val)
-{
-	po_misc = MISCNO_HELP;
-	return P_MISC;
-}
-
-__inline__ int prs_dsp_pkt_version(struct linked_list_opt_value *optl, char *val)
-{
-	po_misc = MISCNO_VERSION;
-	return P_MISC;
-}
-
-__inline__ int prs_dsp_pkt_license(struct linked_list_opt_value *optl, char *val)
-{
-	po_misc = MISCNO_LICENSE;
-	return P_MISC;
-}
-
-__inline__ int prs_dsp_pkt_displayopt(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_DSP_PKT_LKD_ADD(list_display_packet,optl);
-	return OPT_OK;
-}
-
-#define PRS_DSP_RPT_LKD_ADD(L,O,V,S) \
-__extension__ \
-({ \
-	linked_list_add(L, linked_list_dsp_rpt_value_init(O->u.dsp_rpt.func_dsp_rpt,V,S)); \
-})
-
-#define PRS_RPT_LKD_ADD(L,O,V,S) \
-__extension__ \
-({ \
-	linked_list_add(L, linked_list_rpt_value_init(O->u.dsp_rpt.func_rpt,V,S)); \
-})
-
-__inline__ int prs_dsp_rpt_timetot(struct linked_list_opt_value *optl, char *val)
-{
-	struct timeval tmp;
-
-	gettimeofday(&tmp,0);
-
-	PRS_DSP_RPT_LKD_ADD(list_display_report,optl,(__u8 *)&tmp,sizeof(struct timeval));
-
-	return OPT_OK;
-}
-
-__inline__ int prs_dsp_rpt_countpackets(struct linked_list_opt_value *optl, char *val)
-{
-	unsigned int tmp = 0;
-	struct linked_list_value *ptr,*p;
-
-	ptr = PRS_RPT_LKD_ADD(list_report,optl,(__u8 *)&tmp,sizeof(unsigned int));
-	p = PRS_DSP_RPT_LKD_ADD(list_display_report,optl,(__u8 *)&(ptr->u.rpt->val),sizeof(ptr->u.rpt->val));
-	/* printf("L %hu\n",*((unsigned int *) *((unsigned int *) p->u.dsp_rpt->val))); */
-
-	return OPT_OK;
-}
-
-__inline__ int prs_output(struct linked_list_opt_value *optl, char *val)
-{
-	opt_output = 1;
-	output = val;
-	return OPT_OK;
-}
-
-__inline__ int prs_outputdata(struct linked_list_opt_value *optl, char *val)
-{
-	opt_outputdata = 1;
-	outputdata = val;
-	return OPT_OK;
-}
-
-__inline__ int prs_inputfile(struct linked_list_opt_value *optl, char *val)
-{
-	inputfile = val;
-	return OPT_OK;
-}
-
-__inline__ int prs_outputfile(struct linked_list_opt_value *optl, char *val)
-{
-	outputfile = val;
-	return OPT_OK;
-}
-
-#define PRS_FLT_LKD_ADD(L,O,V,S) \
-	linked_list_add(L, \
-			linked_list_flt_value_init(O->u.flt.func_flt, \
-						   (__u8 *)V, \
-						   S));
-	
-#define PRS_FLT_PORT(L,O,V) \
-	__u16 tmp = my_atoi(V,10); \
-	PRS_FLT_LKD_ADD(L,O,&tmp,sizeof(__u16));
-
-__inline__ int prs_flt_srcport(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_PORT(list_filter,optl,val);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_dstport(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_PORT(list_filter,optl,val);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_globalport(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_PORT(list_filter,optl,val);
-	return OPT_OK;
-}
-
-#define PRS_FLT_IP(L,O,V) \
-	__u32 tmp = ipv4_aton(V); \
-	PRS_FLT_LKD_ADD(L,O,&tmp,sizeof(__u32));
-
-__inline__ int prs_flt_srcip(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_IP(list_filter,optl,val);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_dstip(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_IP(list_filter,optl,val);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_globalip(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_IP(list_filter,optl,val);
-	return OPT_OK;
-}
-
-#define PRS_FLT_MAC(L,O,V) \
-	__u8 tmp[MAC_STR_SIZE]; \
-	mac_aton(val,tmp); \
-	PRS_FLT_LKD_ADD(L,O,&tmp,(MAC_STR_SIZE * sizeof(__u8)));
-
-__inline__ int prs_flt_srcmac(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_MAC(list_filter,optl,val);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_dstmac(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_MAC(list_filter,optl,val);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_limitnb(struct linked_list_opt_value *optl, char *val)
-{
-	llimitnb = (long int) my_atoi(val,10);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_timelimit(struct linked_list_opt_value *optl, char *val)
-{
-	timelimit.tv_sec = my_atoi(val,10);
-	timelimit.tv_usec = 500;
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_filterstr(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_LKD_ADD(list_filter,optl,val,sizeof(char *));
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_filterregex(struct linked_list_opt_value *optl, char *val)
-{
-	regex_t tmp; 
-	regcomp(&tmp,val,REG_NOSUB);
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(regex_t));
-	regfree(&tmp);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_protocol(struct linked_list_opt_value *optl, char *val)
-{
-	int tmp = lookup_protoid(strupr(val));
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(unsigned int));
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_ethprotocol(struct linked_list_opt_value *optl, char *val)
-{
-	int tmp = lookup_ethid(strupr(val));
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(unsigned int));
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_ipprotocol(struct linked_list_opt_value *optl, char *val)
-{
-	int tmp = lookup_ipid(strupr(val));
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(unsigned int));
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_dontdisplayemptysl(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_LKD_ADD(list_filter,optl,0,0);
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_dontdisplaypackets(struct linked_list_opt_value *optl, char *val)
-{
-	PRS_FLT_LKD_ADD(list_filter,optl,0,0);
-	return OPT_OK;
 }
 

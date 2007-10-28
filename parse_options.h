@@ -20,8 +20,9 @@
 #ifndef _PARSE_OPTIONS_H
 #define _PARSE_OPTIONS_H
 
+#include <asm/types.h>
+
 #include "network/headers.h"
-#include "network/my_types.h"
 
 #define P_MISC -2 
 #define P_ERROR -1
@@ -122,36 +123,5 @@ struct linked_list_opt_value
 
 int lookup_options(int argc, char **argv, struct linked_list *optlist, struct linked_list_opt_value **elem);
 int parse_options(int argc, char **argv);
-
-__inline__ int prs_dsp_pkt_help(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_pkt_version(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_pkt_license(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_pkt_displayopt(struct linked_list_opt_value *optl, char *val);
-
-__inline__ int prs_dsp_rpt_timetot(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_dsp_rpt_countpackets(struct linked_list_opt_value *optl, char *val);
-
-__inline__ int prs_output(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_outputdata(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_inputfile(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_outputfile(struct linked_list_opt_value *optl, char *val);
-
-__inline__ int prs_flt_dstport(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_srcport(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_globalport(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_srcip(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_dstip(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_globalip(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_srcmac(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_dstmac(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_limitnb(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_timelimit(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_filterstr(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_filterregex(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_protocol(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_ethprotocol(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_ipprotocol(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_dontdisplayemptysl(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_dontdisplaypackets(struct linked_list_opt_value *optl, char *val);
 
 #endif

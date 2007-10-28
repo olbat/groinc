@@ -37,6 +37,7 @@ __extension__ \
 ({ \
 	ERRLIST_ADD(ERRL,EARG_MISSING,	ERR_ST_ERROR,	"Argument missing"); \
 	ERRLIST_ADD(ERRL,EARG_INVAL,	ERR_ST_ERROR,	"Invalid argument"); \
+	ERRLIST_ADD(ERRL,EHOSTNAME_INVAL,ERR_ST_ERROR,	"Invalid hostname"); \
 	ERRLIST_ADD(ERRL,EREGEX_INVAL,	ERR_ST_ERROR,	"Invalid regular expression"); \
 	ERRLIST_ADD(ERRL,EOPT_INVAL,	ERR_ST_ERROR,	"Invalid option"); \
 	ERRLIST_ADD(ERRL,EOPT_UNKNOWN,	ERR_ST_ERROR,	"Unknown option"); \
