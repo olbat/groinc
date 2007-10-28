@@ -17,7 +17,8 @@
  *
  * see the COPYING file for more informations */
 
-#include "my_types.h"
+#include <asm/types.h>
+
 #include "headers.h"
 
 #ifndef _PRINTERS_H
@@ -41,6 +42,7 @@ void print_transport_layer_proto(int fd,struct protocol_header *network_layerph,
 __inline__ void print_protoproto(int fd,struct protocol_header *datalink_layerph);
 __inline__ void print_ethproto(int fd,struct protocol_header *network_layerph);
 __inline__ void print_ipproto(int fd,struct protocol_header *transport_layerph);
+__inline__ void print_ipproto_simple(int fd,struct protocol_header *transport_layerph);
 __inline__ void print_packetnb(int fd, int size);
 
 #endif
