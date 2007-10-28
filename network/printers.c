@@ -137,6 +137,11 @@ __inline__ void print_ipproto(int fd,struct protocol_header *transport_layerph)
 	fprintf((FILE *)fd,"[%s %d]",lookup_ipname(transport_layerph->id),transport_layerph->len);
 }
 
+__inline__ void print_ipproto_simple(int fd,struct protocol_header *transport_layerph)
+{
+	fprintf((FILE *)fd,"[%s]",lookup_ipname(transport_layerph->id));
+}
+
 __inline__ void print_packetnb(int fd, int size)
 {
 	fprintf((FILE *)fd,"[%d]",size);

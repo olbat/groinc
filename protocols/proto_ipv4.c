@@ -25,7 +25,10 @@
 #include "proto_ipv4.h"
 #include "printp.h"
 #include "../tools/network_tools.h"
+#include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 /* buffers for the IP string versions */
 static char sourceip[IPV4_STR_MAXSIZE];
@@ -45,10 +48,23 @@ void print_ipv4(int fd, char *datagram)
 	print_proto(fd,"[IPv4/ version:%hhd ipheaderlen:%hhd tos:%#x totlen:%d id:%#x fragoffset:%#x ttl:%hhu proto:%hhd checksum:%#x source:%s dest:%s]",iph->version,(iph->iphdrlen*4),iph->tos,ntohs(iph->totlen),ntohs(iph->id),ntohs(iph->fragoffset),iph->ttl,iph->proto,ntohs(iph->ipchecksum),ipv4_ntoa(ntohl(iph->sourceaddr),sourceip),ipv4_ntoa(ntohl(iph->destaddr),destip));
 }
 
+#define PROTO_IPV4_DOMAINNAME(S,V,T) __extension__ \
+({ \
+	struct hostent *tmp; \
+	if ((tmp = gethostbyaddr(V,sizeof(*V),AF_INET))) \
+		S = tmp->h_name; \
+	else \
+		S = ipv4_ntoa(ntohl(*V),T); \
+})
+
 void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport)
 {	
 	struct ipv4_header *iph;
-	iph = (struct ipv4_header *) datagram;
+	char *dstname,*srcname;
 
-	print_proto(fd,"[%s:%hu->%s:%hu] ",ipv4_ntoa(ntohl(iph->sourceaddr),sourceip),sourceport,ipv4_ntoa(ntohl(iph->destaddr),destip),destport);
+	iph = (struct ipv4_header *) datagram;
+	PROTO_IPV4_DOMAINNAME(srcname,&iph->sourceaddr,sourceip);
+	PROTO_IPV4_DOMAINNAME(dstname,&iph->destaddr,destip);
+
+	print_proto(fd,"[%s:%hu->%s:%hu] ",srcname,sourceport,dstname,destport);
 }

@@ -25,7 +25,8 @@
 #ifndef _PROTO_IPV4_H
 #define _PROTO_IPV4_H
 
-#include "../network/my_types.h"
+#include <asm/types.h>
+
 #include "../network/headers.h"
 
 struct ipv4_header
