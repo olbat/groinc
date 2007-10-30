@@ -28,12 +28,10 @@
 #include "tools/linked_list.h"
 #include "network/protocols.h"
 #include "misc.h"
+#include "protocols/namescache.h"
 
 #include <regex.h>
 #include <sys/socket.h>
-
-#define PRS_DSP_PKT_LKD_ADD(L,O) \
-	linked_list_add(L, linked_list_dsp_pkt_value_init(O->u.dsp_pkt.func_dsp_pkt));
 
 __inline__ int prs_dsp_pkt_help(struct linked_list_opt_value *optl, char *val)
 {
@@ -52,6 +50,9 @@ __inline__ int prs_dsp_pkt_license(struct linked_list_opt_value *optl, char *val
 	po_misc = MISCNO_LICENSE;
 	return P_MISC;
 }
+
+#define PRS_DSP_PKT_LKD_ADD(L,O) \
+	linked_list_add(L, linked_list_dsp_pkt_value_init(O->u.dsp_pkt.func_dsp_pkt));
 
 __inline__ int prs_dsp_pkt_displayopt(struct linked_list_opt_value *optl, char *val)
 {
@@ -117,6 +118,12 @@ __inline__ int prs_inputfile(struct linked_list_opt_value *optl, char *val)
 __inline__ int prs_outputfile(struct linked_list_opt_value *optl, char *val)
 {
 	outputfile = val;
+	return OPT_OK;
+}
+
+__inline__ int prs_noresolv(struct linked_list_opt_value *optl, char *val)
+{
+	ncacheopt = ncacheopt | NCHE_OPT_NORESOLV;
 	return OPT_OK;
 }
 

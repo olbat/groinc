@@ -5,7 +5,7 @@
 
 CFLAGS= -Wall -O3 -ansi -pedantic -g
 CC= gcc ${CFLAGS} 
-SRC= printp.c 
+SRC= printp.c namescache.c
 OBJ= $(SRC:.c=.o)
 
 all : ${OBJ} protocols
