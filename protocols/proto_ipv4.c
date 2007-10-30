@@ -25,6 +25,7 @@
 #include "proto_ipv4.h"
 #include "printp.h"
 #include "../tools/network_tools.h"
+#include "namescache.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -60,11 +61,8 @@ void print_ipv4(int fd, char *datagram)
 void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport)
 {	
 	struct ipv4_header *iph;
-	char *dstname,*srcname;
 
 	iph = (struct ipv4_header *) datagram;
-	PROTO_IPV4_DOMAINNAME(srcname,&iph->sourceaddr,sourceip);
-	PROTO_IPV4_DOMAINNAME(dstname,&iph->destaddr,destip);
 
-	print_proto(fd,"[%s:%hu->%s:%hu] ",srcname,sourceport,dstname,destport);
+	print_proto(fd,"[%s:%hu->%s:%hu] ",get_ipv4_name(iph->sourceaddr),sourceport,get_ipv4_name(iph->destaddr),destport);
 }

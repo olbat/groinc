@@ -38,6 +38,7 @@
 #include "globals_error.h"
 #include "defaults.h"
 #include "tools/linked_list.h"
+#include "protocols/namescache.h"
 
 #include <string.h>
 
@@ -204,6 +205,7 @@ int cleanup_sniff()
 	linked_list_free(list_display_report);
 	linked_list_free(list_report);
 	linked_list_free(list_error);
+	ncache_free();
 	default_free();
 	close(curinputfd);
 	close(curoutputfd);
