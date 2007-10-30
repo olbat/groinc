@@ -34,6 +34,7 @@ __inline__ int prs_output(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_outputdata(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_inputfile(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_outputfile(struct linked_list_opt_value *optl, char *val);
+__inline__ int prs_noresolv(struct linked_list_opt_value *optl, char *val);
 
 __inline__ int prs_flt_dstport(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_flt_srcport(struct linked_list_opt_value *optl, char *val);

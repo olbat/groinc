@@ -84,6 +84,7 @@ static char *value;
 	OPTLIST_ADD_DSP_PKT(OPTL, 'O',	"output",	OPT_OUTPUT,	PO_ARG, chk_output,	prs_output, 0 ); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'r',	"read",		OPT_INPUTFILE,	PO_ARG, chk_inputfile,	prs_inputfile, 0 ); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'w',	"write",	OPT_OUTPUTFILE,	PO_ARG, chk_outputfile,	prs_outputfile, 0 ); \
+	OPTLIST_ADD_DSP_PKT(OPTL, 'j',	"noresolv",	OPT_NORESOLV,	PO_NOARG, 0,	prs_noresolv, 0 ); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'a',	"displaydata",	OPT_DSP_PKT_DISPLAYDATA,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_data); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'A',	"simpledisplay",OPT_DSP_PKT_SIMPLEDISPLAY,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_simple); \
 	OPTLIST_ADD_DSP_PKT(OPTL, 'v',	"verbose",	OPT_DSP_PKT_DISPLAYHEADER,	PO_NOARG, 0,	prs_dsp_pkt_displayopt, dsp_pkt_header); \
