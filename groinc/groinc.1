@@ -25,6 +25,25 @@ There is a regex filter for layers over the transport layer. You can
 save or load your captures in a file. You have the choice between a lot 
 of type of display (from simple to very detailed). A lot of protocols 
 are available.
+.SH EXAMPLES
+.TP 
+To sniff all the network trafic on this machine and use the simple display : \c
+.B groinc
+.TP 
+To sniff trafic from or to the server pointed by "domain.tld" and use the simple display : \c
+.B groinc -G domain.tld
+.TP 
+To sniff TCP trafic on port 80 and display protocols headers: \c
+.B groinc -v -p tcp -g 80
+.TP
+To sniff ARP trafic, stopping after 20 packets received, using hexadecimal display: \c
+.B groinc -a -H -P arp -l 20
+.TP
+To sniff UDP trafic which have destination IP 127.0.0.1 and destination port 53, saving capture in  the file file.cap: \c
+.B groinc -q -w file.cap -p udp -D 127.0.0.1 -d 53
+.TP
+To sniff all the trafic during 20 seconds and display headers and data: \c
+.B groinc -v -a -t 20
 .SH FILTER OPTIONS
 .TP
 .BI "-m	--sourcemac " "MAC address" \c
@@ -130,19 +149,6 @@ are available.
 .TP
 .B --license \c
 \& Display the copyright informations
-.SH EXAMPLES
-.TP 
-To sniff TCP trafic on port 80 and display protocols headers: \c
-.B groinc -v -p tcp -g 80
-.TP
-To sniff ARP trafic, stopping after 20 packets received, using hexadecimal display: \c
-.B groinc -a -H -P arp -l 20
-.TP
-To sniff UDP trafic which have destination IP 127.0.0.1 and destination port 53, saving capture in  the file file.cap: \c
-.B groinc -q -w file.cap -p udp -D 127.0.0.1 -d 53
-.TP
-To sniff all the trafic during 20 seconds and display headers and data: \c
-.B groinc -v -a -t 20
 .SH AUTHOR
 .RB "The " "groinc" " software and this manual page was written by Luc Sarzyniec <olbat@xiato.com>"
 .SH BUGS

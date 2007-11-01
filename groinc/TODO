@@ -1,4 +1,3 @@
--support of filter using domain name
 -fix the filter regex bug
 -use the new system for the timelimit and packet number options
 -make the "time since first packet" report option work

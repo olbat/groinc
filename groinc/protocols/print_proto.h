@@ -21,6 +21,7 @@
 #define _PRINT_PROTO_H
 
 void print_ether(int fd, char *datagram);
+void print_ether_simple(int fd, char *datagram);
 void print_ipv4(int fd, char *datagram);
 void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport);
 void print_arp(int fd, char *datagram);

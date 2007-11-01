@@ -43,7 +43,7 @@ void hashtable_delete(struct hashtable *t);
 void hashtable_value_free(struct hashtable_value *val);
 
 #include "../error.h"
-struct hashtable_value *hashtable_err_value_init(enum err_id , enum err_state, char *);
+struct hashtable_value *hashtable_err_value_init(enum err_id , enum err_state, char *,void (*func_err)(int));
 void hashtable_err_value_free(struct hashtable_value *val);
 struct hashtable_err_value *hashtable_err_lookup(struct hashtable *, enum err_id);
 	

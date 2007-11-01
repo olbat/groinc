@@ -24,8 +24,7 @@
 
 #include <string.h>
 
-#define LOOKUP_PROTOCOLID(N,T) \
-__extension__ \
+#define LOOKUP_PROTOCOLID(N,T) __extension__ \
 ({ \
 	int end,i; \
 	i = PROTO_MIN; \
@@ -38,8 +37,7 @@ __extension__ \
 	end; \
 })
 
-#define LOOKUP_PROTOCOLNAME(I,T) \
-__extension__ \
+#define LOOKUP_PROTOCOLNAME(I,T) __extension__ \
 ({ \
 	char *end; \
 	int i; \
@@ -53,8 +51,7 @@ __extension__ \
 	end; \
 )}
 
-#define LOOKUP_PROTOCOLST(I,T,V) \
-__extension__ \
+#define LOOKUP_PROTOCOLST(I,T,V) __extension__ \
 ({ \
 	int i; \
 	i = PROTO_MIN; \
@@ -67,14 +64,14 @@ __extension__ \
 })
 
 /* all the names are in upper case, use toupper() in your functions */
-static struct st_protocol st_proto[] = {
+struct st_protocol st_proto[] = {
 	{	PROTO_MIN,	"",	0,	0	},
 
 	{	PROTO_ETHER,	"ETHERNET",	&scan_ether,	&print_ether	},
 
 	{	PROTO_MAX,	"",	0,	0 } };
 
-static struct st_protocol st_ether[] = {
+struct st_protocol st_ether[] = {
 	{	PROTO_MIN,		"",	0,	0	},
 	
 	{	ETHPROTO_IP,		"IP",		&scan_ipv4,	&print_ipv4	},
@@ -86,13 +83,13 @@ static struct st_protocol st_ether[] = {
 	
 	{	PROTO_MAX,		"",	0,	0	} };
 
-static struct st_protocol st_ip[] = {
+struct st_protocol st_ip[] = {
 	{	PROTO_MIN,		"",	0,	0	},
 	
 	{	IPPROTO_ICMP,		"ICMP",		&scan_icmp,	&print_icmp	},
 	{	IPPROTO_UDP,		"UDP",		&scan_udp,	&print_udp	},
 	{	IPPROTO_TCP,		"TCP",		&scan_tcp,	&print_tcp	},
-	{	IPPROTO_IP,		"IP",		0,	0	},
+	{	IPPROTO_IP,		"IP_IP",	0,	0	},
 	{	IPPROTO_IGMP,		"IGMP",		0,	0	},
 	{	IPPROTO_GGP,		"GGP",		0,	0	},
 	{	IPPROTO_IPIP,		"IPIP",		0,	0	},
