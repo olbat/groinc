@@ -39,5 +39,6 @@ struct ethernet_header
 
 void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph);
 void print_ether(int fd, char *datagram);
+void print_ether_simple(int fd, char *datagram);
 
 #endif

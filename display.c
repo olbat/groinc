@@ -101,8 +101,8 @@ __inline__ void dsp_pkt_tlproto(int fd, struct protocol_header *datalink_layerph
 
 __inline__ void dsp_pkt_simple(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
-	print_ipproto_simple(fd,transport_layerph);
-	print_simple(fd,network_layerph,transport_layerph);
+	print_proto_simple(fd,datalink_layerph,network_layerph,transport_layerph);
+	print_simple(fd,datalink_layerph,network_layerph,transport_layerph);
 }
 
 __inline__ void dsp_pkt_header(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
