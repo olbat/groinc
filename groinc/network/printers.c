@@ -91,10 +91,16 @@ __inline__ void print_data(int fd,struct data *data)
 	}
 }
 
-__inline__ void print_simple(int fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
+__inline__ void print_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
-	if (network_layerph->id == ETHPROTO_IP)
+	if ((transport_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
 		print_ipv4_simple(fd,network_layerph->header,get_source_port(transport_layerph),get_dest_port(transport_layerph));
+	/*
+	 * changements will be necessary if other protocols than ethernet
+	 * protocol for datalink layer is available
+	 */
+	else
+		print_ether_simple(fd,datalink_layerph->header);
 }
 
 void print_datalink_layer_proto(int fd,struct protocol_header *datalink_layerph)
@@ -137,9 +143,19 @@ __inline__ void print_ipproto(int fd,struct protocol_header *transport_layerph)
 	fprintf((FILE *)fd,"[%s %d]",lookup_ipname(transport_layerph->id),transport_layerph->len);
 }
 
-__inline__ void print_ipproto_simple(int fd,struct protocol_header *transport_layerph)
+__inline__ void print_proto_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
-	fprintf((FILE *)fd,"[%s]",lookup_ipname(transport_layerph->id));
+	/*
+	 * modifications will be necessary if other than ehternet 
+	 * protocol on datalink layer is usable
+	 */
+	fprintf((FILE *)fd,"[%s]",
+		((transport_layerph->len >= 0) 
+		&& (network_layerph->id == ETHPROTO_IP)
+			? lookup_ipname(transport_layerph->id)
+			: (network_layerph->len >= 0 
+				? lookup_ethname(network_layerph->id)
+				: lookup_protoname(datalink_layerph->id))));
 }
 
 __inline__ void print_packetnb(int fd, int size)

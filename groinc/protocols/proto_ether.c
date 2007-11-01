@@ -45,3 +45,11 @@ void print_ether(int fd, char *datagram)
 	print_proto(fd,"[Ethernet/ dest mac: %s source mac: %s proto:%#x]",mac_ntoa((__u8 *)etherh->destmac,destmac),mac_ntoa((__u8 *)etherh->sourcemac,sourcemac),ntohs(etherh->proto));
 }
 
+void print_ether_simple(int fd, char *datagram)
+{
+	struct ethernet_header *etherh;
+	etherh = (struct ethernet_header *) datagram;
+	print_proto(fd,"[%s->%s]",
+		mac_ntoa((__u8 *)etherh->sourcemac,sourcemac),
+		mac_ntoa((__u8 *)etherh->destmac,destmac));
+}
