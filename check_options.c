@@ -164,7 +164,7 @@ __inline__ int chk_flt_protocol(char *val)
 {
 	if (lookup_protoid(strupr(val)) < 0)
 	{
-		ERR_SET(list_error,EARG_INVAL,val);
+		ERR_SET(list_error,EOPT_PROTO,val);
 		return OPT_ERROR;
 	}
 	else
@@ -177,7 +177,7 @@ __inline__ int chk_flt_ethprotocol(char *val)
 {
 	if (lookup_ethid(strupr(val)) < 0)
 	{
-		ERR_SET(list_error,EARG_INVAL,val);
+		ERR_SET(list_error,EOPT_PROTO,val);
 		return OPT_ERROR;
 	}
 	else
@@ -190,7 +190,7 @@ __inline__ int chk_flt_ipprotocol(char *val)
 {
 	if (lookup_ipid(strupr(val)) < 0)
 	{
-		ERR_SET(list_error,EARG_INVAL,val);
+		ERR_SET(list_error,EOPT_PROTO,val);
 		return OPT_ERROR;
 	}
 	else

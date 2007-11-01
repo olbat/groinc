@@ -31,7 +31,11 @@ struct st_protocol
 	void (*func_print)(int, char *); 
 };
 
-/* the function to get the name/id associations */
+
+
+extern struct st_protocol st_proto[];
+extern struct st_protocol st_ether[];
+extern struct st_protocol st_ip[];
 
 char *lookup_protoname(int id);
 char *lookup_ethname(int id);

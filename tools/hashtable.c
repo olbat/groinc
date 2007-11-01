@@ -98,7 +98,7 @@ void hashtable_value_free(struct hashtable_value *val)
 	}
 }
 
-struct hashtable_value *hashtable_err_value_init(enum err_id id, enum err_state st, char *msg)
+struct hashtable_value *hashtable_err_value_init(enum err_id id, enum err_state st, char *msg, void (*func_err)(int))
 {
 	struct hashtable_value *end;
 
@@ -107,6 +107,7 @@ struct hashtable_value *hashtable_err_value_init(enum err_id id, enum err_state 
 	end->u.err->id = id;
 	end->u.err->state = st;
 	end->u.err->msg = msg;
+	end->u.err->func = func_err;
 	
 	return end;
 }

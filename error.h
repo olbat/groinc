@@ -29,6 +29,7 @@ enum err_id
 	EHOSTNAME_INVAL,
 	EREGEX_INVAL,
 	EOPT_INVAL,
+	EOPT_PROTO,
 	EOPT_UNKNOWN
 };
 
@@ -43,6 +44,7 @@ struct hashtable_err_value
 	enum err_id id;
 	char *msg;
 	enum err_state state;
+	void (*func)(int);
 };
 
 struct linked_list_err_value
@@ -55,5 +57,6 @@ struct linked_list_err_value
 	linked_list_add(L,linked_list_err_value_init(ID,A)); 
 
 int error_display();
+void err_opt_proto(int fd);
 
 #endif
