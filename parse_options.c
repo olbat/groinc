@@ -105,9 +105,7 @@ static char *value;
 	OPTLIST_ADD_FLT(OPTL, 's',	"sourceport",	OPT_FLT_SRCPORT,	PO_ARG, chk_flt_srcport,	prs_flt_srcport,	flt_tl_port_src); \
 	OPTLIST_ADD_FLT(OPTL, 'S',	"sourceip",	OPT_FLT_SRCIP,		PO_ARG, chk_flt_srcip,		prs_flt_srcip,		flt_nl_ip_src); \
 	OPTLIST_ADD_FLT(OPTL, 'f',	"filter",	OPT_FLT_FILTERSTR,	PO_ARG, chk_flt_filterstr,	prs_flt_filterstr,	flt_string); \
-	OPTLIST_ADD_FLT(OPTL, 'Q',	"protocol",	OPT_FLT_PROTOCOL,	PO_ARG, chk_flt_protocol,	prs_flt_protocol,	flt_dl_protocol); \
-	OPTLIST_ADD_FLT(OPTL, 'p',	"ipprotocol", 	OPT_FLT_IPPROTOCOL,	PO_ARG, chk_flt_ipprotocol,	prs_flt_ipprotocol,	flt_tl_protocol); \
-	OPTLIST_ADD_FLT(OPTL, 'P',	"ethprotocol",	OPT_FLT_ETHPROTOCOL,	PO_ARG, chk_flt_ethprotocol,	prs_flt_ethprotocol,	flt_nl_protocol); \
+	OPTLIST_ADD_FLT(OPTL, 'p',	"protocol",	OPT_FLT_PROTOCOL,	PO_ARG, chk_flt_protocol,	prs_flt_protocol,	0); \
 	OPTLIST_ADD_FLT(OPTL, 'F',	"filter-regex",	OPT_FLT_FILTERREGEX,	PO_ARG, chk_flt_filterregex,	prs_flt_filterregex,	flt_regex); \
 	OPTLIST_ADD_FLT(OPTL, 'm',	"sourcemac",	OPT_FLT_SRCMAC,		PO_ARG, chk_flt_srcmac,		prs_flt_srcmac,		flt_dl_mac_src); \
 	OPTLIST_ADD_FLT(OPTL, 'M',	"destmac",	OPT_FLT_DSTMAC,		PO_ARG, chk_flt_dstmac,		prs_flt_dstmac,		flt_dl_mac_dst); \

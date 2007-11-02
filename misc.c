@@ -34,8 +34,8 @@ void print_misc(enum miscno no)
 					"You can also get a copy of the \"GNU General Public License\" at this address :\n"
 					"http://www.gnu.org/copyleft/gpl.html\n");
 	else if (no == MISCNO_HELP)
-		print_format(headerfd,	"usage : %s [-option] [-DSG ip addr] [-dsg port number] [-F regex] [-pP protocolname]\n"
-					"[-l number] [-t time(seconds)]\n"
+		print_format(headerfd,	"usage : %s [-option] [-DSG ip addr] [-dsg port number] [-F regex] [-p protocolname]\n"
+					"\t[-l number] [-t time(seconds)]\n"
 					"Please take a look to the manual to get more informations.\n\n",SOFT_NAME);
 }
 

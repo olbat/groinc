@@ -39,8 +39,6 @@ __inline__ int chk_flt_timelimit(char *val);
 __inline__ int chk_flt_filterstr(char *val);
 __inline__ int chk_flt_filterregex(char *val);
 __inline__ int chk_flt_protocol(char *val);
-__inline__ int chk_flt_ethprotocol(char *val);
-__inline__ int chk_flt_ipprotocol(char *val);
 
 #endif
 
