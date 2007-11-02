@@ -162,33 +162,8 @@ __inline__ int chk_flt_filterregex(char *val)
 
 __inline__ int chk_flt_protocol(char *val)
 {
-	if (lookup_protoid(strupr(val)) < 0)
-	{
-		ERR_SET(list_error,EOPT_PROTO,val);
-		return OPT_ERROR;
-	}
-	else
-	{
-		return OPT_OK;
-	}
-}
-
-__inline__ int chk_flt_ethprotocol(char *val)
-{
-	if (lookup_ethid(strupr(val)) < 0)
-	{
-		ERR_SET(list_error,EOPT_PROTO,val);
-		return OPT_ERROR;
-	}
-	else
-	{
-		return OPT_OK;
-	}
-}
-
-__inline__ int chk_flt_ipprotocol(char *val)
-{
-	if (lookup_ipid(strupr(val)) < 0)
+	if ((lookup_protoid(strupr(val)) < 0) && (lookup_ethid(strupr(val)) < 0)
+	   && (lookup_ipid(strupr(val)) < 0))
 	{
 		ERR_SET(list_error,EOPT_PROTO,val);
 		return OPT_ERROR;

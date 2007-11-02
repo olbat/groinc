@@ -1,4 +1,4 @@
-.TH GROINC 1 "2007-05-20" "version 0.0.9" "Groinc"
+.TH GROINC 1 "2007-11-02" "version 0.0.10" "Groinc"
 .SH NAME
 groinc \- The simple network sniffer
 .SH SYNOPSIS
@@ -11,7 +11,7 @@ groinc \- The simple network sniffer
 .IR "port number" ]
 .RB [ \-F 
 .IR regex ]
-.RB [ \-QpP
+.RB [ \-p
 .IR "protocol name" ]
 .RB [ \-l
 .IR number ]
@@ -30,17 +30,17 @@ are available.
 To sniff all the network trafic on this machine and use the simple display : \c
 .B groinc
 .TP 
-To sniff trafic from or to the server pointed by "domain.tld" and use the simple display : \c
-.B groinc -G domain.tld
+To sniff trafic from or to the server pointed by "domain.tld" and use the simple display without resolv the machines addresses : \c
+.B groinc -G domain.tld -j
 .TP 
 To sniff TCP trafic on port 80 and display protocols headers: \c
 .B groinc -v -p tcp -g 80
 .TP
 To sniff ARP trafic, stopping after 20 packets received, using hexadecimal display: \c
-.B groinc -a -H -P arp -l 20
+.B groinc -H -p arp -l 20
 .TP
-To sniff UDP trafic which have destination IP 127.0.0.1 and destination port 53, saving capture in  the file file.cap: \c
-.B groinc -q -w file.cap -p udp -D 127.0.0.1 -d 53
+To sniff UDP trafic which have destination IP 127.0.0.1 and source port 53, saving capture in the file file.cap: \c
+.B groinc -q -w file.cap -p udp -D 127.0.0.1 -s 53
 .TP
 To sniff all the trafic during 20 seconds and display headers and data: \c
 .B groinc -v -a -t 20
@@ -70,14 +70,8 @@ To sniff all the trafic during 20 seconds and display headers and data: \c
 .BI "-G	--globalip " "IP address" \c
 \& The source or destination IP to be scan
 .TP
-.BI "-Q 	--protocol " "name"\c
-\& Specify the datalink layer protocol name
-.TP
-.BI "-p 	--ipprotocol " "name" \c
-\& Specify the transport layer (ip)protocol name
-.TP
-.BI "-P 	--ethprotocol " "name" \c
-\& Specify the network layer (ethernet)protocol name
+.BI "-p 	--protocol " "name" \c
+\& Specify the protocol
 .TP
 .BI "-f 	--filter " "string" \c
 \& Enable (application layer) filter with a string
@@ -127,7 +121,7 @@ To sniff all the trafic during 20 seconds and display headers and data: \c
 .SH OTHER OPTIONS
 .TP
 .B -j 	--noresolv \c
-\& Do not try to resolv address when using simple-display (makes the display run faster)
+\& Do not try to resolv machines addresses when using simple-display (makes the display runs faster)
 .TP
 .BI "-r	--read " "file" \c
 \& Load data from a saved file

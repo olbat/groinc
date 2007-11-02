@@ -49,8 +49,6 @@ __inline__ int prs_flt_timelimit(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_flt_filterstr(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_flt_filterregex(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_flt_protocol(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_ethprotocol(struct linked_list_opt_value *optl, char *val);
-__inline__ int prs_flt_ipprotocol(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_flt_dontdisplayemptysl(struct linked_list_opt_value *optl, char *val);
 __inline__ int prs_flt_dontdisplaypackets(struct linked_list_opt_value *optl, char *val);
 

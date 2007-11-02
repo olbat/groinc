@@ -223,24 +223,33 @@ __inline__ int prs_flt_filterregex(struct linked_list_opt_value *optl, char *val
 	return OPT_OK;
 }
 
+#define PRS_FLT_PROTO(L,F,V,S) \
+	linked_list_add(L, \
+			linked_list_flt_value_init(F, (__u8 *)V,S));
+
 __inline__ int prs_flt_protocol(struct linked_list_opt_value *optl, char *val)
 {
-	int tmp = lookup_protoid(strupr(val));
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(unsigned int));
-	return OPT_OK;
-}
+	int tmp;
+	if ((tmp = lookup_ipid(strupr(val))) < 0)
+	{
+		if ((tmp = lookup_ethid(strupr(val))) < 0)
+		{
+			tmp = lookup_protoid(strupr(val));
+			PRS_FLT_PROTO(list_filter,flt_dl_protocol,
+				&tmp,sizeof(unsigned int));
+		}
+		else
+		{
+			PRS_FLT_PROTO(list_filter,flt_nl_protocol,
+				&tmp,sizeof(unsigned int));
+		}
+	}
+	else
+	{
+		PRS_FLT_PROTO(list_filter,flt_tl_protocol,
+			&tmp,sizeof(unsigned int));
+	}
 
-__inline__ int prs_flt_ethprotocol(struct linked_list_opt_value *optl, char *val)
-{
-	int tmp = lookup_ethid(strupr(val));
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(unsigned int));
-	return OPT_OK;
-}
-
-__inline__ int prs_flt_ipprotocol(struct linked_list_opt_value *optl, char *val)
-{
-	int tmp = lookup_ipid(strupr(val));
-	PRS_FLT_LKD_ADD(list_filter,optl,&tmp,sizeof(unsigned int));
 	return OPT_OK;
 }
 
