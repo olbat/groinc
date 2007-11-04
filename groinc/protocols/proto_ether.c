@@ -18,9 +18,13 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following documents :
- * 	Ethernet IEEE 802.3 standard (http://standards.ieee.org/getieee802/802.3.html)
- * 	RFC 894 - A Standard for the Transmission of IP Datagrams over Ethernet Networks (http://ietf.org/rfc/rfc894.txt)
+ * For further informations about this implementation please take a look
+ * to the following documents :
+ * 	Ethernet IEEE 802.3 standard
+ * 		(http://standards.ieee.org/getieee802/802.3.html)
+ * 	RFC 894 - A Standard for the Transmission of IP Datagrams over Ethernet
+ * 	Networks
+ * 		(http://ietf.org/rfc/rfc894.txt)
  */
 
 #include "proto_ether.h"
@@ -32,20 +36,34 @@
 static char sourcemac[MAC_STR_SIZE];
 static char destmac[MAC_STR_SIZE];
 
-void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph)
+void
+scan_ether(
+	struct data *datagram,
+	struct protocol_header *datalink_layerph,
+	struct protocol_header *network_layerph)
 {
 	datalink_layerph->len = sizeof(struct ethernet_header);
-	network_layerph->id = ((struct ethernet_header *)datalink_layerph->header)->proto;
+	network_layerph->id = 
+		((struct ethernet_header *)datalink_layerph->header)->proto;
 }
 
-void print_ether(int fd, char *datagram) 
+void
+print_ether(
+	int fd,
+	char *datagram) 
 {
 	struct ethernet_header *etherh;
 	etherh = (struct ethernet_header *) datagram;
-	print_proto(fd,"[Ethernet/ dest mac: %s source mac: %s proto:%#x]",mac_ntoa((__u8 *)etherh->destmac,destmac),mac_ntoa((__u8 *)etherh->sourcemac,sourcemac),ntohs(etherh->proto));
+	print_proto(fd,"[Ethernet/ dest mac: %s source mac: %s proto:%#x]",
+		mac_ntoa((__u8 *)etherh->destmac,destmac),
+		mac_ntoa((__u8 *)etherh->sourcemac,sourcemac),
+		ntohs(etherh->proto));
 }
 
-void print_ether_simple(int fd, char *datagram)
+void
+print_ether_simple(
+	int fd,
+	char *datagram)
 {
 	struct ethernet_header *etherh;
 	etherh = (struct ethernet_header *) datagram;

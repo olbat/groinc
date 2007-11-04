@@ -18,7 +18,8 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
+ * For further informations about this implementation please take a look
+ * to the following RFC :
  * 	RFC 793 - TRANSMISSION CONTROL PROTOCOL (http://ietf.org/rfc/rfc793.txt)
  */
 
@@ -49,7 +50,8 @@ __extension__ __u16 res:4,
 	__u16 tcpchecksum;
 	__u16 urgptr;
 };
-void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
+void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph,
+	struct protocol_header *application_layerph);
 void print_tcp(int fd, char *datagram);
 
 #endif

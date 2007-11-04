@@ -18,7 +18,8 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
+ * For further informations about this implementation please take a look
+ * to the following RFC :
  * 	RFC 793 - TRANSMISSION CONTROL PROTOCOL (http://ietf.org/rfc/rfc793.txt)
  */
 
@@ -26,15 +27,30 @@
 #include "printp.h"
 #include <netinet/in.h>
 
-void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph)
+void
+scan_tcp(
+	struct data *datagram,
+	struct protocol_header *transport_layerph,
+	struct protocol_header *application_layerph)
 {
-	transport_layerph->len = (((struct tcp_header *)transport_layerph->header)->tcphdrlen * 4);
+	transport_layerph->len =
+		(((struct tcp_header *)transport_layerph->header)->tcphdrlen * 4);
 }
 
-void print_tcp(int fd, char *datagram)
+void
+print_tcp(
+	int fd,
+	char *datagram)
 {
 	struct tcp_header *tcph;
 	tcph = (struct tcp_header *) datagram;
-	print_proto(fd,"[TCP/ port src:%hu port dest:%hu seqnum:%#x acknum:%#x tcpheaderlen:%d (res:%d ecn:%d ece:%d urg:%d ack:%d psh:%d rst:%d syn:%d fin:%d) window:%#x checksum:%#x urgptr:%#x]",ntohs(tcph->sourceport),ntohs(tcph->destport),ntohl(tcph->seqnum),ntohl(tcph->acknum),(tcph->tcphdrlen*4),tcph->res,tcph->ecn,tcph->ece,tcph->urg,tcph->ack,tcph->psh,tcph->rst,tcph->syn,tcph->fin,ntohs(tcph->window),tcph->window,ntohs(tcph->tcpchecksum),ntohs(tcph->urgptr));
+	print_proto(fd,"[TCP/ port src:%hu port dest:%hu seqnum:%#x acknum:%#x "
+		"tcpheaderlen:%d (res:%d ecn:%d ece:%d urg:%d ack:%d psh:%d "
+		"rst:%d syn:%d fin:%d) window:%#x checksum:%#x urgptr:%#x]",
+		ntohs(tcph->sourceport),ntohs(tcph->destport),
+		ntohl(tcph->seqnum),ntohl(tcph->acknum),(tcph->tcphdrlen*4),
+		tcph->res,tcph->ecn,tcph->ece,tcph->urg,tcph->ack,tcph->psh,
+		tcph->rst,tcph->syn,tcph->fin,ntohs(tcph->window),tcph->window,
+		ntohs(tcph->tcpchecksum),ntohs(tcph->urgptr));
 }
 

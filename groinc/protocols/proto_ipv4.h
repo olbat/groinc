@@ -18,7 +18,8 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
+ * For further informations about this implementation please take a look
+ * to the following RFC :
  * 	RFC 791 - INTERNET PROTOCOL (http://ietf.org/rfc/rfc791.txt)
  */
 
@@ -44,7 +45,8 @@ __extension__ __u8 iphdrlen:4,
 	__u32 destaddr;
 };
 
-void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph, struct protocol_header *transport_layerph);
+void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph,
+	struct protocol_header *transport_layerph);
 void print_ipv4(int fd, char *datagram);
 void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport);
 

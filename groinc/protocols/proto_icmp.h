@@ -25,8 +25,10 @@
 #include "../network/headers.h"
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
- * 	RFC 792 - INTERNET CONTROL MESSAGE PROTOCOL (http://ietf.org/rfc/rfc792.txt)
+ * For further informations about this implementation please take a look
+ * to the following RFC :
+ * 	RFC 792 - INTERNET CONTROL MESSAGE PROTOCOL
+ * 		(http://ietf.org/rfc/rfc792.txt)
  */
 
 struct icmp_header
@@ -37,7 +39,8 @@ struct icmp_header
 	__u32 field;
 };
 
-void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
+void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph,
+	struct protocol_header *application_layerph);
 void print_icmp(int fd, char *datagram);
 
 #endif
