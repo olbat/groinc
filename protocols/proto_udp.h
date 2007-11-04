@@ -18,7 +18,8 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
+ * For further informations about this implementation please take a look
+ * to the following RFC :
  * 	RFC 768 - User Datagram Protocol (http://ietf.org/rfc/rfc768.txt)
  */
 
@@ -37,7 +38,8 @@ struct udp_header
 	__u16 udpchecksum;
 };
 
-void scan_udp(struct data *datagram, struct protocol_header *transport_layerph, struct protocol_header *application_layerph);
+void scan_udp(struct data *datagram, struct protocol_header *transport_layerph,
+	struct protocol_header *application_layerph);
 void print_udp(int fd,  char *datagram);
 
 #endif

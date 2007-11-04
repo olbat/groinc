@@ -25,9 +25,13 @@
 #include "../network/headers.h"
 
 /*
- * For further informations about this implementation please take a look to the following documents :
- * 	Ethernet IEEE 802.3 standard (http://standards.ieee.org/getieee802/802.3.html)
- * 	RFC 894 - A Standard for the Transmission of IP Datagrams over Ethernet Networks (http://ietf.org/rfc/rfc894.txt)
+ * For further informations about this implementation please take a look 
+ * to the following documents :
+ * 	Ethernet IEEE 802.3 standard
+ * 		(http://standards.ieee.org/getieee802/802.3.html)
+ * 	RFC 894 - A Standard for the Transmission of IP Datagrams over Ethernet
+ * 	Networks
+ * 		(http://ietf.org/rfc/rfc894.txt)
  */
 
 struct ethernet_header
@@ -37,7 +41,8 @@ struct ethernet_header
 	__u16	proto;
 };
 
-void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph);
+void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph,
+	struct protocol_header *network_layerph);
 void print_ether(int fd, char *datagram);
 void print_ether_simple(int fd, char *datagram);
 

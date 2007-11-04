@@ -18,7 +18,8 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
+ * For further informations about this implementation please take a look
+ * to the following RFC :
  * 	RFC 791 - INTERNET PROTOCOL (http://ietf.org/rfc/rfc791.txt)
  */
 
@@ -35,34 +36,48 @@
 static char sourceip[IPV4_STR_MAXSIZE];
 static char destip[IPV4_STR_MAXSIZE];
 
-void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph, struct protocol_header *transport_layerph)
+void
+scan_ipv4(
+	struct data *datagram,
+	struct protocol_header *network_layerph,
+	struct protocol_header *transport_layerph)
 {
-	network_layerph->len = (((struct ipv4_header *)network_layerph->header)->iphdrlen * 4);
-	transport_layerph->id = ((struct ipv4_header *)network_layerph->header)->proto;
+	network_layerph->len = 
+		(((struct ipv4_header *)network_layerph->header)->iphdrlen * 4);
+	transport_layerph->id = 
+		((struct ipv4_header *)network_layerph->header)->proto;
 }
 
-void print_ipv4(int fd, char *datagram)
+void
+print_ipv4(
+	int fd,
+	char *datagram)
 {
 	struct ipv4_header *iph;
 	iph = (struct ipv4_header *) datagram;
 
-	print_proto(fd,"[IPv4/ version:%hhd ipheaderlen:%hhd tos:%#x totlen:%d id:%#x fragoffset:%#x ttl:%hhu proto:%hhd checksum:%#x source:%s dest:%s]",iph->version,(iph->iphdrlen*4),iph->tos,ntohs(iph->totlen),ntohs(iph->id),ntohs(iph->fragoffset),iph->ttl,iph->proto,ntohs(iph->ipchecksum),ipv4_ntoa(ntohl(iph->sourceaddr),sourceip),ipv4_ntoa(ntohl(iph->destaddr),destip));
+	print_proto(fd,"[IPv4/ version:%hhd ipheaderlen:%hhd tos:%#x totlen:%d "
+		"id:%#x fragoffset:%#x ttl:%hhu proto:%hhd checksum:%#x "
+		"source:%s dest:%s]",iph->version,(iph->iphdrlen*4),
+		iph->tos, ntohs(iph->totlen),ntohs(iph->id),
+		ntohs(iph->fragoffset),iph->ttl,iph->proto,
+		ntohs(iph->ipchecksum),
+		ipv4_ntoa(ntohl(iph->sourceaddr),sourceip),
+		ipv4_ntoa(ntohl(iph->destaddr), destip));
 }
 
-#define PROTO_IPV4_DOMAINNAME(S,V,T) __extension__ \
-({ \
-	struct hostent *tmp; \
-	if ((tmp = gethostbyaddr(V,sizeof(*V),AF_INET))) \
-		S = tmp->h_name; \
-	else \
-		S = ipv4_ntoa(ntohl(*V),T); \
-})
-
-void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport)
+void
+print_ipv4_simple(
+	int fd,
+	char *datagram,
+	__u16 sourceport,
+	__u16 destport)
 {	
 	struct ipv4_header *iph;
 
 	iph = (struct ipv4_header *) datagram;
 
-	print_proto(fd,"[%s:%hu->%s:%hu] ",get_ipv4_name(iph->sourceaddr),sourceport,get_ipv4_name(iph->destaddr),destport);
+	print_proto(fd,"[%s:%hu->%s:%hu] ",
+		get_ipv4_name(iph->sourceaddr),sourceport,
+		get_ipv4_name(iph->destaddr),destport);
 }

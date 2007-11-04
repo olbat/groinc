@@ -18,10 +18,14 @@
  * see the COPYING file for more informations */
 
 /*
- * For further informations about this implementation please take a look to the following RFC :
- * 	RFC 826 - An Ethernet Address Resolution Protocol (http://ietf.org/rfc/rfc826.txt)
- * 	RFC 903 - A Reverse Address Resolution Protocol (http://ietf.org/rfc/rfc903.txt)
- * 	RFC 2390 - Inverse Address Resolution Protocol (http://ietf.org/rfc/rfc2390.txt)
+ * For further informations about this implementation please take a look
+ * to the following RFC :
+ * 	RFC 826 - An Ethernet Address Resolution Protocol
+ * 		(http://ietf.org/rfc/rfc826.txt)
+ * 	RFC 903 - A Reverse Address Resolution Protocol
+ * 		(http://ietf.org/rfc/rfc903.txt)
+ * 	RFC 2390 - Inverse Address Resolution Protocol
+ * 		(http://ietf.org/rfc/rfc2390.txt)
  */
 
 #ifndef _PROTO_ARP_H
@@ -76,7 +80,8 @@ struct arp_header
 	__u16 opcode;
 };
 
-void scan_arp(struct data *datagram, struct protocol_header *network_layerph, struct protocol_header *transport_layerph);
+void scan_arp(struct data *datagram, struct protocol_header *network_layerph,
+	struct protocol_header *transport_layerph);
 void print_arp(int fd, char *datagram);
 
 #endif
