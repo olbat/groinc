@@ -19,6 +19,7 @@
 
 #include <netdb.h>
 
+#include "check_options.h"
 #include "globals_filter.h"
 #include "globals_args.h"
 #include "globals_error.h"
@@ -32,50 +33,41 @@
 #include <regex.h>
 #include <sys/socket.h>
 
-__inline__ int chk_output(char *val)
+int chk_output(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_outputdata(char *val)
+int chk_outputdata(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_inputfile(char *val)
+int chk_inputfile(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_outputfile(char *val)
+int chk_outputfile(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_dstport(char *val)
+int chk_flt_dstport(char *val)
 {
 	/* test valid port */
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_srcport(char *val)
+int chk_flt_srcport(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_globalport(char *val)
+int chk_flt_globalport(char *val)
 {
 	return OPT_OK;
 }
-
-#define CHK_FLT_HOST_REGEX_HOSTNAME \
-	"^\\([a-zA-Z0-9\\-]\\+\\.\\)*[a-zA-Z0-9\\-]\\{1,63\\}\\." \
-	"[0-9]*[a-zA-Z\\-][a-zA-Z0-9\\-]*$"
-#define CHK_FLT_HOST_REGEX_IP_NUM \
-	"\\([0-9]\\{1,2\\}\\|[01][0-9]\\{2\\}\\|2[0-4][0-9]\\|25[0-5]\\)"
-#define CHK_FLT_HOST_REGEX_IP \
-	"^\\(" CHK_FLT_HOST_REGEX_IP_NUM "\\.\\)\\{3\\}" \
-	CHK_FLT_HOST_REGEX_IP_NUM "$"
 
 #define CHK_FLT_HOST(V) __extension__ \
 	regex_t tmp; \
@@ -83,68 +75,83 @@ __inline__ int chk_flt_globalport(char *val)
 	if (regexec(&tmp,V,0,0,0)) \
 	{ \
 		regfree(&tmp); \
-		regcomp(&tmp,CHK_FLT_HOST_REGEX_IP,REG_NOSUB); \
+		regcomp(&tmp,CHK_FLT_HOST_REGEX_CIDR,REG_NOSUB); \
 		if (regexec(&tmp,V,0,0,0)) \
-			goto err; \
+		{ \
+			regfree(&tmp); \
+			regcomp(&tmp,CHK_FLT_HOST_REGEX_IPNETMASK,REG_NOSUB); \
+			if (regexec(&tmp,V,0,0,0)) \
+			{ \
+				regfree(&tmp); \
+				regcomp(&tmp,CHK_FLT_HOST_REGEX_IP,REG_NOSUB); \
+				if (regexec(&tmp,V,0,0,0)) \
+					goto err; \
+				else \
+					goto out; \
+			} \
+			else \
+				goto out; \
+		} \
 		else \
-			goto out; \
+			goto out;\
 	} \
 	else \
-		goto out; \
+		goto name; \
 err: \
 	regfree(&tmp); \
 	ERR_SET(list_error,EHOSTNAME_INVAL,V); \
 	return OPT_ERROR; \
-out: \
-	regfree(&tmp); \
+name: \
 	if (!gethostbyname(V)) \
 	{ \
 		herror("Cannot resolve hostname"); \
 		goto err; \
 	} \
+out: \
+	regfree(&tmp); \
 	return OPT_OK;
 
-__inline__ int chk_flt_srcip(char *val)
+int chk_flt_srcip(char *val)
 {
 	CHK_FLT_HOST(val);
 }
 
-__inline__ int chk_flt_dstip(char *val)
+int chk_flt_dstip(char *val)
 {
 	CHK_FLT_HOST(val);
 }
 
-__inline__ int chk_flt_globalip(char *val)
+int chk_flt_globalip(char *val)
 {
 	CHK_FLT_HOST(val);
 }
 
-__inline__ int chk_flt_srcmac(char *val)
+int chk_flt_srcmac(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_dstmac(char *val)
+int chk_flt_dstmac(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_limitnb(char *val)
+int chk_flt_limitnb(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_timelimit(char *val)
+int chk_flt_timelimit(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_filterstr(char *val)
+int chk_flt_filterstr(char *val)
 {
 	return OPT_OK;
 }
 
-__inline__ int chk_flt_filterregex(char *val)
+int chk_flt_filterregex(char *val)
 {
 	regex_t tmp;
 	if (regcomp(&tmp,val,REG_NOSUB))
@@ -160,7 +167,7 @@ __inline__ int chk_flt_filterregex(char *val)
 	}
 }
 
-__inline__ int chk_flt_protocol(char *val)
+int chk_flt_protocol(char *val)
 {
 	if ((lookup_protoid(strupr(val)) < 0) && (lookup_ethid(strupr(val)) < 0)
 	   && (lookup_ipid(strupr(val)) < 0))

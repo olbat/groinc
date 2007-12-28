@@ -20,25 +20,49 @@
 #ifndef _CHECK_OPTIONS_H
 #define _CHECK_OPTIONS_H
 
+
+#define CHK_FLT_HOST_REGEX_HOSTNAME \
+	"^\\([a-zA-Z0-9\\-]\\+\\.\\)*[a-zA-Z0-9\\-]\\{1,63\\}\\." \
+	"[0-9]*[a-zA-Z\\-][a-zA-Z0-9\\-]*$"
+
+#define CHK_FLT_HOST_REGEX_IP_NUM \
+	"\\([0-9]\\{1,2\\}\\|[01][0-9]\\{2\\}\\|2[0-4][0-9]\\|25[0-5]\\)"
+
+#define CHK_FLT_HOST_REGEX_CIDR_NUM \
+	"\\([0-2]\\?[0-9]\\|3[0-2]\\)"
+
+#define CHK_FLT_HOST_REGEX_IP_ADDR \
+	"\\(" CHK_FLT_HOST_REGEX_IP_NUM "\\.\\)\\{3\\}" \
+	CHK_FLT_HOST_REGEX_IP_NUM
+
+#define CHK_FLT_HOST_REGEX_IP "^" CHK_FLT_HOST_REGEX_IP_ADDR "$"
+
+#define CHK_FLT_HOST_REGEX_IPNETMASK \
+	"^" CHK_FLT_HOST_REGEX_IP_ADDR ":" CHK_FLT_HOST_REGEX_IP_ADDR "$"
+
+#define CHK_FLT_HOST_REGEX_CIDR \
+	"^\\(" CHK_FLT_HOST_REGEX_IP_NUM "\\.\\)\\{0,3\\}" \
+	CHK_FLT_HOST_REGEX_IP_NUM "/" CHK_FLT_HOST_REGEX_CIDR_NUM "$"
+
 int check_options();
 
-__inline__ int chk_output(char *val);
-__inline__ int chk_outputdata(char *val);
-__inline__ int chk_inputfile(char *val);
-__inline__ int chk_outputfile(char *val);
-__inline__ int chk_flt_dstport(char *val);
-__inline__ int chk_flt_srcport(char *val);
-__inline__ int chk_flt_globalport(char *val);
-__inline__ int chk_flt_srcip(char *val);
-__inline__ int chk_flt_dstip(char *val);
-__inline__ int chk_flt_globalip(char *val);
-__inline__ int chk_flt_srcmac(char *val);
-__inline__ int chk_flt_dstmac(char *val);
-__inline__ int chk_flt_limitnb(char *val);
-__inline__ int chk_flt_timelimit(char *val);
-__inline__ int chk_flt_filterstr(char *val);
-__inline__ int chk_flt_filterregex(char *val);
-__inline__ int chk_flt_protocol(char *val);
+int chk_output(char *val);
+int chk_outputdata(char *val);
+int chk_inputfile(char *val);
+int chk_outputfile(char *val);
+int chk_flt_dstport(char *val);
+int chk_flt_srcport(char *val);
+int chk_flt_globalport(char *val);
+int chk_flt_srcip(char *val);
+int chk_flt_dstip(char *val);
+int chk_flt_globalip(char *val);
+int chk_flt_srcmac(char *val);
+int chk_flt_dstmac(char *val);
+int chk_flt_limitnb(char *val);
+int chk_flt_timelimit(char *val);
+int chk_flt_filterstr(char *val);
+int chk_flt_filterregex(char *val);
+int chk_flt_protocol(char *val);
 
 #endif
 
