@@ -63,7 +63,7 @@ filter(
 	!mac_cmp(V,(__u8 *)ethh->E); \
 })
 
-__inline__ int
+int
 flt_dl_mac_src(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -75,7 +75,7 @@ flt_dl_mac_src(
 		return FLT_ERROR;
 }
 
-__inline__ int
+int
 flt_dl_mac_dst(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -90,34 +90,34 @@ flt_dl_mac_dst(
 #define FLT_NL_IP(HDR,V,E) __extension__ \
 ({ \
 	struct ipv4_header *iph = (struct ipv4_header *) HDR; \
-	(iph->V == E); \
+	((iph->V & *(E + 1)) == *(E)); \
 })
 
-__inline__ int
+int
 flt_nl_ip_src(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
 )
 {
 	if ((likely(nlph->len > 0)) && (nlph->id == ETHPROTO_IP))
-		return FLT_NL_IP(nlph->header,sourceaddr,*((__u32 *)val));
+		return FLT_NL_IP(nlph->header,sourceaddr,((__u32 *)val));
 	else
 		return 0;
 }
 
-__inline__ int
+int
 flt_nl_ip_dst(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
 )
 {
 	if ((likely(nlph->len > 0)) && (nlph->id == ETHPROTO_IP))
-		return FLT_NL_IP(nlph->header,destaddr,*((__u32 *)val));
+		return FLT_NL_IP(nlph->header,destaddr,((__u32 *)val));
 	else
 		return 0;
 }
 
-__inline__ int
+int
 flt_nl_ip_global(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -125,14 +125,14 @@ flt_nl_ip_global(
 {
 	
 	if ((likely(nlph->len > 0)) && (nlph->id == ETHPROTO_IP))
-		return (FLT_NL_IP(nlph->header,sourceaddr,*((__u32 *)val)) || 
-			FLT_NL_IP(nlph->header,destaddr,*((__u32 *)val)));
+		return (FLT_NL_IP(nlph->header,sourceaddr,((__u32 *)val)) || 
+			FLT_NL_IP(nlph->header,destaddr,((__u32 *)val)));
 	else
 		return 0;
 }
 
 
-__inline__ int
+int
 flt_tl_port_src(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -144,7 +144,7 @@ flt_tl_port_src(
 		return 0;
 }
 
-__inline__ int
+int
 flt_tl_port_dst(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -156,7 +156,7 @@ flt_tl_port_dst(
 		return 0;
 }
 
-__inline__ int
+int
 flt_tl_port_global(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -169,7 +169,7 @@ flt_tl_port_global(
 		return 0;
 }
 
-__inline__ int
+int
 flt_dl_protocol(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -181,7 +181,7 @@ flt_dl_protocol(
 		return 0;
 }
 
-__inline__ int
+int
 flt_nl_protocol(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -193,7 +193,7 @@ flt_nl_protocol(
 		return 0;
 }
 
-__inline__ int
+int
 flt_tl_protocol(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -205,21 +205,23 @@ flt_tl_protocol(
 		return 0;
 }
 
-__inline__ int
+int
 flt_regex(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
 )
 {
 	int end;
-	regex_t tmp;
-	memcpy((char *)&tmp,(char *)val,sizeof(regex_t));
-	end = !(regexec(&tmp,(datagram->data + datagram->len),0,0,0));
-	regfree(&tmp);
+	end = !(regexec((regex_t *) val,(datagram->data + datagram->len),0,0,0));
 	return end;
 }
 
-__inline__ int
+void flt_regex_free(__u8 *flt_val)
+{
+	regfree((regex_t *)flt_val);
+}
+
+int
 flt_string(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -228,7 +230,7 @@ flt_string(
 	return findstr((datagram->data + datagram->len),(char *)val);
 }
 
-__inline__ int
+int
 flt_sl_nempty(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val
@@ -237,7 +239,7 @@ flt_sl_nempty(
 	return (datagram->totlen > datagram->len);
 }
 
-__inline__ int
+int
 flt_dontdisplaypackets(
 	struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *datagram, __u8 *val

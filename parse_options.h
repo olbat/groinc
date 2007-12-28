@@ -89,7 +89,7 @@ enum opttype
 struct opt_dsp_rpt_type
 {
 	void (*func_dsp_rpt)(int, __u8 *);
-	void (*func_rpt)(__u8 *,long int, long int, long int);
+	void (*func_rpt)(__u8 *,int, int, int);
 };
 
 struct opt_dsp_pkt_type
@@ -100,6 +100,7 @@ struct opt_dsp_pkt_type
 struct opt_flt_type 
 {
 	int (*func_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *, __u8 *);
+	void (*func_free)(__u8 *);
 };
 
 struct linked_list_opt_value 

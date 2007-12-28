@@ -58,14 +58,15 @@ struct linked_list_value *linked_list_add(struct linked_list *l,struct linked_li
 	return val;
 }
 
-struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram, __u8 *v), __u8 *val, unsigned int size)
+struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram, __u8 *v), void (*func_free)(__u8 *), __u8 *val, unsigned int size)
 {
 	struct linked_list_value *end;
 
-	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value));
 	end->type = LKD_TYPE_FLT;
 	end->u.flt = (struct linked_list_flt_value *) malloc(sizeof(struct linked_list_flt_value));
 	end->u.flt->func_flt = func;
+	end->u.flt->func_free = func_free;
 	end->u.flt->val = (__u8 *) malloc(size * sizeof(__u8));
 	memcpy((char *)end->u.flt->val,(char *)val,size);
 
@@ -76,7 +77,7 @@ struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(int, struc
 {
 	struct linked_list_value *end;
 
-	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value));
 	end->type = LKD_TYPE_DSP_PKT;
 	end->u.dsp_pkt = (struct linked_list_dsp_pkt_value *) malloc(sizeof(struct linked_list_dsp_pkt_value));
 	end->u.dsp_pkt->func_dsp_pkt = func;
@@ -98,7 +99,7 @@ struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(int, __u8 
 	return end;
 }
 
-struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *,long int,long int,long int), __u8 *val, unsigned int size)
+struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *,int,int,int), __u8 *val, unsigned int size)
 {
 	struct linked_list_value *end;
 
@@ -121,7 +122,7 @@ struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *,long in
 	V->func_prs = PRS; \
 	V->type = TY;
 
-struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *datagram, __u8 *))
+struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *datagram, __u8 *), void (*f_free)(__u8 *))
 {
 	struct linked_list_value *end;
 	
@@ -131,6 +132,7 @@ struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum
 	end->u.opt = (struct linked_list_opt_value *) malloc(sizeof(struct linked_list_opt_value));
 	LKD_OPT_VALUE_INIT(end->u.opt,ns,nl,id,fl,f_chk,f_prs,OPT_TYPE_FLT);
 	end->u.opt->u.flt.func_flt = f_flt;
+	end->u.opt->u.flt.func_free = f_free;
 	
 	return end;
 }
@@ -149,7 +151,7 @@ struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, 
 	return end;
 }
 
-struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(int, __u8 *), void (*func_rpt)(__u8 *,long int, long int, long int))
+struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(int, __u8 *), void (*func_rpt)(__u8 *,int, int, int))
 {
 	struct linked_list_value *end;
 	
@@ -186,6 +188,8 @@ void linked_list_opt_value_free(struct linked_list_value *val)
 
 void linked_list_flt_value_free(struct linked_list_value *val)
 {
+	if (val->u.flt->func_free)
+		(val->u.flt->func_free)(val->u.flt->val);
 	free(val->u.flt->val);
 	free(val->u.flt);
 	free(val);
