@@ -52,6 +52,7 @@ static struct protocol_header *transport_layerph;
 */
 
 static struct data datagram;
+static char datagram_data[DATAGRAM_SIZE];
 static struct protocol_header datalink_layerph;
 static struct protocol_header network_layerph;
 static struct protocol_header transport_layerph;
@@ -79,7 +80,8 @@ int start_sniff(int inputfd,int outputfd)
 	
 	/* datagram = (struct data *) malloc(sizeof(struct data));  */
 	memset((char *)&datagram,0,sizeof(struct data));
-	datagram.data = (char *) malloc(sizeof(char)*DATAGRAM_SIZE);
+	/* datagram.data = (char *) malloc(sizeof(char)*DATAGRAM_SIZE); */
+	datagram.data = datagram_data;
 	memset(datagram.data,0,sizeof(char)*DATAGRAM_SIZE);
 	
 	/* datalink_layerph = (struct protocol_header *) malloc(sizeof(struct protocol_header)); */
@@ -178,7 +180,8 @@ int start_sniff(int inputfd,int outputfd)
 		}
 	}
 
-	close(outputfd);
+	if (outputfd >= 0)
+		close(outputfd);
 	
 	stop_sniff(); 
 	cleanup_sniff();
@@ -195,7 +198,7 @@ int stop_sniff()
 
 int cleanup_sniff()
 {
-	free(datagram.data);
+	/* free(datagram.data); */
 	/* free(datagram); */
 	/* free(datalink_layerph); */
 	/* free(network_layerph); */
@@ -207,8 +210,10 @@ int cleanup_sniff()
 	linked_list_free(list_error);
 	ncache_free();
 	default_free();
-	close(curinputfd);
-	close(curoutputfd);
+	if (curinputfd >= 0)
+		close(curinputfd);
+	if (curoutputfd >= 0)
+		close(curoutputfd);
 
 	return 0;
 }
