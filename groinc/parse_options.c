@@ -20,6 +20,7 @@
 #include "parse_options.h"
 #include "parse_args.h"
 #include "check_options.h"
+#include "protocols/filter_proto.h"
 #include "globals_error.h"
 #include "display.h"
 #include "report.h"
@@ -74,8 +75,8 @@ static char *value;
 #define OPTLIST_ADD_DSP_RPT(O,SH,LG,ID,FL,CK,PR,D,R) \
 	linked_list_add(O,linked_list_opt_value_init_dsp_rpt(SH,LG,ID,FL,CK,PR,D,R));
 
-#define OPTLIST_ADD_FLT(O,SH,LG,ID,FL,CK,PR,F) \
-	linked_list_add(O,linked_list_opt_value_init_flt(SH,LG,ID,FL,CK,PR,F));
+#define OPTLIST_ADD_FLT(O,SH,LG,ID,FL,CK,PR,F,FR) \
+	linked_list_add(O,linked_list_opt_value_init_flt(SH,LG,ID,FL,CK,PR,F,FR));
 
 /* Do not forget to increment the OPTLIST_SIZE when add an option */
 /* void options_optlist_init(struct linked_list_opt_value *optl) */
@@ -100,21 +101,21 @@ static char *value;
 	OPTLIST_ADD_DSP_RPT(OPTL, 'T',	"reportotaltime",	OPT_DSP_RPT_TIMETOT,		PO_NOARG, 0,	prs_dsp_rpt_timetot, dsp_rpt_timetot, 0); \
 	OPTLIST_ADD_DSP_RPT(OPTL, 'c',	"countpacketstot",	OPT_DSP_RPT_COUNTPACKETSTOT,	PO_NOARG, 0,	prs_dsp_rpt_countpackets, dsp_rpt_countpacketstot, rpt_countpacketstot); \
 	OPTLIST_ADD_DSP_RPT(OPTL, 'C',	"countpacketsfiltred",	OPT_DSP_RPT_COUNTPACKETSFILTRED,	PO_NOARG, 0,	prs_dsp_rpt_countpackets, dsp_rpt_countpacketsfiltred, rpt_countpacketsfiltred); \
-	OPTLIST_ADD_FLT(OPTL, 'd',	"destport",	OPT_FLT_DSTPORT,	PO_ARG, chk_flt_dstport,	prs_flt_dstport,	flt_tl_port_dst); \
-	OPTLIST_ADD_FLT(OPTL, 'D',	"destip",	OPT_FLT_DSTIP,		PO_ARG, chk_flt_dstip,		prs_flt_dstip,		flt_nl_ip_dst); \
-	OPTLIST_ADD_FLT(OPTL, 's',	"sourceport",	OPT_FLT_SRCPORT,	PO_ARG, chk_flt_srcport,	prs_flt_srcport,	flt_tl_port_src); \
-	OPTLIST_ADD_FLT(OPTL, 'S',	"sourceip",	OPT_FLT_SRCIP,		PO_ARG, chk_flt_srcip,		prs_flt_srcip,		flt_nl_ip_src); \
-	OPTLIST_ADD_FLT(OPTL, 'f',	"filter",	OPT_FLT_FILTERSTR,	PO_ARG, chk_flt_filterstr,	prs_flt_filterstr,	flt_string); \
-	OPTLIST_ADD_FLT(OPTL, 'p',	"protocol",	OPT_FLT_PROTOCOL,	PO_ARG, chk_flt_protocol,	prs_flt_protocol,	0); \
-	OPTLIST_ADD_FLT(OPTL, 'F',	"filter-regex",	OPT_FLT_FILTERREGEX,	PO_ARG, chk_flt_filterregex,	prs_flt_filterregex,	flt_regex); \
-	OPTLIST_ADD_FLT(OPTL, 'm',	"sourcemac",	OPT_FLT_SRCMAC,		PO_ARG, chk_flt_srcmac,		prs_flt_srcmac,		flt_dl_mac_src); \
-	OPTLIST_ADD_FLT(OPTL, 'M',	"destmac",	OPT_FLT_DSTMAC,		PO_ARG, chk_flt_dstmac,		prs_flt_dstmac,		flt_dl_mac_dst); \
-	OPTLIST_ADD_FLT(OPTL, 'l',	"limitnb",	OPT_FLT_LIMITNB,	PO_ARG, chk_flt_limitnb,	prs_flt_limitnb,	0); \
-	OPTLIST_ADD_FLT(OPTL, 'g',	"globalport",	OPT_FLT_GLOBALPORT,	PO_ARG, chk_flt_globalport,	prs_flt_globalport,	flt_tl_port_global); \
-	OPTLIST_ADD_FLT(OPTL, 'G',	"globalip",	OPT_FLT_GLOBALIP,	PO_ARG, chk_flt_globalip,	prs_flt_globalip,	flt_nl_ip_global); \
-	OPTLIST_ADD_FLT(OPTL, 't',	"timelimit",	OPT_FLT_TIMELIMIT,	PO_ARG, chk_flt_timelimit,	prs_flt_timelimit,	0); \
-	OPTLIST_ADD_FLT(OPTL, 'z',	"dontdisplayemptysl",	OPT_DSP_PKT_DONTDISPLAYEMPTYSL,	PO_NOARG, 0,	prs_flt_dontdisplayemptysl, flt_sl_nempty); \
-	OPTLIST_ADD_FLT(OPTL, 'q',	"quiet",	OPT_DSP_PKT_DONTDISPLAYPACKETS,	PO_NOARG, 0,	prs_flt_dontdisplaypackets, flt_dontdisplaypackets); \
+	OPTLIST_ADD_FLT(OPTL, 'd',	"destport",	OPT_FLT_DSTPORT,	PO_ARG, chk_flt_dstport,	prs_flt_dstport,	flt_tl_port_dst,0); \
+	OPTLIST_ADD_FLT(OPTL, 'D',	"destip",	OPT_FLT_DSTIP,		PO_ARG, chk_flt_dstip,		prs_flt_dstip,		flt_nl_ip_dst,0); \
+	OPTLIST_ADD_FLT(OPTL, 's',	"sourceport",	OPT_FLT_SRCPORT,	PO_ARG, chk_flt_srcport,	prs_flt_srcport,	flt_tl_port_src,0); \
+	OPTLIST_ADD_FLT(OPTL, 'S',	"sourceip",	OPT_FLT_SRCIP,		PO_ARG, chk_flt_srcip,		prs_flt_srcip,		flt_nl_ip_src,0); \
+	OPTLIST_ADD_FLT(OPTL, 'f',	"filter",	OPT_FLT_FILTERSTR,	PO_ARG, chk_flt_filterstr,	prs_flt_filterstr,	flt_string,0); \
+	OPTLIST_ADD_FLT(OPTL, 'p',	"protocol",	OPT_FLT_PROTOCOL,	PO_ARG, chk_flt_protocol,	prs_flt_protocol,	0,0); \
+	OPTLIST_ADD_FLT(OPTL, 'F',	"filter-regex",	OPT_FLT_FILTERREGEX,	PO_ARG, chk_flt_filterregex,	prs_flt_filterregex,	flt_regex,flt_regex_free); \
+	OPTLIST_ADD_FLT(OPTL, 'm',	"sourcemac",	OPT_FLT_SRCMAC,		PO_ARG, chk_flt_srcmac,		prs_flt_srcmac,		flt_dl_mac_src,0); \
+	OPTLIST_ADD_FLT(OPTL, 'M',	"destmac",	OPT_FLT_DSTMAC,		PO_ARG, chk_flt_dstmac,		prs_flt_dstmac,		flt_dl_mac_dst,0); \
+	OPTLIST_ADD_FLT(OPTL, 'l',	"limitnb",	OPT_FLT_LIMITNB,	PO_ARG, chk_flt_limitnb,	prs_flt_limitnb,	0,0); \
+	OPTLIST_ADD_FLT(OPTL, 'g',	"globalport",	OPT_FLT_GLOBALPORT,	PO_ARG, chk_flt_globalport,	prs_flt_globalport,	flt_tl_port_global,0); \
+	OPTLIST_ADD_FLT(OPTL, 'G',	"globalip",	OPT_FLT_GLOBALIP,	PO_ARG, chk_flt_globalip,	prs_flt_globalip,	flt_nl_ip_global,0); \
+	OPTLIST_ADD_FLT(OPTL, 't',	"timelimit",	OPT_FLT_TIMELIMIT,	PO_ARG, chk_flt_timelimit,	prs_flt_timelimit,	0,0); \
+	OPTLIST_ADD_FLT(OPTL, 'z',	"dontdisplayemptysl",	OPT_DSP_PKT_DONTDISPLAYEMPTYSL,	PO_NOARG, 0,	prs_flt_dontdisplayemptysl, flt_sl_nempty,0); \
+	OPTLIST_ADD_FLT(OPTL, 'q',	"quiet",	OPT_DSP_PKT_DONTDISPLAYPACKETS,	PO_NOARG, 0,	prs_flt_dontdisplaypackets, flt_dontdisplaypackets,0); \
 	OPTLIST_ADD_DSP_PKT(OPTL, '\0',	"",		OPT_END,	PO_NOARG, 0,	0, 0 );
 
 int lookup_options(int argc, char **argv, struct linked_list *optlist, struct linked_list_opt_value **elem)
@@ -165,9 +166,15 @@ int lookup_options(int argc, char **argv, struct linked_list *optlist, struct li
 			}
 			else
 			{
-				ERR_SET(list_error,EOPT_UNKNOWN,argv[args]);
-				args++;
-				end = OPT_ERROR;
+				value = argv[args + 1];
+				if (proto_filter(ptr + 2,value) != OPT_OK)
+				{
+					ERR_SET(list_error,EOPT_INVAL,ptr);
+					args++;
+					end = OPT_ERROR;
+				}
+				else
+					args++;
 			}
 		}
 		else
