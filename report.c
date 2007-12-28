@@ -21,7 +21,7 @@
 #include "globals_report.h"
 #include "tools/compiler.h"
 
-void report(long int id_dl, long int id_nl, long int id_tl)
+void report(int id_dl, int id_nl, int id_tl)
 {
 	struct linked_list *ptr = list_report;
 	if (likely(ptr->value))
@@ -50,13 +50,13 @@ __extension__ \
 	*V = (*((unsigned int *) V) + 1); \
 })
 
-void rpt_countpacketstot(__u8 *val, long int id_dl, long int id_nl, long int id_tl)
+void rpt_countpacketstot(__u8 *val, int id_dl, int id_nl, int id_tl)
 {
 	RPT_COUNT_PACKETS_INC(val);
 	
 }
 
-void rpt_countpacketsfiltred(__u8 *val, long int id_dl, long int id_nl, long int id_tl)
+void rpt_countpacketsfiltred(__u8 *val, int id_dl, int id_nl, int id_tl)
 {
 	if ((id_dl != -1) || (id_nl != -1) || (id_tl != -1))
 		RPT_COUNT_PACKETS_INC(val);
