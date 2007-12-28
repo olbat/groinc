@@ -79,12 +79,12 @@ void display_report(int fd)
 	print_newline(fd);
 }
 
-__inline__ void dsp_pkt_packets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_packets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_packetnb(fd,datagram->len);
 }
 
-__inline__ void dsp_pkt_dlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_dlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_datalink_layer_proto(fd,datalink_layerph);
 }
@@ -94,30 +94,30 @@ __inline void dsp_pkt_nlproto(int fd, struct protocol_header *datalink_layerph, 
 	print_network_layer_proto(fd,datalink_layerph,network_layerph);
 }
 
-__inline__ void dsp_pkt_tlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_tlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_transport_layer_proto(fd,network_layerph,transport_layerph);
 }
 
-__inline__ void dsp_pkt_simple(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_simple(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_proto_simple(fd,datalink_layerph,network_layerph,transport_layerph);
 	print_simple(fd,datalink_layerph,network_layerph,transport_layerph);
 }
 
-__inline__ void dsp_pkt_header(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_header(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_datalink_layer(fd,datalink_layerph);
 	print_network_layer(fd,network_layerph);
 	print_transport_layer(fd,transport_layerph);
 }
 
-__inline__ void dsp_pkt_data(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_data(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_data(datafd,datagram);
 }
 
-__inline__ void dsp_pkt_hexa(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_hexa(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_protoproto(fd,datalink_layerph);
 	print_hexa(fd,datalink_layerph->header,datalink_layerph->len);
@@ -136,7 +136,7 @@ __inline__ void dsp_pkt_hexa(int fd, struct protocol_header *datalink_layerph, s
 	print_hexa(fd,(datagram->data + datagram->len),(datagram->totlen - datagram->len));
 }
 
-__inline__ void dsp_pkt_allpackets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
+void dsp_pkt_allpackets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
 {
 	print_packetnb(fd,datagram->len);
 }
