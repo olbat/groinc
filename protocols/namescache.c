@@ -19,6 +19,7 @@
 
 #include "namescache.h"
 #include "../tools/network_tools.h"
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <malloc.h>
@@ -27,18 +28,19 @@
 __u16 ncacheopt = 0;
 
 static struct ncache_ipv4 *ipv4c = 0;
-static int ipv4csize = 0;
+static int ipv4cptr = 0;
+static struct sockaddr_in ipv4namesain;
 
 #define NCHE_IPV4_INIT() __extension__ \
 ({ \
 	struct ncache_ipv4 *p; \
 	ipv4c = (struct ncache_ipv4 *) \
 		malloc(NCHE_IPV4_SIZE*sizeof(struct ncache_ipv4)); \
-	p = ipv4c + (NCHE_IPV4_SIZE - 1); \
-	while (p >= ipv4c) \
-		(p--)->name = 0; \
-	if (!(ncacheopt & NCHE_OPT_NORESOLV)) \
-		sethostent(1); \
+	p = ipv4c + NCHE_IPV4_SIZE; \
+	while (p-- > ipv4c) \
+		p->name = 0; \
+	ipv4namesain.sin_family = AF_INET; \
+	ipv4namesain.sin_port = 0; \
 })
 
 #define NCHE_IPV4_FREE() __extension__ \
@@ -48,17 +50,17 @@ static int ipv4csize = 0;
 	while (p-- > ipv4c) \
 		if (p->name) \
 			free(p->name); \
-	ipv4csize = 0; \
+	ipv4cptr = 0; \
 	free(ipv4c); \
 	ipv4c = 0; \
-	if (!(ncacheopt & NCHE_OPT_NORESOLV)) \
-		endhostent(); \
 })
 
 char *
 get_ipv4_name(__u32 addr)
 {
 	static char tmpip[IPV4_STR_MAXSIZE];
+	/* to prevent freeing of a name between two call of the function */
+	static char *last;
 	register struct ncache_ipv4 *ptr;
 	struct hostent *tmph;
 
@@ -66,33 +68,42 @@ get_ipv4_name(__u32 addr)
 	{	
 		NCHE_IPV4_INIT();
 		ptr = ipv4c;
+		ipv4cptr = 1;
 	}
 	else
 	{
 		ptr = ipv4c;
-		while(ptr < (ipv4c + ipv4csize))
+		while(ptr < (ipv4c + ipv4cptr))
 		{
 			if (ptr->addr == addr)
 				goto out;
 			ptr++;
 		}
-		if ((ptr + (NCHE_IPV4_SIZE - 1))->name)
+		if ((ipv4c + (NCHE_IPV4_SIZE - 1))->name)
 		{
 			ptr = ipv4c + (NCHE_IPV4_SIZE - 1);
-			while (ptr >= (ipv4c + ipv4csize)) 
+			while (ptr >= (ipv4c + ipv4cptr)) 
 			{
 				if (ptr->addr == addr)
 					goto out;
 				ptr--;
 			}
 		}
-		ptr = ipv4c + ipv4csize++;
-		ipv4csize %= NCHE_IPV4_SIZE;
+#define NCHE_IPV4_INCPTR() __extension__ \
+({ \
+	(ipv4c + (ipv4cptr >= (NCHE_IPV4_SIZE - 1) \
+		? (ipv4cptr = 0) : ipv4cptr++)); \
+})
+
+		/* the addr was not found in the cache */
+		ptr = NCHE_IPV4_INCPTR();
+		while (ptr->name == last)
+			ptr = NCHE_IPV4_INCPTR();
 	}
 
 #define NCHE_IPV4_NCPY(V,S) __extension__ \
 ({ \
-	V = (char *) malloc(strlen(S)*sizeof(char)); \
+	V = (char *) malloc(strlen(S)*sizeof(char)+1); \
 	V = strcpy(V,S); \
 })
 
@@ -102,9 +113,16 @@ get_ipv4_name(__u32 addr)
 		free(ptr->name);
 
 	if (ncacheopt & NCHE_OPT_NORESOLV)
+	{
 		NCHE_IPV4_NCPY(ptr->name,ipv4_ntoa(ntohl(addr),tmpip));
+	}
 	else
 	{
+		ipv4namesain.sin_addr.s_addr = addr;
+
+		/* if (getnameinfo(&ipv4namesain,sizeof(ipv4namesain),tmpname,
+			sizeof(tmpname),0,0,0)) */
+
 		if ((tmph = gethostbyaddr(&addr,sizeof(__u32),AF_INET)))
 			NCHE_IPV4_NCPY(ptr->name,tmph->h_name);
 		else
@@ -112,7 +130,7 @@ get_ipv4_name(__u32 addr)
 	}
 
 	out:
-		return ptr->name;
+		return (last = ptr->name);
 }
 
 __inline__ void ncache_free()

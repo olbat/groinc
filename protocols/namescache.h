@@ -22,7 +22,7 @@
 
 #include <asm/types.h>
 
-#define NCHE_IPV4_SIZE	32
+#define NCHE_IPV4_SIZE	64
 
 extern __u16	ncacheopt;
 
