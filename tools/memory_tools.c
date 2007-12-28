@@ -27,6 +27,17 @@ char to_lower(char c)
 {
 	return (c | 0x20);
 }
+int strccount(char *str, char c)
+{
+	int i;
+	i= 0;
+	while (*str)
+	{
+		if (*str++ == c)
+			i++;
+	}
+	return i;
+}
 char *strupr(char *str)
 {
 	char *end;
