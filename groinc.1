@@ -39,8 +39,8 @@ To sniff TCP trafic on port 80 and display protocols headers: \c
 To sniff ARP trafic, stopping after 20 packets received, using hexadecimal display: \c
 .B groinc -H -p arp -l 20
 .TP
-To sniff UDP trafic which have destination IP 127.0.0.1 and source port 53, saving capture in the file file.cap: \c
-.B groinc -q -w file.cap -p udp -D 127.0.0.1 -s 53
+To sniff UDP trafic which have a destination IP in the subnetwork 192.168.0.0 whick have for network mask 255.255.0.0 and source port 53, saving capture in the file file.cap: \c
+.BI "groinc -q -w file.cap -p udp -D 192.168/16 -s 53" " or " "groinc -q -w file.cap -p udp -D 192.168.0.0:255.255.0.0 -s 53"
 .TP
 To sniff all the trafic during 20 seconds and display headers and data: \c
 .B groinc -v -a -t 20
@@ -61,13 +61,13 @@ To sniff all the trafic during 20 seconds and display headers and data: \c
 .BI "-g	--globalport " "port" \c
 \& The source or destination port to be scan
 .TP
-.BI "-S 	--sourceip " "IP address" \c
+.BI "-S 	--sourceip " "IP address[:netmask]" " | " "domain name" " | " "IP address/netmask(CIDR)" \c
 \& The source IP adress to be scan
 .TP
-.BI "-D 	--destip " "IP address" \c
+.BI "-D 	--destip " "IP address[:netmask]" " | " "domain name" " | " "IP address/netmask(CIDR)" \c
 \& The destination IP adress to be scan
 .TP
-.BI "-G	--globalip " "IP address" \c
+.BI "-G 	--globalip " "IP address[:netmask]" " | " "domain name" " | " "IP address/netmask(CIDR)" \c
 \& The source or destination IP to be scan
 .TP
 .BI "-p 	--protocol " "name" \c
