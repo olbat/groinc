@@ -31,7 +31,7 @@ struct data
 
 struct protocol_header
 {
-	long int id;
+	int id;
 	int len;
 	char *header;
 };

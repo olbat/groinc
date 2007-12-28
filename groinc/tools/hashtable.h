@@ -36,7 +36,7 @@ struct hashtable
 };
 
 struct hashtable *hashtable_init(int size);
-__extension__ unsigned long long hashtable_hash(char *str);
+unsigned int hashtable_hash(char *str);
 struct cell *hashtable_lookup(struct hashtable *t, char *key, struct hashtable_value **value);
 struct hashtable *hashtable_add(struct hashtable *t, char *key, struct hashtable_value *value);
 void hashtable_delete(struct hashtable *t);

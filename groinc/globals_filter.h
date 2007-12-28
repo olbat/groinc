@@ -25,7 +25,7 @@
 #include "tools/network_tools.h"
 #include <sys/time.h>
 
-extern long int 	llimitnb;
+extern int 	llimitnb;
 
 extern	int 	datafd,
    		headerfd;

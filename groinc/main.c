@@ -42,7 +42,7 @@
 
 /* declaration of the globals */
 
-long int	llimitnb;
+int	llimitnb;
 
 char	*outputdata,
 	*output,
