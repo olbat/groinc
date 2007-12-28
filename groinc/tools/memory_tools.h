@@ -19,6 +19,7 @@
 #ifndef _MEMORY_TOOLS_H
 #define _MEMORY_TOOLS_H
 
+int strccount(char *str, char c);
 char to_upper(char c);
 char to_lower(char c);
 char *strupr(char *str);
