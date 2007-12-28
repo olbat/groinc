@@ -18,9 +18,9 @@ struct hashtable *hashtable_init(int size)
 	return end;
 }
 
-__extension__ unsigned long long hashtable_hash(char *str)
+unsigned int hashtable_hash(char *str)
 {
-	__extension__ unsigned long long end;
+	unsigned int end;
 	end = 0;
 	while (*str)
 	{
@@ -51,7 +51,7 @@ struct cell *hashtable_lookup(struct hashtable *t, char *key, struct hashtable_v
 void hashtable_delete(struct hashtable *t)
 {
 	int i;
-	struct cell *ptr;
+	struct cell *ptr,*tmpptr;
 	i = 0;
 	while (i < t->size)
 	{
@@ -60,8 +60,9 @@ void hashtable_delete(struct hashtable *t)
 		{
 			hashtable_value_free(ptr->value);
 			free(ptr->key);
+			tmpptr = ptr->next;
 			free(ptr);
-			ptr = ptr->next;
+			ptr = tmpptr;
 		}
 	}
 	free(t->cells);
@@ -75,11 +76,11 @@ struct hashtable *hashtable_add(struct hashtable *t, char *key, struct hashtable
 
 	table = (t->cells + (hashtable_hash(key) % t->size));
 	newcell = (struct cell *) malloc(sizeof(struct cell));
-	len = strlen(key);
+	len = strlen(key) + 1;
 	
 	newcell->key = (char *) malloc(len*sizeof(char));
 	memcpy(newcell->key,key,len);
-	newcell->key[len] = 0;
+	/* newcell->key[len] = 0; */
 	newcell->value = value;
 
 	newcell->next = *table;
@@ -90,12 +91,16 @@ struct hashtable *hashtable_add(struct hashtable *t, char *key, struct hashtable
 
 void hashtable_value_free(struct hashtable_value *val)
 {
+	/* to be changed if more types */
+	hashtable_err_value_free(val);
+	/*
 	switch (val->type)
 	{
 		case HSH_TYPE_ERR :
 			hashtable_err_value_free(val);
 			break;
 	}
+	*/
 }
 
 struct hashtable_value *hashtable_err_value_init(enum err_id id, enum err_state st, char *msg, void (*func_err)(int))
