@@ -21,7 +21,7 @@
 
 #include <asm/types.h>
 
-#define MAC_STR_SIZE 19
+#define MAC_STR_SIZE 18
 #define IPV4_STR_MAXSIZE 16
 
 char *ipv4_ntoa(__u32 longip, char *buff);
