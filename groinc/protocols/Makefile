@@ -3,9 +3,9 @@
 # This software is released under GPL the license
 # see the COPYING file for more informations
 
-CFLAGS= -Wall -O3 -ansi -pedantic -g
+CFLAGS= -Wall -ansi -pedantic -O3 -fomit-frame-pointer -g
 CC= gcc ${CFLAGS} 
-SRC= printp.c namescache.c
+SRC= printp.c namescache.c filter_proto.c
 OBJ= $(SRC:.c=.o)
 
 all : ${OBJ} protocols
