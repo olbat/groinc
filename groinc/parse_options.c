@@ -174,7 +174,7 @@ int lookup_options(int argc, char **argv, struct linked_list *optlist, struct li
 					end = OPT_ERROR;
 				}
 				else
-					args++;
+					args += 2;
 			}
 		}
 		else
