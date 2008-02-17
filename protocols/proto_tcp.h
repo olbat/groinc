@@ -30,12 +30,40 @@
 
 #include "../network/headers.h"
 
+/* host-bytes-order */
+enum tcp_flags
+{
+	TCP_LEN = 0xF0,
+	TCP_RES = 0x0F,
+/*
+	TCP_FIN = 0x0080,
+	TCP_SYN = 0x0040,
+	TCP_RST = 0x0020,
+	TCP_PSH = 0x0010,
+	TCP_ACK = 0x0008,
+	TCP_URG = 0x0004,
+	TCP_ECE = 0x0002,
+	TCP_ECN = 0x0001
+*/
+	TCP_FIN = 0x01,
+	TCP_SYN = 0x02,
+	TCP_RST = 0x04,
+	TCP_PSH = 0x08,
+	TCP_ACK = 0x10,
+	TCP_URG = 0x20,
+	TCP_ECE = 0x40,
+	TCP_ECN = 0x80
+};
+
 struct tcp_header
 {
 	__u16 sourceport;
 	__u16 destport;
 	__u32 seqnum;
 	__u32 acknum;
+	__u8 lenres;
+	__u8 flags;
+/*
 __extension__ __u16 res:4,
 	      tcphdrlen:4,
 	      fin:1,
@@ -46,12 +74,17 @@ __extension__ __u16 res:4,
 	      urg:1,
 	      ece:1,
 	      ecn:1;
+*/
 	__u16 window;
 	__u16 tcpchecksum;
 	__u16 urgptr;
 };
-void scan_tcp(struct data *datagram, struct protocol_header *transport_layerph,
-	struct protocol_header *application_layerph);
+void scan_tcp(struct data *datagram, struct protocol_header *tlph,
+	struct protocol_header *alph);
 void print_tcp(int fd, char *datagram);
+int check_filter_tcp(char *filtername, char *val);
+int parse_filter_tcp(char *filtername, char *val, __u8 *buff);
+int filter_tcp(struct protocol_header *dlph, struct protocol_header *nlph,
+	struct protocol_header *tlph, struct data *data, __u8 *val);
 
 #endif
