@@ -1,4 +1,7 @@
--fix the filter regex bug
+-use little or bigendian types in protocols structs
+-use atexit or on_exit, abort function
+-use standard loop for string seeking in arrays
+-protocol option "proto1 OR proto2" (atm just "proto1 AND proto2")
 -use the new system for the timelimit and packet number options
 -make the "time since first packet" report option work
 -new protocols (to be done)
@@ -20,7 +23,7 @@
 -complete verification of the arguments in the check_options
 -give the choice of the interface
 -make a session layer filter
--stack for the received packet, keep the times
+-stack for the received packet, keep the time
 -time received options 
 -ntohs / ntohl
 -make the filter work for fragmented data (tcp,ip) 
