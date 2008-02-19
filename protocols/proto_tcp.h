@@ -1,6 +1,6 @@
 /* This file is a part of groinc
  * 
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * Copyright (C) 2006-2008 Sarzyniec Luc <olbat@xiato.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,16 +35,6 @@ enum tcp_flags
 {
 	TCP_LEN = 0xF0,
 	TCP_RES = 0x0F,
-/*
-	TCP_FIN = 0x0080,
-	TCP_SYN = 0x0040,
-	TCP_RST = 0x0020,
-	TCP_PSH = 0x0010,
-	TCP_ACK = 0x0008,
-	TCP_URG = 0x0004,
-	TCP_ECE = 0x0002,
-	TCP_ECN = 0x0001
-*/
 	TCP_FIN = 0x01,
 	TCP_SYN = 0x02,
 	TCP_RST = 0x04,
@@ -82,7 +72,6 @@ __extension__ __u16 res:4,
 void scan_tcp(struct data *datagram, struct protocol_header *tlph,
 	struct protocol_header *alph);
 void print_tcp(int fd, char *datagram);
-int check_filter_tcp(char *filtername, char *val);
 int parse_filter_tcp(char *filtername, char *val, __u8 *buff);
 int filter_tcp(struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *data, __u8 *val);

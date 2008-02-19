@@ -1,6 +1,6 @@
 /* This file is a part of groinc
  * 
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * Copyright (C) 2006-2008 Sarzyniec Luc <olbat@xiato.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ print_tcp(
 		ntohs(tcph->sourceport),ntohs(tcph->destport),
 		ntohl(tcph->seqnum),ntohl(tcph->acknum),
 		FLAG_VAL(tcph->lenres,TCP_LEN,4),
-		BFLAG_VAL(tcph->lenres,TCP_RES),BFLAG_VAL(tcph->flags,TCP_ECN),
+		FLAG_VAL(tcph->lenres,TCP_RES,0),BFLAG_VAL(tcph->flags,TCP_ECN),
 		BFLAG_VAL(tcph->flags,TCP_ECE),BFLAG_VAL(tcph->flags,TCP_URG),
 		BFLAG_VAL(tcph->flags,TCP_ACK),BFLAG_VAL(tcph->flags,TCP_PSH),
 		BFLAG_VAL(tcph->flags,TCP_RST),BFLAG_VAL((tcph->flags),TCP_SYN),
