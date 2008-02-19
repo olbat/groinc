@@ -1,6 +1,6 @@
 /* This file is a part of groinc
  * 
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * Copyright (C) 2006-2008 Sarzyniec Luc <olbat@xiato.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,20 @@
 
 #include "../network/headers.h"
 
+enum ipv4_flags
+{
+	IPV4_HDRLEN = 0x0F,
+	IPV4_VERS = 0xF0
+};
+
 struct ipv4_header
 {
+/*
 __extension__ __u8 iphdrlen:4,
+
 	     version:4;
+*/
+	__u8 lenvers;
 	__u8 tos;
 	__u16 totlen;
 	__u16 id;
@@ -49,6 +59,9 @@ void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph,
 	struct protocol_header *transport_layerph);
 void print_ipv4(int fd, char *datagram);
 void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport);
+int parse_filter_ipv4(char *filtername, char *val, __u8 *buff);
+int filter_ipv4(struct protocol_header *dlph, struct protocol_header *nlph,
+	struct protocol_header *tlph, struct data *data, __u8 *val);
 
 #endif
 
