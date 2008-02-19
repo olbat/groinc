@@ -1,6 +1,6 @@
 /* This file is a part of groinc
  * 
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * Copyright (C) 2006-2008 Sarzyniec Luc <olbat@xiato.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ void print_misc(enum miscno no)
 	if (no == MISCNO_VERSION)
 		print_format(headerfd, "%s\nThis is free software; see the source or use --license for copying conditions.\n",SOFT_VERSION);
 	else if (no == MISCNO_LICENSE)
-		print_format(headerfd,	"Groinc is Copyright 2006,2007 by Sarzyniec Luc <olbat@xiato.com>.\n\n"
+		print_format(headerfd,	"Groinc is Copyright 2006-2008 by Sarzyniec Luc <olbat@xiato.net>.\n\n"
 					"Groinc is free software, covered by the \"GNU General Public License version 3\", you are\n"
 					"welcome to change it and/or distribute copies of it under certain conditions.\n"
 					"There is absolutely no warranty for groinc.\n\n"
