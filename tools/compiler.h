@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * Copyright (C) 2006-2008 Sarzyniec Luc <olbat@xiato.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,5 +21,7 @@
 
 #define likely(X) __builtin_expect(!!(X),1)
 #define unlikely(X) __builtin_expect(!!(X),0)
+#define typeofm(T,M) __typeof__(((T *)0)->M)
+#define sizeofm(T,M) sizeof(typeofm(T,M))
 
 #endif
