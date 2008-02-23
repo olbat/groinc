@@ -1,6 +1,6 @@
 /* This file is a part of groinc
  * 
- * Copyright (C) 2006, 2007 Sarzyniec Luc <olbat@xiato.com>
+ * Copyright (C) 2006-2008 Sarzyniec Luc <olbat@xiato.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <unistd.h>
 #include <ctype.h>
 #include <netinet/in.h>
 #include "printers.h"
@@ -72,23 +73,20 @@ void print_transport_layer(int fd, struct protocol_header *transport_layerph)
 
 __inline__ void print_data(int fd,struct data *data)
 {
-	/* fwrite((data->data + data->len),sizeof(char),(data->totlen - data->len),(FILE *)fd); */
-	/* write(fd,(data->data + data->len),(data->totlen - data->len));
-	fflush((FILE *)fd); */
 	int len;
 	char *ptr;
 
-	len = data->totlen;
+	len = data->totlen - data->len;
 	ptr = data->data + data->len;
 
 	while (len--)
 	{
-		if((isprint(*ptr)) || (*ptr == '\t') || (*ptr == '\n') || (*ptr == '\r'))
-			fputc(*ptr,(FILE *)fd);
-		else
-			fputc('.',(FILE *)fd);
+		if((!isprint(*ptr)) && (*ptr != '\t') && (*ptr != '\n') && (*ptr != '\r'))
+			*ptr = '.';
 		ptr++;
 	}
+	fwrite((data->data + data->len),sizeof(char),(data->totlen - data->len),(FILE *)fd);
+	fflush((FILE *)fd);
 }
 
 __inline__ void print_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
