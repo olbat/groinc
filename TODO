@@ -1,0 +1,37 @@
+-modify crapy printing functions
+-add help and filter list to protofilters
+-use automake and autoconf
+-use little or bigendian types in protocols structs
+-use atexit or on_exit, abort function
+-use standard loop for string seeking in arrays
+-protocol option "proto1 OR proto2" (atm just "proto1 AND proto2")
+-use the new system for the timelimit and packet number options
+-make the "time since first packet" report option work
+-new protocols (to be done)
+-make the defaults for the report system
+-update the manual
+-display expression option
+-put the filtering, parsing and checking functions in the protocols/ files
+
+-remove the mistakes in the manual
+-interactive mode
+-use standard libs
+-use standard status as END_STATUS_OK
+-revision prints.c and other print files
+-revision of the user's options names
+-make structures/functions for dynamic structures
+-enable filtering of encapsuled protocol headers (like IP header in ICMP) 
+-options to display detailed layer protocol description
+-use sprintf instead of fprintf in prints.c
+-complete verification of the arguments in the check_options
+-give the choice of the interface
+-make a session layer filter
+-stack for the received packet, keep the time
+-time received options 
+-ntohs / ntohl
+-make the filter work for fragmented data (tcp,ip) 
+-make the code fit on a 80x24 console
+
+-code optimization
+-comment
+-make the net libs
