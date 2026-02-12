@@ -113,6 +113,12 @@ Quiet capture with a report of total and filtered packet counts over 60 seconds:
 groinc -q -c -C -t 60
 ```
 
+Hex dump of ICMP packets:
+
+```sh
+groinc -p ICMP -H
+```
+
 ## Implementation
 
 Groinc is written in ANSI C with no external dependencies beyond the C standard library and Linux system headers.
@@ -165,9 +171,3 @@ Other targets:
 
 
 The default build uses `-Wall -ansi -pedantic -O3 -fomit-frame-pointer -g`.
-
-Hex dump of ICMP packets:
-
-```sh
-groinc -p ICMP -H
-```
