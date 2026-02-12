@@ -30,6 +30,7 @@
 #include "printp.h"
 #include "../tools/network_tools.h"
 #include <netinet/in.h>
+#include <string.h>
 
 /* buffers for the IP string versions */
 static char gatewayip[IPV4_STR_MAXSIZE];
@@ -92,13 +93,16 @@ print_icmp(
 	}
 	else if ((icmph->type == 13) || (icmph->type == 14))
 	{
-		__u32 field;
+		__u32 field, ts_orig, ts_recv, ts_trans;
 		field = ntohl(icmph->field);
-		print_proto(fd," (ident:%#x seqnum:%#x) origtimestamp:%ld "
-			"rectimestamp:%ld transtimestamp:%ld",
+		memcpy(&ts_orig, ptr, sizeof(__u32));
+		memcpy(&ts_recv, ptr + 4, sizeof(__u32));
+		memcpy(&ts_trans, ptr + 8, sizeof(__u32));
+		print_proto(fd," (ident:%#x seqnum:%#x) origtimestamp:%u "
+			"rectimestamp:%u transtimestamp:%u",
 			(field&0xffff0000)>>16,field&0x0000ffff,
-			ntohl((__u32) ptr),ntohl((__u32) (ptr + 4)),
-			ntohl((__u32) (ptr + 8)));
+			ntohl(ts_orig),ntohl(ts_recv),
+			ntohl(ts_trans));
 	}
 	else
 	{

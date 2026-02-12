@@ -41,7 +41,7 @@ void print_hexa(FILE *fd, char *data, int size)
 			}
 			else
 			{
-				fprintf(fd," ");	
+				fprintf(fd," ");
 			}
 		}
 		fprintf(fd," %02x",(unsigned char)*data++);

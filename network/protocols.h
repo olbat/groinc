@@ -29,7 +29,7 @@ struct st_protocol
 	int id;
 	char *name;
 	void (*func_scan)(struct data *, struct protocol_header *, struct protocol_header *);
-	void (*func_print)(FILE *, char *); 
+	void (*func_print)(FILE *, char *);
 };
 
 

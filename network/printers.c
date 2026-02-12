@@ -39,7 +39,7 @@ void print_datalink_layer(FILE *fd, struct protocol_header *datalink_layerph)
 {
 	if (datalink_layerph->len >= 0)
 	{
-		void (*ptr)(FILE *, char *); 
+		void (*ptr)(FILE *, char *);
 		if ((ptr = lookup_protoprint(datalink_layerph->id)))
 			(*ptr)(fd,datalink_layerph->header);
 		else
@@ -51,7 +51,7 @@ void print_network_layer(FILE *fd, struct protocol_header *network_layerph)
 {
 	if (network_layerph->len >= 0)
 	{
-		void (*ptr)(FILE *, char *); 
+		void (*ptr)(FILE *, char *);
 		if ((ptr = lookup_ethprint(network_layerph->id)))
 			(*ptr)(fd,network_layerph->header);
 		else
@@ -63,7 +63,7 @@ void print_transport_layer(FILE *fd, struct protocol_header *transport_layerph)
 {
 	if (transport_layerph->len >= 0)
 	{
-		void (*ptr)(FILE *, char *); 
+		void (*ptr)(FILE *, char *);
 		if ((ptr = lookup_ipprint(transport_layerph->id)))
 			(*ptr)(fd,transport_layerph->header);
 		else

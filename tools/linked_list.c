@@ -47,8 +47,6 @@ struct linked_list_value *linked_list_add(struct linked_list *l,struct linked_li
 {
 	if (l->value)
 	{
-		struct linked_list *ptr;
-		ptr = l;
 		while (l->next)
 			l = l->next;
 		l->next = linked_list_init(); 

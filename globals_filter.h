@@ -28,8 +28,8 @@
 
 extern int 	llimitnb;
 
-extern	FILE 	*datafd,
-   		*headerfd;
+extern	FILE	*datafd,
+		*headerfd;
 
 extern char	sniffer_stop;
 

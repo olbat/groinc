@@ -89,10 +89,10 @@ int prs_dsp_rpt_timetot(struct linked_list_opt_value *optl, char *val)
 int prs_dsp_rpt_countpackets(struct linked_list_opt_value *optl, char *val)
 {
 	unsigned int tmp = 0;
-	struct linked_list_value *ptr,*p;
+	struct linked_list_value *ptr;
 
 	ptr = PRS_RPT_LKD_ADD(list_report,optl,(__u8 *)&tmp,sizeof(unsigned int));
-	p = PRS_DSP_RPT_LKD_ADD(list_display_report,optl,(__u8 *)&(ptr->u.rpt->val),sizeof(ptr->u.rpt->val));
+	PRS_DSP_RPT_LKD_ADD(list_display_report,optl,(__u8 *)&(ptr->u.rpt->val),sizeof(ptr->u.rpt->val));
 	/* printf("L %hu\n",*((unsigned int *) *((unsigned int *) p->u.dsp_rpt->val))); */
 
 	return OPT_OK;

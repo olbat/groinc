@@ -42,14 +42,14 @@ char *strupr(char *str)
 {
 	char *end;
 	end = str;
-	while((*str++ = to_upper(*str)));
+	while(*str) { *str = to_upper(*str); str++; }
 	return end;
 }
 char *strlwr(char *str)
 {
 	char *end;
 	end = str;
-	while((*str++ = to_lower(*str)));
+	while(*str) { *str = to_lower(*str); str++; }
 	return end;
 }
 

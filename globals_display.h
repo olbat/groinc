@@ -29,8 +29,8 @@ extern char	opt_output,
 extern char	*inputfile,
 		*outputfile;
 
-extern FILE 	*datafd,
-      		*headerfd;
+extern FILE	*datafd,
+		*headerfd;
 
 extern struct linked_list 	*list_display_packet,
 				*list_display_report;

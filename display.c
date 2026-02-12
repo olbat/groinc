@@ -26,6 +26,7 @@
 #include "network/printers.h"
 #include "prints.h"
 
+#include <string.h>
 #include <sys/time.h>
 
 void display_packet(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram)
@@ -163,7 +164,9 @@ void dsp_rpt_timetot(FILE *fd, __u8 *val)
 #define DSP_RPT_COUNT_PACKETS_CAST(V) \
 __extension__ \
 ({ \
-	*((unsigned int *) *((unsigned int *) val)); \
+	unsigned int *_p; \
+	memcpy(&_p, (V), sizeof(_p)); \
+	*_p; \
 })
 
 void dsp_rpt_default(FILE *fd, __u8 *val)
