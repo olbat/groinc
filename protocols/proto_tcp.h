@@ -26,6 +26,7 @@
 #ifndef _PROTO_TCP_H
 #define _PROTO_TCP_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "../network/headers.h"
@@ -71,7 +72,7 @@ __extension__ __u16 res:4,
 };
 void scan_tcp(struct data *datagram, struct protocol_header *tlph,
 	struct protocol_header *alph);
-void print_tcp(int fd, char *datagram);
+void print_tcp(FILE *fd, char *datagram);
 int parse_filter_tcp(char *filtername, char *val, __u8 *buff);
 int filter_tcp(struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *data, __u8 *val);

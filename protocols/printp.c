@@ -20,12 +20,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-void print_proto(int fd, char *format, ...)
+void print_proto(FILE *fd, char *format, ...)
 {
 	va_list list;
 	va_start(list,format);
-	vfprintf((FILE *)fd,format,list);
-	fflush((FILE *)fd);
+	vfprintf(fd,format,list);
+	fflush(fd);
 	va_end(list);
 }
 

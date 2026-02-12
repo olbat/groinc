@@ -1,10 +1,10 @@
-# This file is a part of groinc 
+# This file is a part of groinc
 # Copyright 2006 Sarzyniec Luc <olbat@xiato.com>
 # This software is released under GPL the license
 # see the COPYING file for more informations
 
-CFLAGS= -Wall -ansi -pedantic -O3 -fomit-frame-pointer -g
-CC= gcc ${CFLAGS} 
+CFLAGS= -Wall -std=gnu99 -O3 -fomit-frame-pointer -g
+CC= gcc ${CFLAGS}
 SRC= printp.c namescache.c filter_proto.c
 OBJ= $(SRC:.c=.o)
 
@@ -20,6 +20,5 @@ protocols :
 	@echo 'protocol modules compiled'
 clean :
 	@echo cleaning object files
-	@rm -f ${OBJ} 
+	@rm -f ${OBJ}
 	@for proto in proto_*.o ; do rm -f $${proto} ; done;
-

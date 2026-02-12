@@ -30,6 +30,6 @@ struct default_report
 };
 
 void default_rpt_init();
-__inline__ void default_free();
+void default_free();
 
 #endif

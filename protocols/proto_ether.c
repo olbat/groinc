@@ -49,7 +49,7 @@ scan_ether(
 
 void
 print_ether(
-	int fd,
+	FILE *fd,
 	char *datagram) 
 {
 	struct ethernet_header *etherh;
@@ -62,7 +62,7 @@ print_ether(
 
 void
 print_ether_simple(
-	int fd,
+	FILE *fd,
 	char *datagram)
 {
 	struct ethernet_header *etherh;

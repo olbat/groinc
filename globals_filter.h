@@ -20,6 +20,7 @@
 #ifndef _GLOBALS_FILTER_H
 #define _GLOBALS_FILTER_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "tools/network_tools.h"
@@ -27,8 +28,8 @@
 
 extern int 	llimitnb;
 
-extern	int 	datafd,
-   		headerfd;
+extern	FILE 	*datafd,
+   		*headerfd;
 
 extern char	sniffer_stop;
 

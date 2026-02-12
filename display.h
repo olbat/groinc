@@ -20,35 +20,36 @@
 #ifndef _DISPLAY_H
 #define _DISPLAY_H
 
+#include <stdio.h>
 #include "network/headers.h"
 
 struct linked_list_dsp_pkt_value
 {
-	void (*func_dsp_pkt)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+	void (*func_dsp_pkt)(FILE *, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
 };
 
 struct linked_list_dsp_rpt_value
 {
-	void (*func_dsp_rpt)(int, __u8 *);
+	void (*func_dsp_rpt)(FILE *, __u8 *);
 	__u8 *val;
 };
 
 
-void display_packet(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void display_report(int fd);
+void display_packet(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void display_report(FILE *fd);
 
-void dsp_pkt_packets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_dlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_nlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_tlproto(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_simple(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_header(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_data(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_hexa(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_pkt_allpackets(int fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
-void dsp_rpt_default(int fd, __u8 *val);
-void dsp_rpt_timetot(int fd, __u8 *);
-void dsp_rpt_countpacketstot(int fd, __u8 *val);
-void dsp_rpt_countpacketsfiltred(int fd, __u8 *val);
+void dsp_pkt_packets(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_dlproto(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_nlproto(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_tlproto(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_simple(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_header(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_data(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_hexa(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_pkt_allpackets(FILE *fd, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram);
+void dsp_rpt_default(FILE *fd, __u8 *val);
+void dsp_rpt_timetot(FILE *fd, __u8 *);
+void dsp_rpt_countpacketstot(FILE *fd, __u8 *val);
+void dsp_rpt_countpacketsfiltred(FILE *fd, __u8 *val);
 
 #endif

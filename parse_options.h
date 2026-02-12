@@ -20,6 +20,7 @@
 #ifndef _PARSE_OPTIONS_H
 #define _PARSE_OPTIONS_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "network/headers.h"
@@ -88,13 +89,13 @@ enum opttype
 
 struct opt_dsp_rpt_type
 {
-	void (*func_dsp_rpt)(int, __u8 *);
+	void (*func_dsp_rpt)(FILE *, __u8 *);
 	void (*func_rpt)(__u8 *,int, int, int);
 };
 
 struct opt_dsp_pkt_type
 {
-	void (*func_dsp_pkt)(int, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *);
+	void (*func_dsp_pkt)(FILE *, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *);
 };
 
 struct opt_flt_type 

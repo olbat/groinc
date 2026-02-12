@@ -30,16 +30,16 @@
 #include "parsers.h"
 #include "../protocols/print_proto.h"
 
-void print_unknown(int fd,char *layer,char *protoname)
+void print_unknown(FILE *fd,char *layer,char *protoname)
 {
-	fprintf((FILE *)fd,"[Unknown protocol/%s layer]",layer);
+	fprintf(fd,"[Unknown protocol/%s layer]",layer);
 }
 
-void print_datalink_layer(int fd, struct protocol_header *datalink_layerph)
+void print_datalink_layer(FILE *fd, struct protocol_header *datalink_layerph)
 {
 	if (datalink_layerph->len >= 0)
 	{
-		void (*ptr)(int, char *); 
+		void (*ptr)(FILE *, char *); 
 		if ((ptr = lookup_protoprint(datalink_layerph->id)))
 			(*ptr)(fd,datalink_layerph->header);
 		else
@@ -47,11 +47,11 @@ void print_datalink_layer(int fd, struct protocol_header *datalink_layerph)
 	}
 }
 
-void print_network_layer(int fd, struct protocol_header *network_layerph)
+void print_network_layer(FILE *fd, struct protocol_header *network_layerph)
 {
 	if (network_layerph->len >= 0)
 	{
-		void (*ptr)(int, char *); 
+		void (*ptr)(FILE *, char *); 
 		if ((ptr = lookup_ethprint(network_layerph->id)))
 			(*ptr)(fd,network_layerph->header);
 		else
@@ -59,11 +59,11 @@ void print_network_layer(int fd, struct protocol_header *network_layerph)
 	}
 }
 
-void print_transport_layer(int fd, struct protocol_header *transport_layerph)
+void print_transport_layer(FILE *fd, struct protocol_header *transport_layerph)
 {
 	if (transport_layerph->len >= 0)
 	{
-		void (*ptr)(int, char *); 
+		void (*ptr)(FILE *, char *); 
 		if ((ptr = lookup_ipprint(transport_layerph->id)))
 			(*ptr)(fd,transport_layerph->header);
 		else
@@ -71,7 +71,7 @@ void print_transport_layer(int fd, struct protocol_header *transport_layerph)
 	}
 }
 
-__inline__ void print_data(int fd,struct data *data)
+__inline__ void print_data(FILE *fd,struct data *data)
 {
 	int len;
 	char *ptr;
@@ -85,11 +85,11 @@ __inline__ void print_data(int fd,struct data *data)
 			*ptr = '.';
 		ptr++;
 	}
-	fwrite((data->data + data->len),sizeof(char),(data->totlen - data->len),(FILE *)fd);
-	fflush((FILE *)fd);
+	fwrite((data->data + data->len),sizeof(char),(data->totlen - data->len),fd);
+	fflush(fd);
 }
 
-__inline__ void print_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
+__inline__ void print_simple(FILE *fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
 	if ((transport_layerph->len > 0) && (network_layerph->id == ETHPROTO_IP))
 		print_ipv4_simple(fd,network_layerph->header,get_source_port(transport_layerph),get_dest_port(transport_layerph));
@@ -101,12 +101,12 @@ __inline__ void print_simple(int fd,struct protocol_header *datalink_layerph,str
 		print_ether_simple(fd,datalink_layerph->header);
 }
 
-void print_datalink_layer_proto(int fd,struct protocol_header *datalink_layerph)
+void print_datalink_layer_proto(FILE *fd,struct protocol_header *datalink_layerph)
 {
-	fprintf((FILE *)fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
+	fprintf(fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
 }
 
-void print_network_layer_proto(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph)
+void print_network_layer_proto(FILE *fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph)
 {
 	switch (datalink_layerph->id)
 	{
@@ -116,7 +116,7 @@ void print_network_layer_proto(int fd,struct protocol_header *datalink_layerph,s
 	}
 }
 
-void print_transport_layer_proto(int fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
+void print_transport_layer_proto(FILE *fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
 	switch (network_layerph->id)
 	{
@@ -126,28 +126,28 @@ void print_transport_layer_proto(int fd,struct protocol_header *network_layerph,
 	}
 }
 
-__inline__ void print_protoproto(int fd,struct protocol_header *datalink_layerph)
+__inline__ void print_protoproto(FILE *fd,struct protocol_header *datalink_layerph)
 {
-	fprintf((FILE *)fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
+	fprintf(fd,"[%s %d]",lookup_protoname(datalink_layerph->id),datalink_layerph->len);
 }
 
-__inline__ void print_ethproto(int fd,struct protocol_header *network_layerph)
+__inline__ void print_ethproto(FILE *fd,struct protocol_header *network_layerph)
 {
-	fprintf((FILE *)fd,"[%s %d]",lookup_ethname(network_layerph->id),network_layerph->len);
+	fprintf(fd,"[%s %d]",lookup_ethname(network_layerph->id),network_layerph->len);
 }
 
-__inline__ void print_ipproto(int fd,struct protocol_header *transport_layerph)
+__inline__ void print_ipproto(FILE *fd,struct protocol_header *transport_layerph)
 {
-	fprintf((FILE *)fd,"[%s %d]",lookup_ipname(transport_layerph->id),transport_layerph->len);
+	fprintf(fd,"[%s %d]",lookup_ipname(transport_layerph->id),transport_layerph->len);
 }
 
-__inline__ void print_proto_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
+__inline__ void print_proto_simple(FILE *fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph)
 {
 	/*
 	 * modifications will be necessary if other than ehternet 
 	 * protocol on datalink layer is usable
 	 */
-	fprintf((FILE *)fd,"[%s]",
+	fprintf(fd,"[%s]",
 		((transport_layerph->len >= 0) 
 		&& (network_layerph->id == ETHPROTO_IP)
 			? lookup_ipname(transport_layerph->id)
@@ -156,9 +156,9 @@ __inline__ void print_proto_simple(int fd,struct protocol_header *datalink_layer
 				: lookup_protoname(datalink_layerph->id))));
 }
 
-__inline__ void print_packetnb(int fd, int size)
+__inline__ void print_packetnb(FILE *fd, int size)
 {
-	fprintf((FILE *)fd,"[%d]",size);
-	/*fflush((FILE *)fd);*/
+	fprintf(fd,"[%d]",size);
+	/*fflush(fd);*/
 }
 

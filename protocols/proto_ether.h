@@ -20,6 +20,7 @@
 #ifndef _PROTO_ETHER_H
 #define _PROTO_ETHER_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "../network/headers.h"
@@ -43,7 +44,7 @@ struct ethernet_header
 
 void scan_ether(struct data *datagram, struct protocol_header *datalink_layerph,
 	struct protocol_header *network_layerph);
-void print_ether(int fd, char *datagram);
-void print_ether_simple(int fd, char *datagram);
+void print_ether(FILE *fd, char *datagram);
+void print_ether_simple(FILE *fd, char *datagram);
 
 #endif

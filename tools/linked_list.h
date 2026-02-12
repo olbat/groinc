@@ -65,9 +65,9 @@ struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol
 void linked_list_flt_value_free(struct linked_list_value *);
 
 #include "../display.h"
-struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(int, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *));
+struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(FILE *, struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *));
 void linked_list_dsp_pkt_value_free(struct linked_list_value *);
-struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func_dsp)(int, __u8 *), __u8 *val, unsigned int size);
+struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func_dsp)(FILE *, __u8 *), __u8 *val, unsigned int size);
 void linked_list_dsp_rpt_value_free(struct linked_list_value *);
 
 #include "../report.h"
@@ -76,8 +76,8 @@ void linked_list_rpt_value_free(struct linked_list_value *);
 
 #include "../parse_options.h"
 struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), int (*f_flt)(struct protocol_header *, struct protocol_header *, struct protocol_header *, struct data *datagram, __u8 *), void (*f_free)(__u8 *));
-struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram));
-struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(int, __u8 *), void (*func_rpt)(__u8 *,int, int, int));
+struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(FILE *, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram));
+struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(FILE *, __u8 *), void (*func_rpt)(__u8 *,int, int, int));
 void linked_list_opt_value_free(struct linked_list_value *);
 
 #include "../error.h"

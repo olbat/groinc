@@ -31,6 +31,7 @@
 #ifndef _PROTO_ARP_H
 #define _PROTO_ARP_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "../network/headers.h"
@@ -82,6 +83,6 @@ struct arp_header
 
 void scan_arp(struct data *datagram, struct protocol_header *network_layerph,
 	struct protocol_header *transport_layerph);
-void print_arp(int fd, char *datagram);
+void print_arp(FILE *fd, char *datagram);
 
 #endif

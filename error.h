@@ -20,6 +20,7 @@
 #ifndef _ERROR_H
 #define _ERROR_H
 
+#include <stdio.h>
 #include "tools/math_tools.h"
 
 enum err_id
@@ -44,7 +45,7 @@ struct hashtable_err_value
 	enum err_id id;
 	char *msg;
 	enum err_state state;
-	void (*func)(int);
+	void (*func)(FILE *);
 };
 
 struct linked_list_err_value
@@ -57,6 +58,6 @@ struct linked_list_err_value
 	linked_list_add(L,linked_list_err_value_init(ID,A)); 
 
 int error_display();
-void err_opt_proto(int fd);
+void err_opt_proto(FILE *fd);
 
 #endif

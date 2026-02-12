@@ -17,6 +17,7 @@
  *
  * see the COPYING file for more informations */
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "headers.h"
@@ -30,19 +31,19 @@ void print_ipv4(int fd,struct ipv4_header *iph);
 void print_tcp(int fd,struct tcp_header *tcph);
 void print_udp(int fd, struct udp_header *udph);
 */
-void print_unknown(int fd,char *layer,char *protoname);
-void print_datalink_layer(int fd, struct protocol_header *datalink_layerph);
-void print_network_layer(int fd, struct protocol_header *network_layerph);
-void print_transport_layer(int fd, struct protocol_header *transport_layerph);
-__inline__ void print_data(int fd,struct data *data);
-__inline__ void print_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
-void print_datalink_layer_proto(int fd,struct protocol_header *datalink_layerph);
-void print_network_layer_proto(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph);
-void print_transport_layer_proto(int fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
-__inline__ void print_protoproto(int fd,struct protocol_header *datalink_layerph);
-__inline__ void print_ethproto(int fd,struct protocol_header *network_layerph);
-__inline__ void print_ipproto(int fd,struct protocol_header *transport_layerph);
-__inline__ void print_proto_simple(int fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
-__inline__ void print_packetnb(int fd, int size);
+void print_unknown(FILE *fd,char *layer,char *protoname);
+void print_datalink_layer(FILE *fd, struct protocol_header *datalink_layerph);
+void print_network_layer(FILE *fd, struct protocol_header *network_layerph);
+void print_transport_layer(FILE *fd, struct protocol_header *transport_layerph);
+void print_data(FILE *fd,struct data *data);
+void print_simple(FILE *fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
+void print_datalink_layer_proto(FILE *fd,struct protocol_header *datalink_layerph);
+void print_network_layer_proto(FILE *fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph);
+void print_transport_layer_proto(FILE *fd,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
+void print_protoproto(FILE *fd,struct protocol_header *datalink_layerph);
+void print_ethproto(FILE *fd,struct protocol_header *network_layerph);
+void print_ipproto(FILE *fd,struct protocol_header *transport_layerph);
+void print_proto_simple(FILE *fd,struct protocol_header *datalink_layerph,struct protocol_header *network_layerph,struct protocol_header *transport_layerph);
+void print_packetnb(FILE *fd, int size);
 
 #endif

@@ -20,13 +20,15 @@
 #ifndef _PRINT_PROTO_H
 #define _PRINT_PROTO_H
 
-void print_ether(int fd, char *datagram);
-void print_ether_simple(int fd, char *datagram);
-void print_ipv4(int fd, char *datagram);
-void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport);
-void print_arp(int fd, char *datagram);
-void print_icmp(int fd, char *datagram);
-void print_tcp(int fd, char *datagram);
-void print_udp(int fd, char *datagram);
+#include <stdio.h>
+
+void print_ether(FILE *fd, char *datagram);
+void print_ether_simple(FILE *fd, char *datagram);
+void print_ipv4(FILE *fd, char *datagram);
+void print_ipv4_simple(FILE *fd, char *datagram, __u16 sourceport, __u16 destport);
+void print_arp(FILE *fd, char *datagram);
+void print_icmp(FILE *fd, char *datagram);
+void print_tcp(FILE *fd, char *datagram);
+void print_udp(FILE *fd, char *datagram);
 
 #endif

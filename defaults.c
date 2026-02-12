@@ -20,7 +20,7 @@
 #include "globals_report.h"
 #include "tools/memory_tools.h"
 #include <asm/types.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <sys/time.h>
 
 void default_rpt_init()

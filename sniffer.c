@@ -19,7 +19,7 @@
 
 #include "sniffer.h"
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h> /* needed for perror */
 #include <unistd.h>
 #include <sys/select.h>

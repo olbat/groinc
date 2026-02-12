@@ -54,7 +54,7 @@ scan_ipv4(
 
 void
 print_ipv4(
-	int fd,
+	FILE *fd,
 	char *datagram)
 {
 	struct ipv4_header *iph;
@@ -72,7 +72,7 @@ print_ipv4(
 
 void
 print_ipv4_simple(
-	int fd,
+	FILE *fd,
 	char *datagram,
 	__u16 sourceport,
 	__u16 destport)

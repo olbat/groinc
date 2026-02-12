@@ -181,7 +181,7 @@ struct proto_filter_parse
 })
 
 
-__inline__ int proto_filter(char *protofilterstr, char *val);
+int proto_filter(char *protofilterstr, char *val);
 int check_filter(char *filtername, char *val);
 
 #endif

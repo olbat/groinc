@@ -43,7 +43,7 @@ scan_tcp(
 
 void
 print_tcp(
-	int fd,
+	FILE *fd,
 	char *datagram)
 {
 	struct tcp_header *tcph;

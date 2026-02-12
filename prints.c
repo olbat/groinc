@@ -25,7 +25,7 @@
 #define PRINT_HEXA_BYTES_PER_LINE 16
 #define PRINT_SEPARATOR "--------"
 
-void print_hexa(int fd, char *data, int size)
+void print_hexa(FILE *fd, char *data, int size)
 {
 	int i,j;
 	i = 0;
@@ -36,61 +36,61 @@ void print_hexa(int fd, char *data, int size)
 		{
 			if (!(i % PRINT_HEXA_BYTES_PER_LINE))
 			{
-				fprintf((FILE *)fd,"\n%04d ",j);
+				fprintf(fd,"\n%04d ",j);
 				j = j + PRINT_HEXA_BYTES_PER_LINE;
 			}
 			else
 			{
-				fprintf((FILE *)fd," ");	
+				fprintf(fd," ");	
 			}
 		}
-		fprintf((FILE *)fd," %02x",(unsigned char)*data++);
+		fprintf(fd," %02x",(unsigned char)*data++);
 		i++;
 	}
 }
 
 
-void print_str(int fd, unsigned int nb, char *str, ...)
+void print_str(FILE *fd, unsigned int nb, char *str, ...)
 {
-	fputs(str,(FILE *)fd);
+	fputs(str,fd);
 	if (nb > 0)
 	{
 		va_list ap;
 		va_start(ap,str);
 
 		while (nb--)
-			fputs(va_arg(ap,char *),(FILE *)fd);
+			fputs(va_arg(ap,char *),fd);
 
 		va_end(ap);
 	}
 }
 
-void print_format(int fd, char *format, ...)
+void print_format(FILE *fd, char *format, ...)
 {
 	va_list ap;
 	va_start(ap,format);
-	vfprintf((FILE *)fd,format,ap);
+	vfprintf(fd,format,ap);
 	va_end(ap);
 }
 
-void print_separator(int fd)
+void print_separator(FILE *fd)
 {
-	fputs(PRINT_SEPARATOR,(FILE *)fd);
+	fputs(PRINT_SEPARATOR,fd);
 }
 
-void print_newline(int fd)
+void print_newline(FILE *fd)
 {
-	fputc('\n',(FILE *)fd);
-	/*fflush((FILE *)fd);*/
+	fputc('\n',fd);
+	/*fflush(fd);*/
 }
 
-void print_error(int fd, int nb, char *str, ...)
+void print_error(FILE *fd, int nb, char *str, ...)
 {
 	va_list ap;
 	va_start(ap,str);
-	fputs(str,(FILE *)fd);
+	fputs(str,fd);
 	while (--nb)
-		fputs(va_arg(ap,char *),(FILE *)fd);
+		fputs(va_arg(ap,char *),fd);
 	va_end(ap);
 }
 

@@ -17,6 +17,7 @@
  *
  * see the COPYING file for more informations */
 
+#include <stdio.h>
 #include <netdb.h>
 
 #include "check_options.h"
@@ -104,7 +105,7 @@ err: \
 name: \
 	if (!gethostbyname(V)) \
 	{ \
-		herror("Cannot resolve hostname"); \
+		fprintf(stderr, "Cannot resolve hostname\n"); \
 		goto err; \
 	} \
 out: \

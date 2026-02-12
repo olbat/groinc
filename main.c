@@ -49,8 +49,8 @@ char	*outputdata,
 	*inputfile,
 	*outputfile;
 
-int 	datafd,
-	headerfd;
+FILE 	*datafd,
+	*headerfd;
 
 char	sniffer_stop,
 	opt_output,
@@ -122,14 +122,14 @@ int main(int argc, char **argv)
 	list_error = linked_list_init();
 
 	if (opt_output != 0)
-		headerfd = open(output,O_CREAT|O_WRONLY);
+		headerfd = fdopen(open(output,O_CREAT|O_WRONLY), "w");
 	else
-		headerfd = (int)OUTPUT_HEADER_FILE_DEFAULT;
+		headerfd = OUTPUT_HEADER_FILE_DEFAULT;
 
 	if (opt_outputdata != 0)
-		datafd = open(outputdata,O_CREAT|O_WRONLY);
+		datafd = fdopen(open(outputdata,O_CREAT|O_WRONLY), "w");
 	else
-		datafd = (int)OUTPUT_DATA_FILE_DEFAULT;
+		datafd = OUTPUT_DATA_FILE_DEFAULT;
 	
 	if (parse_options(argc-1,argv) == P_MISC)
 	{

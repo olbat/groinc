@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 __u16 ncacheopt = 0;

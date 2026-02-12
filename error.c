@@ -86,7 +86,7 @@ int error_display()
 		print_error(F,2,T[i++].name,","); \
 })
 
-void err_opt_proto(int fd)
+void err_opt_proto(FILE *fd)
 {
 	print_error(fd,1,"\n\nAvailable protocols :\n  -datalink layer: \n\t");
 	ERR_PROTO_PRINTNAME(fd,st_proto);

@@ -20,6 +20,7 @@
 #ifndef _PROTO_ICMP_H
 #define _PROTO_ICMP_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "../network/headers.h"
@@ -41,6 +42,6 @@ struct icmp_header
 
 void scan_icmp(struct data *datagram, struct protocol_header *transport_layerph,
 	struct protocol_header *application_layerph);
-void print_icmp(int fd, char *datagram);
+void print_icmp(FILE *fd, char *datagram);
 
 #endif

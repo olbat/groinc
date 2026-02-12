@@ -62,7 +62,7 @@ scan_arp(
 /* the implementation of this function need to be optimized */
 void
 print_arp(
-	int fd,
+	FILE *fd,
 	char *datagram)
 {
 	struct arp_header *arph;

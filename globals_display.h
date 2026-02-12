@@ -20,6 +20,7 @@
 #ifndef _GLOBALS_DISPLAY_H
 #define _GLOBALS_DISPLAY_H
 
+#include <stdio.h>
 #include "tools/linked_list.h"
 
 extern char	opt_output,
@@ -28,8 +29,8 @@ extern char	opt_output,
 extern char	*inputfile,
 		*outputfile;
 
-extern int 	datafd,
-      		headerfd;
+extern FILE 	*datafd,
+      		*headerfd;
 
 extern struct linked_list 	*list_display_packet,
 				*list_display_report;

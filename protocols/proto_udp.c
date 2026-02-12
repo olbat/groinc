@@ -38,7 +38,7 @@ scan_udp(
 
 void
 print_udp(
-	int fd,
+	FILE *fd,
 	char *datagram)
 {
 	struct udp_header *udph;

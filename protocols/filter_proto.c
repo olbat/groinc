@@ -76,7 +76,7 @@ __inline__ int proto_filter(char *protofilterstr, char *val)
 		{ _PROTOFLT_MAX,	"",		0, 0, 0, 0 }
 	};
 
-	if ((ptr = index(protofilterstr,'-')))
+	if ((ptr = strchr(protofilterstr,'-')))
 	{
 		register struct proto_filter *pfptr;
 		__u8 buff[PRT_FLT_BUFFERSIZE];

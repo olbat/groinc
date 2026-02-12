@@ -26,6 +26,7 @@
 #ifndef _PROTO_UDP_H
 #define _PROTO_UDP_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "../network/headers.h"
@@ -40,6 +41,6 @@ struct udp_header
 
 void scan_udp(struct data *datagram, struct protocol_header *transport_layerph,
 	struct protocol_header *application_layerph);
-void print_udp(int fd,  char *datagram);
+void print_udp(FILE *fd,  char *datagram);
 
 #endif

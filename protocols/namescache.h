@@ -37,7 +37,7 @@ struct ncache_ipv4
 	__u32 addr;
 };
 
-__inline__ void ncache_free();
+void ncache_free();
 char *get_ipv4_name(__u32 addr);
 
 #endif

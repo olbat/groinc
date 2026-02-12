@@ -20,6 +20,8 @@
 #ifndef _PRINTP_H
 #define _PRINTP_H
 
+#include <stdio.h>
+
 #define BFLAG_VAL(V,F) (((V)&(F)) != 0)
 #define NBFLAG_VAL16(V,F) ((ntohs((V))&(F)) != 0)
 #define NBFLAG_VAL32(V,F) (((ntohl(V))&(F)) != 0)
@@ -27,6 +29,6 @@
 #define NFLAG_VAL16(V,F,OF) (((ntohs(V))&(F)) >> OF)
 #define NFLAG_VAL32(V,F,OF) (((ntohl(V))&(F)) >> OF)
 
-void print_proto(int fd, char *format, ...);
+void print_proto(FILE *fd, char *format, ...);
 
 #endif

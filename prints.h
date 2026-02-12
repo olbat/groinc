@@ -20,12 +20,14 @@
 #ifndef _PRINTS_H
 #define _PRINTS_H
 
-void print_hexa(int fd, char *data, int size);
-void print_str(int fd, unsigned int nb, char *str, ...);
-void print_format(int fd, char *format, ...);
-void print_separator(int fd);
-void print_newline(int fd);
-void print_error(int fd, int nb, char *str, ...);
+#include <stdio.h>
+
+void print_hexa(FILE *fd, char *data, int size);
+void print_str(FILE *fd, unsigned int nb, char *str, ...);
+void print_format(FILE *fd, char *format, ...);
+void print_separator(FILE *fd);
+void print_newline(FILE *fd);
+void print_error(FILE *fd, int nb, char *str, ...);
 
 #endif
 

@@ -18,7 +18,7 @@
  * see the COPYING file for more informations */
 
 #include "linked_list.h"
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 struct linked_list *linked_list_init()
@@ -73,7 +73,7 @@ struct linked_list_value *linked_list_flt_value_init(int (*func)(struct protocol
 	return end;
 }
 
-struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
+struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(FILE *, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
 {
 	struct linked_list_value *end;
 
@@ -85,11 +85,11 @@ struct linked_list_value *linked_list_dsp_pkt_value_init(void (*func)(int, struc
 	return end;
 }
 
-struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(int, __u8 *), __u8 *val, unsigned int size)
+struct linked_list_value *linked_list_dsp_rpt_value_init(void (*func)(FILE *, __u8 *), __u8 *val, unsigned int size)
 {
 	struct linked_list_value *end;
 
-	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value));
 	end->type = LKD_TYPE_DSP_RPT;
 	end->u.dsp_rpt = (struct linked_list_dsp_rpt_value *) malloc(sizeof(struct linked_list_dsp_rpt_value));
 	end->u.dsp_rpt->func_dsp_rpt = func;
@@ -103,7 +103,7 @@ struct linked_list_value *linked_list_rpt_value_init(void (*func)(__u8 *,int,int
 {
 	struct linked_list_value *end;
 
-	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value *));
+	end = (struct linked_list_value *) malloc(sizeof(struct linked_list_value));
 	end->type = LKD_TYPE_RPT;
 	end->u.rpt = (struct linked_list_rpt_value *) malloc(sizeof(struct linked_list_rpt_value));
 	end->u.rpt->func_rpt = func;
@@ -137,7 +137,7 @@ struct linked_list_value *linked_list_opt_value_init_flt(char ns, char *nl, enum
 	return end;
 }
 
-struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(int, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
+struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func)(FILE *, struct protocol_header *datalink_layerph, struct protocol_header *network_layerph, struct protocol_header *transport_layerph, struct data *datagram))
 {
 	struct linked_list_value *end;
 	
@@ -151,7 +151,7 @@ struct linked_list_value *linked_list_opt_value_init_dsp_pkt(char ns, char *nl, 
 	return end;
 }
 
-struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(int, __u8 *), void (*func_rpt)(__u8 *,int, int, int))
+struct linked_list_value *linked_list_opt_value_init_dsp_rpt(char ns, char *nl, enum optid id, int fl, int (*f_chk)(char *), int (*f_prs)(struct linked_list_opt_value *, char *), void (*func_dsp)(FILE *, __u8 *), void (*func_rpt)(__u8 *,int, int, int))
 {
 	struct linked_list_value *end;
 	

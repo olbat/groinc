@@ -20,6 +20,7 @@
 #ifndef _PROTOCOLS_H
 #define _PROTOCOLS_H
 
+#include <stdio.h>
 #include "headers.h"
 
 /* struct for the translation array */
@@ -28,7 +29,7 @@ struct st_protocol
 	int id;
 	char *name;
 	void (*func_scan)(struct data *, struct protocol_header *, struct protocol_header *);
-	void (*func_print)(int, char *); 
+	void (*func_print)(FILE *, char *); 
 };
 
 
@@ -43,9 +44,9 @@ char *lookup_ipname(int id);
 void (*lookup_protoscan(int id))(struct data *, struct protocol_header *, struct protocol_header *);
 void (*lookup_ethscan(int id))(struct data *, struct protocol_header *, struct protocol_header *);
 void (*lookup_ipscan(int id))(struct data *, struct protocol_header *, struct protocol_header *);
-void (*lookup_protoprint(int id))(int, char *);
-void (*lookup_ethprint(int id))(int, char *);
-void (*lookup_ipprint(int id))(int, char *);
+void (*lookup_protoprint(int id))(FILE *, char *);
+void (*lookup_ethprint(int id))(FILE *, char *);
+void (*lookup_ipprint(int id))(FILE *, char *);
 int lookup_protoid(char *name);
 int lookup_ethid(char *name);
 int lookup_ipid(char *name);

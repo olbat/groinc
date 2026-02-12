@@ -177,7 +177,7 @@ int prs_flt_globalport(struct linked_list_opt_value *optl, char *val)
 		regcomp(&reg,CHK_FLT_HOST_REGEX_CIDR,REG_NOSUB); \
 		if (!regexec(&reg,V,0,0,0)) \
 		{ \
-			str = index(buff,'/'); \
+			str = strchr(buff,'/'); \
 			addrs[0] = my_atoi(str + 1,10); \
 			mask = 0; \
 			for (addr = 0;addr < sizeof(__u32)*8; addr++) \
@@ -204,10 +204,10 @@ int prs_flt_globalport(struct linked_list_opt_value *optl, char *val)
 				mask = ~0; \
 			else \
 			{ \
-				str = index(buff,':'); \
+				str = strchr(buff,':'); \
 				*str = 0; \
 				hostt = gethostbyname(str + 1); \
-				mask = *((__u32 *) hostt->h_addr); \
+				mask = *((__u32 *) hostt->h_addr_list[0]); \
 			} \
 		} \
 		regfree(&reg); \
@@ -215,7 +215,7 @@ int prs_flt_globalport(struct linked_list_opt_value *optl, char *val)
 	else \
 		mask = ~0; \
 	hostt = gethostbyname(buff); \
-	addr = *((__u32 *) hostt->h_addr); \
+	addr = *((__u32 *) hostt->h_addr_list[0]); \
 	addr &= mask; \
 	addrs[0] = addr; \
 	addrs[1] = mask; \

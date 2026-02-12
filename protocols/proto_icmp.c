@@ -29,7 +29,7 @@
 #include "proto_icmp.h"
 #include "printp.h"
 #include "../tools/network_tools.h"
-#include "netinet/in.h"
+#include <netinet/in.h>
 
 /* buffers for the IP string versions */
 static char gatewayip[IPV4_STR_MAXSIZE];
@@ -55,7 +55,7 @@ scan_icmp(
 
 void
 print_icmp(
-	int fd,
+	FILE *fd,
 	char *datagram)
 {
 	struct icmp_header *icmph;

@@ -26,6 +26,7 @@
 #ifndef _PROTO_IPV4_H
 #define _PROTO_IPV4_H
 
+#include <stdio.h>
 #include <asm/types.h>
 
 #include "../network/headers.h"
@@ -57,8 +58,8 @@ __extension__ __u8 iphdrlen:4,
 
 void scan_ipv4(struct data *datagram, struct protocol_header *network_layerph,
 	struct protocol_header *transport_layerph);
-void print_ipv4(int fd, char *datagram);
-void print_ipv4_simple(int fd, char *datagram, __u16 sourceport, __u16 destport);
+void print_ipv4(FILE *fd, char *datagram);
+void print_ipv4_simple(FILE *fd, char *datagram, __u16 sourceport, __u16 destport);
 int parse_filter_ipv4(char *filtername, char *val, __u8 *buff);
 int filter_ipv4(struct protocol_header *dlph, struct protocol_header *nlph,
 	struct protocol_header *tlph, struct data *data, __u8 *val);

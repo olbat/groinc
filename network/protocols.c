@@ -219,17 +219,17 @@ void (*lookup_ipscan(int id))(struct data *, struct protocol_header *, struct pr
 	LOOKUP_PROTOCOLST(id,st_ip,func_scan);
 }
 
-void (*lookup_protoprint(int id))(int, char *)
+void (*lookup_protoprint(int id))(FILE *, char *)
 {
 	LOOKUP_PROTOCOLST(id,st_proto,func_print);
 }
 
-void (*lookup_ethprint(int id))(int, char *)
+void (*lookup_ethprint(int id))(FILE *, char *)
 {
 	LOOKUP_PROTOCOLST(id,st_ether,func_print);
 }
 
-void (*lookup_ipprint(int id))(int, char *)
+void (*lookup_ipprint(int id))(FILE *, char *)
 {
 	LOOKUP_PROTOCOLST(id,st_ip,func_print);
 }
