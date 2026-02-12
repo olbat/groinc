@@ -19,6 +19,45 @@ groinc [options]
 
 Running `groinc` with no arguments captures and displays all packets on the default interface. Root privileges (or `CAP_NET_RAW`) are required for live capture.
 
+## Examples
+
+Capture all traffic and display payload data:
+
+```sh
+groinc -a
+```
+
+Capture TCP traffic on port 80 with verbose headers:
+
+```sh
+groinc -p TCP -d 80 -v
+```
+
+Capture 100 packets from a subnet and write to a file:
+
+```sh
+groinc -S 192.168.1.0/24 -l 100 -w capture.dat
+```
+
+Read a capture file and filter for HTTP content:
+
+```sh
+groinc -r capture.dat -f "HTTP" -a
+```
+
+Quiet capture with a report of total and filtered packet counts over 60 seconds:
+
+```sh
+groinc -q -c -C -t 60
+```
+
+Hex dump of ICMP packets:
+
+```sh
+groinc -p ICMP -H
+```
+
+## Options
 ### Display options
 
 | Flag | Long form                  | Description                              |
@@ -80,44 +119,6 @@ IP addresses accept several formats: a single IP (`192.168.1.1`), CIDR notation 
 | `-h` | `--help`      | Show help message       |
 |      | `--version`   | Show version            |
 |      | `--license`   | Show GPLv3 license text |
-
-## Examples
-
-Capture all traffic and display payload data:
-
-```sh
-groinc -a
-```
-
-Capture TCP traffic on port 80 with verbose headers:
-
-```sh
-groinc -p TCP -d 80 -v
-```
-
-Capture 100 packets from a subnet and write to a file:
-
-```sh
-groinc -S 192.168.1.0/24 -l 100 -w capture.dat
-```
-
-Read a capture file and filter for HTTP content:
-
-```sh
-groinc -r capture.dat -f "HTTP" -a
-```
-
-Quiet capture with a report of total and filtered packet counts over 60 seconds:
-
-```sh
-groinc -q -c -C -t 60
-```
-
-Hex dump of ICMP packets:
-
-```sh
-groinc -p ICMP -H
-```
 
 ## Implementation
 
