@@ -10,8 +10,6 @@ Groinc is a network packet sniffer and analyzer for Linux. It captures packets f
 - Flexible filtering by MAC address, IP address (with CIDR support), port, protocol, substring, or regex
 - Configurable display: raw data, hex dump, per-layer headers, simple or verbose output
 - Report generation with packet counts and capture timing
-- DNS name caching for hostname resolution
-- Graceful signal handling (SIGINT, SIGQUIT)
 
 ## Usage
 
