@@ -13,59 +13,6 @@ Groinc is a network packet sniffer and analyzer for Linux. It captures packets f
 - DNS name caching for hostname resolution
 - Graceful signal handling (SIGINT, SIGQUIT)
 
-## Implementation
-
-Groinc is written in ANSI C with no external dependencies beyond the C standard library and Linux system headers.
-
-### Architecture
-
-Packet capture uses `select()` for I/O multiplexing on a PF_PACKET socket. Each captured packet is passed through a three-stage parsing pipeline:
-
-1. **Datalink layer** - Ethernet (IEEE 802.3) header parsing
-2. **Network layer** - IPv4 (RFC 791), ARP
-3. **Transport layer** - TCP (RFC 793), UDP, ICMP
-
-Protocol implementations are modular: each protocol provides scan (parse) and print functions registered via function pointer tables, making it straightforward to add new protocols.
-
-### Key data structures
-
-- `struct data` - Tracks the raw packet buffer, current parse offset, and total length
-- `struct protocol_header` - Holds a parsed header's protocol ID, length, and data pointer
-- A union-based **linked list** is used throughout for filters, display options, reports, and errors
-- A **hash table** backs the error lookup system
-
-### Filtering
-
-All active filters are AND-composed. The filter chain is evaluated sequentially with early exit. Compiler branch-prediction hints (`likely`/`unlikely` macros) optimize the hot path.
-
-
-## Building
-
-Requires GCC and standard Linux headers.
-
-```sh
-make
-```
-
-To install the binary and man page system-wide:
-
-```sh
-make install
-```
-
-Other targets:
-
-| Target     | Description                                    |
-|------------|------------------------------------------------|
-| `all`      | Build the executable (default)                 |
-| `dev`      | Development build (keeps intermediate objects)  |
-| `install`  | Install binary to `/usr/bin` and man page       |
-| `clean`    | Remove object files                            |
-| `cleanall` | Remove object files and the executable         |
-
-
-The default build uses `-Wall -ansi -pedantic -O3 -fomit-frame-pointer -g`.
-
 ## Usage
 
 ```
@@ -167,6 +114,59 @@ Quiet capture with a report of total and filtered packet counts over 60 seconds:
 ```sh
 groinc -q -c -C -t 60
 ```
+
+## Implementation
+
+Groinc is written in ANSI C with no external dependencies beyond the C standard library and Linux system headers.
+
+### Architecture
+
+Packet capture uses `select()` for I/O multiplexing on a PF_PACKET socket. Each captured packet is passed through a three-stage parsing pipeline:
+
+1. **Datalink layer** - Ethernet (IEEE 802.3) header parsing
+2. **Network layer** - IPv4 (RFC 791), ARP
+3. **Transport layer** - TCP (RFC 793), UDP, ICMP
+
+Protocol implementations are modular: each protocol provides scan (parse) and print functions registered via function pointer tables, making it straightforward to add new protocols.
+
+### Key data structures
+
+- `struct data` - Tracks the raw packet buffer, current parse offset, and total length
+- `struct protocol_header` - Holds a parsed header's protocol ID, length, and data pointer
+- A union-based **linked list** is used throughout for filters, display options, reports, and errors
+- A **hash table** backs the error lookup system
+
+### Filtering
+
+All active filters are AND-composed. The filter chain is evaluated sequentially with early exit. Compiler branch-prediction hints (`likely`/`unlikely` macros) optimize the hot path.
+
+
+## Building
+
+Requires GCC and standard Linux headers.
+
+```sh
+make
+```
+
+To install the binary and man page system-wide:
+
+```sh
+make install
+```
+
+Other targets:
+
+| Target     | Description                                    |
+|------------|------------------------------------------------|
+| `all`      | Build the executable (default)                 |
+| `dev`      | Development build (keeps intermediate objects)  |
+| `install`  | Install binary to `/usr/bin` and man page       |
+| `clean`    | Remove object files                            |
+| `cleanall` | Remove object files and the executable         |
+
+
+The default build uses `-Wall -ansi -pedantic -O3 -fomit-frame-pointer -g`.
 
 Hex dump of ICMP packets:
 
