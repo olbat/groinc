@@ -172,3 +172,7 @@ Other targets:
 
 
 The default build uses `-Wall -ansi -pedantic -O3 -fomit-frame-pointer -g`.
+
+___Note__: the code in the main branch has been preserved in it's original 2005-ish state,
+therefore it doesn't compile on modern versions of Linux & GCC. An AI-fixed version of the code,
+which compiles on modern tech stacks, is available in the [fix-build-for-modern-linux-and-gcc](https://github.com/olbat/groinc/tree/fix-build-for-modern-linux-and-gcc) branch._
